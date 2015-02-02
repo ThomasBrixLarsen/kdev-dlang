@@ -1,0 +1,52 @@
+{
+    "KPlugin": {
+        "Description": "D Language Support (libdparser-based)", 
+        "Description[ca]": "Implementació del llenguatge D (basat en libdparser)", 
+        "Description[cs]": "Podpora jazyka D (založeno na libdparser)", 
+        "Description[de]": "Sprachunterstützung für D (libdparser-basiert)", 
+        "Description[en_GB]": "D Language Support (libdparser-based)", 
+        "Description[es]": "Implementación del lenguaje D (basado en libdparser)", 
+        "Description[hu]": "D nyelvi támogatás (libdparser-alapú)", 
+        "Description[nl]": "Ondersteuning voor de talen D", 
+        "Description[pl]": "Obsługa języków D (na podstawie libdparser)", 
+        "Description[pt]": "Suporte para a Linguagem D (baseado no libdparser)", 
+        "Description[pt_BR]": "Suporte à linguagem D (baseado no libdparser)", 
+        "Description[sk]": "Podpora jazyka D (založená na triedach)", 
+        "Description[sv]": "D språkstöd (baserat på libdparser)", 
+        "Description[uk]": "Підтримка мови D на основі libdparser", 
+        "Description[x-test]": "xxD Language Support (libdparser-based)xx", 
+        "Description[zh_CN]": "D 语言支持 (基于 libdparser)", 
+        "Icon": "text-x-dsrc", 
+        "Id": "kdevgoplugin", 
+        "Name": "D Support", 
+        "Name[bs]": "D Podrška", 
+        "Name[ca@valencia]": "Implementació per a D", 
+        "Name[ca]": "Implementació per a D", 
+        "Name[cs]": "Podpora D", 
+        "Name[de]": "Unterstützung für D", 
+        "Name[en_GB]": "D Support", 
+        "Name[es]": "Implementación de D", 
+        "Name[fi]": "D-tuki", 
+        "Name[hu]": "D támogatás", 
+        "Name[nl]": "Ondersteuning voor D", 
+        "Name[pl]": "Obsługa D", 
+        "Name[pt]": "Suporte a D", 
+        "Name[pt_BR]": "Suporte à D", 
+        "Name[sk]": "Podpora D", 
+        "Name[sv]": "D stöd", 
+        "Name[uk]": "Підтримка D", 
+        "Name[x-test]": "xxD Supportxx", 
+        "Name[zh_CN]": "D 支持", 
+        "ServiceTypes": [
+            "KDevelop/Plugin"
+        ]
+    }, 
+    "X-KDevelop-Args": "D", 
+    "X-KDevelop-Interfaces": "ILanguageSupport", 
+    "X-KDevelop-Language": "D", 
+    "X-KDevelop-LoadMode": "AlwaysOn", 
+    "X-KDevelop-Mode": "NoGUI", 
+    "X-KDevelop-SupportedMimeTypes": [
+        "text/x-dsrc"
+    ]
+}

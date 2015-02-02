@@ -1,0 +1,11 @@
+{
+	"name": "dparser",
+	"description": "A C interface for dparser.",
+	"authors": ["Thomas Brix Larsen"],
+	"homepage": "http://brix-verden.dk",
+	"license": "LGPL-2.1",
+	"dependencies": {
+		"libdparse": "~master"
+	},
+	"targetType": "dynamicLibrary",
+}
