@@ -16,27 +16,24 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGIMPORTITEM_H
-#define GOLANGIMPORTITEM_H
+#pragma once
 
 #include <language/codecompletion/normaldeclarationcompletionitem.h>
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
 
 class ImportCompletionItem : public KDevelop::NormalDeclarationCompletionItem
 {
 public:
-    ImportCompletionItem(QString packagename);
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
-    void execute(KTextEditor::View* view, const KTextEditor::Range& word) override;
+	ImportCompletionItem(QString packagename);
+	virtual QVariant data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const;
+	void execute(KTextEditor::View *view, const KTextEditor::Range &word) override;
 
 private:
-    QString m_packageName;
+	QString m_packageName;
 };
 
 }
-
-#endif

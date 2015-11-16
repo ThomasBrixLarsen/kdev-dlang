@@ -16,26 +16,20 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGDECLNAVCONTEXT_H
-#define GOLANGDECLNAVCONTEXT_H
+#pragma once
 
 #include <language/duchain/navigation/abstractdeclarationnavigationcontext.h>
 #include <language/duchain/types/identifiedtype.h>
 
-
 class DeclarationNavigationContext : public KDevelop::AbstractDeclarationNavigationContext
 {
 public:
-    DeclarationNavigationContext(KDevelop::DeclarationPointer decl,
-                                 KDevelop::TopDUContextPointer topContext,
-                                 KDevelop::AbstractNavigationContext* previousContext = 0);
-protected: 
-    virtual void htmlFunction();
-    
-    virtual void eventuallyMakeTypeLinks( KDevelop::AbstractType::Ptr type );
-    
-    virtual QString html(bool shorten);
+	DeclarationNavigationContext(KDevelop::DeclarationPointer decl, KDevelop::TopDUContextPointer topContext, KDevelop::AbstractNavigationContext *previousContext = 0);
+
+protected:
+	virtual void htmlFunction();
+	
+	virtual void eventuallyMakeTypeLinks(KDevelop::AbstractType::Ptr type);
+	
+	virtual QString html(bool shorten);
 };
-
-
-#endif

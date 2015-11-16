@@ -16,68 +16,71 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGINTTYPE_H
-#define GOLANGINTTYPE_H
+#pragma once
 
 #include <language/duchain/types/integraltype.h>
 
-#include "goduchainexport.h"
+#include "dduchainexport.h"
 
-namespace go {
-    
+namespace dlang
+{
+
 typedef KDevelop::IntegralTypeData GoIntegralTypeData;
 
-class KDEVGODUCHAIN_EXPORT GoIntegralType : public KDevelop::IntegralType
+class KDEVDDUCHAIN_EXPORT GoIntegralType : public KDevelop::IntegralType
 {
 public:
-    typedef KDevelop::TypePtr<GoIntegralType> Ptr;
-    
-    /// Default constructor
-    GoIntegralType(uint type = TypeNone);
-    /// Copy constructor. \param rhs type to copy
-    GoIntegralType(const GoIntegralType& rhs);
-    /// Constructor using raw data. \param data internal data.
-    GoIntegralType(GoIntegralTypeData& data);
-
-    virtual KDevelop::AbstractType* clone() const;
-    
-    virtual QString toString() const;
-
-    virtual bool equals(const KDevelop::AbstractType* rhs) const;
-
-    virtual uint hash() const;
-    
-    enum GoIntegralTypes {
-       TypeUbyte=201,
-       TypeUshort,
-       TypeUint,
-       TypeUlong,
-       TypeByte,
-       TypeShort,
-       TypeInt,
-       TypeLong,
-       TypeFloat,
-       TypeDouble,
-	   TypeReal,
-       TypeBool,
-	   TypeChar,
-	   TypeWchar,
-	   TypeDchar
-   };
-   
-    enum {
-        ///TODO: is that value OK?
-        Identity = 78
-    };
-    
-  //GoIntegralType(uint type = TypeNone) : IntegralType(type) {}
-   
-  typedef KDevelop::IntegralTypeData Data;
-  typedef KDevelop::IntegralType BaseType;
-   
+	typedef KDevelop::TypePtr<GoIntegralType> Ptr;
+	
+	///Default constructor.
+	GoIntegralType(uint type = TypeNone);
+	///Copy constructor. \param rhs type to copy.
+	GoIntegralType(const GoIntegralType &rhs);
+	///Constructor using raw data. \param data internal data.
+	GoIntegralType(GoIntegralTypeData &data);
+	
+	virtual KDevelop::AbstractType *clone() const;
+	
+	virtual QString toString() const;
+	
+	virtual bool equals(const KDevelop::AbstractType *rhs) const;
+	
+	virtual uint hash() const;
+	
+	enum GoIntegralTypes
+	{
+		TypeVoid=201,
+		TypeUbyte,
+		TypeUshort,
+		TypeUint,
+		TypeUlong,
+		TypeByte,
+		TypeShort,
+		TypeInt,
+		TypeLong,
+		TypeFloat,
+		TypeDouble,
+		TypeReal,
+		TypeBool,
+		TypeChar,
+		TypeWchar,
+		TypeDchar
+	};
+	
+	enum
+	{
+		///TODO: is that value OK?
+		Identity = 78
+	};
+	
+	//GoIntegralType(uint type = TypeNone) : IntegralType(type) {}
+	
+	typedef KDevelop::IntegralTypeData Data;
+	typedef KDevelop::IntegralType BaseType;
+	
 protected:
-    TYPE_DECLARE_DATA(GoIntegralType);
-
+	TYPE_DECLARE_DATA(GoIntegralType);
+	
 };
 
 }
@@ -87,15 +90,11 @@ namespace KDevelop
 {
 
 template<>
-inline go::GoIntegralType* fastCast<go::GoIntegralType*>(AbstractType* from) {
-    if ( !from || from->whichType() != AbstractType::TypeIntegral ) {
-        return 0;
-    } else {
-        return dynamic_cast<go::GoIntegralType*>(from);
-    }
+inline dlang::GoIntegralType *fastCast<dlang::GoIntegralType *>(AbstractType *from)
+{
+	if(!from || from->whichType() != AbstractType::TypeIntegral)
+		return 0;
+	return dynamic_cast<dlang::GoIntegralType *>(from);
 }
 
 }
-
-
-#endif

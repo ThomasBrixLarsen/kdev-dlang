@@ -1,11 +1,11 @@
-KDevelop Go Language support plugin
+KDevelop D Language support plugin
 -------------------------------------------------
 
-This plugin introduces Go language support for KDevelop. Go is a programming language developed by Google, KDevelop is a free and open-source IDE developed by KDevelop community, available on most Unix-like systems and Microsoft Windows.
+This plugin introduces D language support for KDevelop. D is a programming language developed by Digital Mars, KDevelop is a free and open-source IDE developed by KDevelop community, available on most Unix-like systems and Microsoft Windows.
 
 Features
 --------------------
-**NOTE**: It is still a WIP, so only a part of all Go language features is supported at this time. 
+**NOTE**: It is still a WIP, so only a part of all D language features is supported at this time. 
 Some of the most important features include:
  -   Code highlighting(currently some of the language constructions are not supported)
  -   KDevelop navigation widgets(information about type, declaration and so on)
@@ -17,22 +17,13 @@ I haven't tested the plugin with stable KDevelop versions so I can't say for sur
 
 1) Follow KDevelop installation instructions here https://techbase.kde.org/Projects/KDevelop4/HowToCompile
 
-2) Install KDevelop-PG-Qt
-```
-git clone git://anongit.kde.org/kdevelop-pg-qt
-mkdir kdevelop-pg-qt/build && cd kdevelop-pg-qt/build
-cmake -DCMAKE_PREFIX_PATH=`your KDevelop install dir` 
- -DCMAKE_INSTALL_PREFIX=`your KDevelop install dir` ../
-make && make install
-```
+3) Install D(if not already installed)
 
-3) Install Go(if not already installed)
-
-4) Install Go Plugin
+4) Install D Plugin
 
 Download this repository,
 ``` 
-mkdir kdev-go/build && cd kdev-go/build
+mkdir kdev-d/build && cd kdev-d/build
 cmake -DCMAKE_PREFIX_PATH=`your KDevelop install dir` 
  -DCMAKE_INSTALL_PREFIX=`your KDevelop install dir` ../
 make && make install
@@ -42,7 +33,7 @@ If you installed KDevelop into a custom directory don't forget to add this direc
 
 **HOWTO use this plugin**
 
-I recommend following official code organization suggestions for example like [here](http://golang.org/doc/code.html) or [here](http://www.youtube.com/watch?v=XCsL89YtqCs). In that case you will need to set $GOPATH environment variable to the root of your project before starting KDevelop. Plugin can also try to find path to your project automatically, but it can fail. For go standart library to work you need the path to your 'go' binary be in $PATH environment variable, which if you installed Go normally(with your package manager) should already be there. After that just start KDevelop and open your Go project. If plugin doesn't work(e.g. highlighting is disabled) check if it's loaded in KDevelop(Help->Loaded Plugins). If not - check if it's installed for example like this: find 'KDevelop installation path' -name "*kdevgo*". If it is installed and loaded but still not working consider opening an issue on github or contacting me directly at onehundredof@gmail.com.
+I recommend following official code organization suggestions for example like [here](http://dlang.org/doc/code.html) or [here](http://www.youtube.com/watch?v=XCsL89YtqCs). In that case you will need to set $GOPATH environment variable to the root of your project before starting KDevelop. Plugin can also try to find path to your project automatically, but it can fail. For go standart library to work you need the path to your 'go' binary be in $PATH environment variable, which if you installed Go normally(with your package manager) should already be there. After that just start KDevelop and open your Go project. If plugin doesn't work(e.g. highlighting is disabled) check if it's loaded in KDevelop(Help->Loaded Plugins). If not - check if it's installed for example like this: find 'KDevelop installation path' -name "*kdevgo*". If it is installed and loaded but still not working consider opening an issue on github or contacting me directly at onehundredof@gmail.com.
 
 For building and executing your application I recommend using custom build system built into KDevelop.
 

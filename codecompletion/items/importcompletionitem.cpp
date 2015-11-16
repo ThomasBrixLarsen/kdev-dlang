@@ -22,31 +22,31 @@
 #include <KTextEditor/Document>
 #include <language/codecompletion/codecompletionmodel.h>
 
-namespace go
+namespace dlang
 {
 
-ImportCompletionItem::ImportCompletionItem(QString packagename): KDevelop::NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(),
-                                                                  QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), 0), m_packageName(packagename)
+ImportCompletionItem::ImportCompletionItem(QString packagename) : KDevelop::NormalDeclarationCompletionItem(KDevelop::DeclarationPointer(),
+    QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), 0), m_packageName(packagename)
 {
 }
 
-QVariant ImportCompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const
+QVariant ImportCompletionItem::data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const
 {
-    if(role == Qt::DisplayRole && (index.column() == CodeCompletionModel::Name))
-        return m_packageName;
-    if(role == Qt::DisplayRole && (index.column() == CodeCompletionModel::Prefix))
-        return "package";
-    return NormalDeclarationCompletionItem::data(index, role, model);
+	if(role == Qt::DisplayRole && (index.column() == CodeCompletionModel::Name))
+		return m_packageName;
+	if(role == Qt::DisplayRole && (index.column() == CodeCompletionModel::Prefix))
+		return "module";
+	return NormalDeclarationCompletionItem::data(index, role, model);
 }
 
-void ImportCompletionItem::execute(KTextEditor::View* view, const KTextEditor::Range& word)
+void ImportCompletionItem::execute(KTextEditor::View *view, const KTextEditor::Range &word)
 {
-    KTextEditor::Document* document = view->document();
-    KTextEditor::Range checkSuffix(word.end().line(), word.end().column(), word.end().line(), document->lineLength(word.end().line()));
-    QString suffix = "\"";
-    if(document->text(checkSuffix).startsWith('"'))
-        suffix.clear();
-    document->replaceText(word, m_packageName + suffix);
+	KTextEditor::Document *document = view->document();
+	KTextEditor::Range checkSuffix(word.end().line(), word.end().column(), word.end().line(), document->lineLength(word.end().line()));
+	QString suffix = "\"";
+	if(document->text(checkSuffix).startsWith('"'))
+		suffix.clear();
+	document->replaceText(word, m_packageName + suffix);
 }
 
 }

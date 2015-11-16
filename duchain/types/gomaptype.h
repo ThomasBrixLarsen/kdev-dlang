@@ -16,32 +16,31 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGMAPTYPE_H
-#define GOLANGMAPTYPE_H
+#pragma once
 
 #include <language/duchain/types/structuretype.h>
 #include <language/duchain/types/typesystem.h>
 #include <language/duchain/types/indexedtype.h>
 
-#include "duchain/goduchainexport.h"
+#include "duchain/dduchainexport.h"
 
-namespace go
+namespace dlang
 {
 
 class GoMapTypeData : public KDevelop::AbstractTypeData
 {
 public:
-    GoMapTypeData()
-        : KDevelop::AbstractTypeData()
-    {
-    }
-    GoMapTypeData( const GoMapTypeData& rhs )
-        : KDevelop::AbstractTypeData(rhs), keyType(rhs.keyType), valueType(rhs.valueType)
-    {
-    }
-
-    KDevelop::IndexedType keyType;
-    KDevelop::IndexedType valueType;
+	GoMapTypeData() : KDevelop::AbstractTypeData()
+	{
+		
+	}
+	GoMapTypeData(const GoMapTypeData &rhs) : KDevelop::AbstractTypeData(rhs), keyType(rhs.keyType), valueType(rhs.valueType)
+	{
+		
+	}
+	
+	KDevelop::IndexedType keyType;
+	KDevelop::IndexedType valueType;
 };
 
 /**
@@ -49,48 +48,49 @@ public:
  *  - KDevplatform's MapType tied into UnsureType and stuff which is nod needed in kdev-go
  *  - Custom toString() implementation looks much better
  *  - This custom type is much simpler and therefore should be a little bit more efficient
- * If you have a convincing reason to use KDevplatform's MapType - do it, switching types 
- * shouldn't be hard. 
+ * If you have a convincing reason to use KDevplatform's MapType - do it, switching types
+ * shouldn't be hard.
  */
-class KDEVGODUCHAIN_EXPORT GoMapType: public KDevelop::AbstractType
+class KDEVDDUCHAIN_EXPORT GoMapType : public KDevelop::AbstractType
 {
 public:
-    typedef KDevelop::TypePtr<GoMapType> Ptr;
-
-    /// Default constructor
-    GoMapType();
-    /// Copy constructor. \param rhs type to copy
-    GoMapType(const GoMapType& rhs);
-    /// Constructor using raw data. \param data internal data.
-    GoMapType(GoMapTypeData& data);
-
-    void setKeyType(AbstractType::Ptr type);
-
-    void setValueType(AbstractType::Ptr type);
-
-    AbstractType::Ptr keyType();
-
-    AbstractType::Ptr valueType();
-
-    virtual QString toString() const;
-
-    virtual KDevelop::AbstractType* clone() const;
-
-    virtual uint hash() const;
-
-    virtual bool equals(const AbstractType* rhs) const;
-
-    void accept0(KDevelop::TypeVisitor *v) const;
-
-    enum {
-        Identity = 105
-    };
-
-  typedef GoMapTypeData Data;
-  typedef KDevelop::AbstractType BaseType;
+	typedef KDevelop::TypePtr<GoMapType> Ptr;
+	
+	///Default constructor.
+	GoMapType();
+	///Copy constructor. \param rhs type to copy.
+	GoMapType(const GoMapType &rhs);
+	///Constructor using raw data. \param data internal data.
+	GoMapType(GoMapTypeData &data);
+	
+	void setKeyType(AbstractType::Ptr type);
+	
+	void setValueType(AbstractType::Ptr type);
+	
+	AbstractType::Ptr keyType();
+	
+	AbstractType::Ptr valueType();
+	
+	virtual QString toString() const;
+	
+	virtual KDevelop::AbstractType *clone() const;
+	
+	virtual uint hash() const;
+	
+	virtual bool equals(const AbstractType *rhs) const;
+	
+	void accept0(KDevelop::TypeVisitor *v) const;
+	
+	enum
+	{
+		Identity = 105
+	};
+	
+	typedef GoMapTypeData Data;
+	typedef KDevelop::AbstractType BaseType;
 
 protected:
-    TYPE_DECLARE_DATA(GoMapType);
+	TYPE_DECLARE_DATA(GoMapType);
 };
 
 }
@@ -99,15 +99,11 @@ namespace KDevelop
 {
 
 template<>
-inline go::GoMapType* fastCast<go::GoMapType*>(AbstractType* from) {
-    if ( !from || from->whichType() != AbstractType::TypeAbstract ) {
-        return 0;
-    } else {
-        return dynamic_cast<go::GoMapType*>(from);
-    }
+inline dlang::GoMapType *fastCast<dlang::GoMapType *>(AbstractType *from)
+{
+	if(!from || from->whichType() != AbstractType::TypeAbstract)
+		return 0;
+	return dynamic_cast<dlang::GoMapType *>(from);
 }
 
 }
-
-
-#endif

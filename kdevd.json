@@ -1,0 +1,41 @@
+{
+    "KPlugin": {
+        "Category": "Language Support",
+        "Icon": "text-x-dsrc",
+        "Id": "kdevd",
+        "License": "GPL",
+        "Name": "D Support",
+        "Name[ast]": "Sofitu D",
+        "Name[bs]": "D podrška",
+        "Name[ca@valencia]": "Implementació del D",
+        "Name[ca]": "Implementació del D",
+        "Name[cs]": "Podpora D",
+        "Name[de]": "Unterstützung für D",
+        "Name[en_GB]": "D Support",
+        "Name[es]": "Ir a la página de soporte",
+        "Name[fi]": "D-tuki",
+        "Name[gl]": "Compatibilidade con D",
+        "Name[hu]": "D támogatás",
+        "Name[nl]": "Ondersteuning voor D",
+        "Name[pl]": "Obsługa D",
+        "Name[pt]": "Suporte para D",
+        "Name[pt_BR]": "Suporte a D",
+        "Name[sk]": "Podpora D",
+        "Name[sv]": "D-support",
+        "Name[tr]": "D Desteği",
+        "Name[uk]": "Підтримка D",
+        "Name[x-test]": "xxD Supportxx",
+        "Name[zh_CN]": "D 支持",
+        "ServiceTypes": [
+            "KDevelop/Plugin"
+        ]
+    },
+    "X-KDevelop-Interfaces": [
+        "ILanguageSupport"
+    ],
+    "X-KDevelop-Language": "D",
+    "X-KDevelop-Mode": "NoGUI",
+    "X-KDevelop-SupportedMimeTypes": [
+        "text/x-dsrc"
+    ]
+}

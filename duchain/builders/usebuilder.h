@@ -16,33 +16,35 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGUSEBUILDER_H
-#define GOLANGUSEBUILDER_H
+#pragma once
 
 #include <language/duchain/builders/abstractusebuilder.h>
 
 #include "contextbuilder.h"
 
-namespace go 
+namespace dlang
 {
 
 typedef KDevelop::AbstractUseBuilder<INode, IIdentifier, ContextBuilder> UseBuilderBase;
 
-class KDEVGODUCHAIN_EXPORT UseBuilder : public UseBuilderBase
+class KDEVDDUCHAIN_EXPORT UseBuilder : public UseBuilderBase
 {
 public:
-    UseBuilder(ParseSession* session);
-
-    virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString& url, INode* node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext());
-
-    //virtual void visitPrimaryExpr(go::PrimaryExprAst* node);
-    virtual void visitTypeName(IType* node);
-    //virtual void visitBlock(go::BlockAst* node);
+	UseBuilder(ParseSession *session);
+	
+	virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext());
+	virtual void startVisiting(INode *node);
+	//virtual void visitPrimaryExpr(dlang::PrimaryExprAst* node);
+	virtual void visitTypeName(IType *node);
+	virtual void visitVarDeclaration(IVariableDeclaration *node);
+	virtual void visitDeclarator(IDeclarator *node, IType *type);
+	virtual void visitBlock(IBlockStatement *node);
+	virtual void visitPrimaryExpression(IPrimaryExpression *node);
+	virtual void visitUnaryExpression(IUnaryExpression *node);
+	virtual void visitSingleImport(ISingleImport *node);
 
 private:
-    QStack<KDevelop::AbstractType::Ptr> m_types;
+	QStack<KDevelop::AbstractType::Ptr> m_types;
 };
 
 }
-
-#endif

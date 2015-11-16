@@ -20,17 +20,17 @@
 
 #include "worker.h"
 
-namespace go
-{
-    
-CodeCompletionModel::CodeCompletionModel(QObject* parent): KDevelop::CodeCompletionModel(parent)
+namespace dlang
 {
 
-}
-   
-KDevelop::CodeCompletionWorker* CodeCompletionModel::createCompletionWorker()
+CodeCompletionModel::CodeCompletionModel(QObject *parent) : KDevelop::CodeCompletionModel(parent)
 {
-    return new CodeCompletionWorker(this);
+	
+}
+
+KDevelop::CodeCompletionWorker *CodeCompletionModel::createCompletionWorker()
+{
+	return new CodeCompletionWorker(this);
 }
 
 }

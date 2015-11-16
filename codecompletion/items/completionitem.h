@@ -16,29 +16,27 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGCOMPLETIONITEM_H
-#define GOLANGCOMPLETIONITEM_H
+#pragma once
 
 #include <language/codecompletion/normaldeclarationcompletionitem.h>
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
 
 class CompletionItem : public NormalDeclarationCompletionItem
 {
 public:
-    CompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(),
-                   QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context=QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(),
-                   int inheritanceDepth = 0);
-
-    virtual QVariant data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const;
+	CompletionItem(KDevelop::DeclarationPointer decl = KDevelop::DeclarationPointer(),
+	               QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context=QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(),
+	               int inheritanceDepth = 0);
+	
+	virtual QVariant data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const;
 
 private:
-    QString m_prefix;
+	QString m_prefix;
 };
 
 }
 
-#endif

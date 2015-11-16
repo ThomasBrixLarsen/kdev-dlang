@@ -21,22 +21,21 @@
 #include "context.h"
 #include "completiondebug.h"
 
-namespace go
+namespace dlang
 {
-CodeCompletionWorker::CodeCompletionWorker(KDevelop::CodeCompletionModel* model): KDevelop::CodeCompletionWorker(model)
+CodeCompletionWorker::CodeCompletionWorker(KDevelop::CodeCompletionModel *model): KDevelop::CodeCompletionWorker(model)
 {
 
 }
 
-KDevelop::CodeCompletionContext* CodeCompletionWorker::createCompletionContext(KDevelop::DUContextPointer context, 
-									       const QString& contextText, 
-									       const QString& followingText, 
-									       const KDevelop::CursorInRevision& position) const
+KDevelop::CodeCompletionContext *CodeCompletionWorker::createCompletionContext(KDevelop::DUContextPointer context,
+        const QString &contextText,
+        const QString &followingText,
+        const KDevelop::CursorInRevision &position) const
 {
-    qCDebug(COMPLETION) << "Completion test";
-    //return go::CodeCompletionWorker::createCompletionContext(context, contextText, followingText, position);
-    return new go::CodeCompletionContext(context, contextText, position);
+	qCDebug(COMPLETION) << "Completion test";
+	//return dlang::CodeCompletionWorker::createCompletionContext(context, contextText, followingText, position);
+	return new dlang::CodeCompletionContext(context, contextText, position);
 }
-
 
 }

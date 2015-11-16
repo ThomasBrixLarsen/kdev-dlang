@@ -18,6 +18,9 @@
 
 #include "declarationbuilder.h"
 
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+#include <language/backgroundparser/backgroundparser.h>
 #include <language/duchain/duchainlock.h>
 #include <language/duchain/duchain.h>
 #include <language/duchain/types/integraltype.h>
@@ -28,6 +31,7 @@
 #include <language/duchain/classdeclaration.h>
 #include <language/duchain/topducontext.h>
 #include <language/duchain/namespacealiasdeclaration.h>
+#include <language/duchain/duchainutils.h>
 
 #include "helper.h"
 #include "duchaindebug.h"
@@ -35,38 +39,38 @@
 using namespace KDevelop;
 
 
-DeclarationBuilder::DeclarationBuilder(ParseSession* session, bool forExport) : m_export(forExport), m_preBuilding(false), m_lastTypeComment(), m_lastConstComment()
+DeclarationBuilder::DeclarationBuilder(ParseSession *session, bool forExport) : m_export(forExport), m_preBuilding(false), m_lastTypeComment(), m_lastConstComment(), m_ownPriority(0)
 {
-    setParseSession(session);
+	setParseSession(session);
 }
 
-KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString& url, INode* node, KDevelop::ReferencedTopDUContext updateContext)
+KDevelop::ReferencedTopDUContext DeclarationBuilder::build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext)
 {
-  qCDebug(DUCHAIN) << "DeclarationBuilder start";
-  if(!m_preBuilding)
-  {
-      qCDebug(DUCHAIN) << "Running prebuilder";
-      DeclarationBuilder preBuilder(m_session, m_export);
-      preBuilder.m_preBuilding = true;
-      updateContext = preBuilder.build(url, node, updateContext);
-  }
-  return DeclarationBuilderBase::build(url, node, updateContext);
+	qCDebug(DUCHAIN) << "DeclarationBuilder start";
+	if(!m_preBuilding)
+	{
+		qCDebug(DUCHAIN) << "Running prebuilder";
+		DeclarationBuilder preBuilder(m_session, m_export);
+		preBuilder.m_preBuilding = true;
+		updateContext = preBuilder.build(url, node, updateContext);
+	}
+	return DeclarationBuilderBase::build(url, node, updateContext);
 }
 
-void DeclarationBuilder::startVisiting(INode* node)
+void DeclarationBuilder::startVisiting(INode *node)
 {
-    {
-        DUChainWriteLocker lock;
-        topContext()->clearImportedParentContexts();
-        topContext()->updateImportsCache();
-    }
-
-    return DeclarationBuilderBase::startVisiting(node);
+	{
+		DUChainWriteLocker lock;
+		topContext()->clearImportedParentContexts();
+		topContext()->updateImportsCache();
+	}
+	
+	return DeclarationBuilderBase::startVisiting(node);
 }
 
-void DeclarationBuilder::visitVarDeclaration(IVariableDeclaration* node)
+void DeclarationBuilder::visitVarDeclaration(IVariableDeclaration *node)
 {
-	visitTypeName(node->getType());
+	DeclarationBuilderBase::visitVarDeclaration(node);
 	if(!lastType())
 		injectType(AbstractType::Ptr(new IntegralType(IntegralType::TypeNone)));
 	//lastType()->setModifiers(declareConstant ? AbstractType::ConstModifier : AbstractType::NoModifiers);
@@ -77,12 +81,12 @@ void DeclarationBuilder::visitVarDeclaration(IVariableDeclaration* node)
 	}
 }
 
-/*void DeclarationBuilder::visitShortVarDecl(go::ShortVarDeclAst* node)
+/*void DeclarationBuilder::visitShortVarDecl(dlang::ShortVarDeclAst* node)
 {
     declareVariables(node->id, node->idList, node->expression, node->expressionList, false);
 }
 
-void DeclarationBuilder::declareVariablesWithType(go::IdentifierAst* id, go::IdListAst* idList, go::TypeAst* type, bool declareConstant)
+void DeclarationBuilder::declareVariablesWithType(dlang::IdentifierAst* id, dlang::IdListAst* idList, dlang::TypeAst* type, bool declareConstant)
 {
 	m_contextIdentifier = identifierForNode(id);
 	visitType(type);
@@ -113,14 +117,14 @@ void DeclarationBuilder::declareVariablesWithType(go::IdentifierAst* id, go::IdL
 }
 
 
-void DeclarationBuilder::declareVariables(go::IdentifierAst* id, go::IdListAst* idList, go::ExpressionAst* expression,
-					    go::ExpressionListAst* expressionList, bool declareConstant)
+void DeclarationBuilder::declareVariables(dlang::IdentifierAst* id, dlang::IdListAst* idList, dlang::ExpressionAst* expression,
+					    dlang::ExpressionListAst* expressionList, bool declareConstant)
 {
     m_contextIdentifier = identifierForNode(id);
     QList<AbstractType::Ptr> types;
     if(!expression)
 	return;
-    go::ExpressionVisitor exprVisitor(m_session, currentContext(), this);
+    dlang::ExpressionVisitor exprVisitor(m_session, currentContext(), this);
     exprVisitor.visitExpression(expression);
     Q_ASSERT(exprVisitor.lastTypes().size() != 0);
     if(!expressionList)
@@ -171,30 +175,53 @@ void DeclarationBuilder::declareVariables(go::IdentifierAst* id, go::IdListAst* 
     }
 }*/
 
-void DeclarationBuilder::declareVariable(IIdentifier* id, const AbstractType::Ptr& type)
+void DeclarationBuilder::declareVariable(IIdentifier *id, const AbstractType::Ptr &type)
 {
-    if(type->modifiers() & AbstractType::ConstModifier)
-        setComment(m_lastConstComment);
-    DUChainWriteLocker lock;
-    Declaration* dec = openDeclaration<Declaration>(identifierForNode(id), editorFindRange(id, 0));
-    dec->setType<AbstractType>(type);
-    dec->setKind(Declaration::Instance);
-    closeDeclaration();
+	if(type->modifiers() & AbstractType::ConstModifier)
+		setComment(m_lastConstComment);
+	DUChainWriteLocker lock;
+	Declaration *dec = openDeclaration<Declaration>(identifierForNode(id), editorFindRange(id, 0));
+	dec->setType<AbstractType>(type);
+	dec->setKind(Declaration::Instance);
+	closeDeclaration();
 }
 
+void DeclarationBuilder::visitClassDeclaration(IClassDeclaration *node)
+{
+	DeclarationBuilderBase::visitClassDeclaration(node);
+	if(node->getComment())
+		setComment(node->getComment()->getString());
+	DUChainWriteLocker lock;
+	Declaration *dec = openDeclaration<Declaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
+	dec->setType<AbstractType>(lastType());
+	dec->setKind(KDevelop::Declaration::Type);
+	closeDeclaration();
+}
 
-/*void DeclarationBuilder::visitConstDecl(go::ConstDeclAst* node)
+void DeclarationBuilder::visitStructDeclaration(IStructDeclaration *node)
+{
+	DeclarationBuilderBase::visitStructDeclaration(node);
+	if(node->getComment())
+		setComment(node->getComment()->getString());
+	DUChainWriteLocker lock;
+	Declaration *dec = openDeclaration<Declaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
+	dec->setType<AbstractType>(lastType());
+	dec->setKind(KDevelop::Declaration::Type);
+	closeDeclaration();
+}
+
+/*void DeclarationBuilder::visitConstDecl(dlang::ConstDeclAst* node)
 {
     m_constAutoTypes.clear();
     m_lastConstComment = m_session->commentBeforeToken(node->startToken);
     //adding const declaration code, just like in GoDoc
     m_lastConstComment.append(m_session->textForNode(node).toUtf8());
-    go::DefaultVisitor::visitConstDecl(node);
+    dlang::DefaultVisitor::visitConstDecl(node);
     m_lastConstComment = QByteArray();
 }
 
 
-void DeclarationBuilder::visitConstSpec(go::ConstSpecAst* node)
+void DeclarationBuilder::visitConstSpec(dlang::ConstSpecAst* node)
 {
     if(node->type)
     {
@@ -229,27 +256,29 @@ void DeclarationBuilder::visitConstSpec(go::ConstSpecAst* node)
     }
 }*/
 
-void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
+void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 {
 	auto name = node->getName();
 	printf("name: %s\n", name->getString());
-	printf("comment: %s\n", node->getComment()->getString());
-	go::GoFunctionDeclaration* decl = parseSignature(node, true, node->getName(), node->getComment()->getString());
+	if(node->getComment())
+		printf("comment: %s\n", node->getComment()->getString());
+	KDevelop::FunctionDeclaration *decl = parseSignature(node, true, node->getName(), node->getComment()? node->getComment()->getString() : "");
 	DeclarationBuilderBase::setEncountered(decl);
 	if(!node->getFunctionBody())
 		return;
 	//a context will be opened when visiting block, but we still open another one here
 	//so we can import arguments into it.(same goes for methodDeclaration)
-	DUContext* bodyContext = openContext(node->getFunctionBody(), DUContext::ContextType::Function, node->getName());
-	{//import parameters into body context
+	DUContext *bodyContext = openContext(node->getFunctionBody(), DUContext::ContextType::Function, node->getName());
+	{
+		//import parameters into body context
 		DUChainWriteLocker lock;
 		if(decl->internalContext())
 			currentContext()->addImportedParentContext(decl->internalContext());
-		if(decl->returnArgsContext())
-			currentContext()->addImportedParentContext(decl->returnArgsContext());
+		//if(decl->returnArgsContext())
+		//	currentContext()->addImportedParentContext(decl->returnArgsContext());
 	}
 	
-	visitBody(node->getFunctionBody());
+	DeclarationBuilderBase::visitFuncDeclaration(node);
 	{
 		DUChainWriteLocker lock;
 		lastContext()->setType(DUContext::Function);
@@ -259,17 +288,17 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
 	closeContext(); //body wrapper context
 }
 
-/*void DeclarationBuilder::visitMethodDeclaration(go::MethodDeclarationAst* node)
+/*void DeclarationBuilder::visitMethodDeclaration(dlang::MethodDeclarationAst* node)
 {
     Declaration* declaration=0;
     if(node->methodRecv)
     {
-	go::IdentifierAst* actualtype=0;
+	dlang::IdentifierAst* actualtype=0;
 	if(node->methodRecv->ptype)
 	    actualtype = node->methodRecv->ptype;
 	else if(node->methodRecv->type)
 	    actualtype = node->methodRecv->type;
-	else 
+	else
 	    actualtype = node->methodRecv->nameOrType;
 	DUChainWriteLocker lock;
 	declaration = openDeclaration<Declaration>(identifierForNode(actualtype), editorFindRange(actualtype, 0));
@@ -277,8 +306,8 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
 	openContext(node, editorFindRange(node, 0), DUContext::Namespace, identifierForNode(actualtype));
 	declaration->setInternalContext(currentContext());
     }
-    go::GoFunctionDeclaration* decl = parseSignature(node->signature, true, node->methodName, m_session->commentBeforeToken(node->startToken-1));
-    
+    dlang::GoFunctionDeclaration* decl = parseSignature(node->signature, true, node->methodName, m_session->commentBeforeToken(node->startToken-1));
+
     if(!node->body)
 	return;
 
@@ -291,7 +320,7 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
         if(decl->returnArgsContext())
             currentContext()->addImportedParentContext(decl->returnArgsContext());
     }
-    
+
     if(node->methodRecv->type)
     {//declare method receiver variable('this' or 'self' analog in Go)
         buildTypeName(node->methodRecv->type);
@@ -306,7 +335,7 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
 	thisVariable->setAbstractType(lastType());
 	closeDeclaration();
     }
-	
+
     visitBlock(node->body);
     {
 	DUChainWriteLocker lock;
@@ -314,13 +343,13 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration* node)
 	decl->setInternalFunctionContext(lastContext()); //inner block context
 	decl->setKind(Declaration::Instance);
     }
-    
+
     closeContext(); //body wrapper context
     closeContext();	//namespace
     closeDeclaration();	//namespace declaration
 }
 
-void DeclarationBuilder::visitTypeSpec(go::TypeSpecAst* node)
+void DeclarationBuilder::visitTypeSpec(dlang::TypeSpecAst* node)
 {
     //first try setting comment before type name
     //if it doesn't exists, set comment before type declaration
@@ -343,134 +372,135 @@ void DeclarationBuilder::visitTypeSpec(go::TypeSpecAst* node)
     DUChainWriteLocker lock;
     //qCDebug(DUCHAIN) << lastType()->toString();
     decl->setType(lastType());
-    
+
     decl->setIsTypeAlias(true);
     closeDeclaration();
     //qCDebug(DUCHAIN) << "Type" << identifierForNode(node->name) << " exit";
-}
-
-void DeclarationBuilder::visitImportSpec(go::ImportSpecAst* node)
-{
-    //prevent recursive imports
-    //without preventing recursive imports. importing standart go library(2000+ files) takes minutes and sometimes never stops
-    //thankfully go import mechanism doesn't need recursive imports(I think)
-    //if(m_export)
-	//return;
-    QString import(identifierForIndex(node->importpath->import).toString());
-    QList<ReferencedTopDUContext> contexts = m_session->contextForImport(import);
-    if(contexts.empty())
-	return;
- 
-    //usually package name matches directory, so try searching for that first
-    QualifiedIdentifier packageName(import.mid(1, import.length()-2));
-    bool firstContext = true;
-    for(const ReferencedTopDUContext& context : contexts)
-    {
-        //don't import itself
-        if(context.data() == topContext())
-            continue;
-        DeclarationPointer decl = go::checkPackageDeclaration(packageName.last(), context);
-        if(!decl && firstContext)
-        {
-            decl = go::getFirstDeclaration(context); //package name differs from directory, so get the real name
-            if(!decl)
-                continue;
-            DUChainReadLocker lock;
-            packageName = decl->qualifiedIdentifier();
-        }
-        if(!decl) //contexts belongs to a different package
-            continue;
-	
-        DUChainWriteLocker lock;
-        if(firstContext) //only open declarations once per import(others are redundant)
-        {
-            setComment(decl->comment());
-            if(node->packageName)
-            {//create alias for package
-                QualifiedIdentifier id = identifierForNode(node->packageName);
-                NamespaceAliasDeclaration* decl = openDeclaration<NamespaceAliasDeclaration>(id, editorFindRange(node->importpath, 0));
-                decl->setKind(Declaration::NamespaceAlias);
-                decl->setImportIdentifier(packageName); //this needs to be actual package name
-                closeDeclaration();
-            }else if(node->dot != -1)
-            {//anonymous import
-                NamespaceAliasDeclaration* decl = openDeclaration<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), 
-                                                                                            editorFindRange(node->importpath, 0));
-                decl->setKind(Declaration::NamespaceAlias);
-                decl->setImportIdentifier(packageName); //this needs to be actual package name
-                closeDeclaration();
-            }else
-            {
-                Declaration* decl = openDeclaration<Declaration>(packageName, editorFindRange(node->importpath, 0));
-                decl->setKind(Declaration::Import);
-                closeDeclaration();
-            }
-        }
-	topContext()->addImportedParentContext(context.data());
-        firstContext = false;
-    }
-    DUChainWriteLocker lock;
-    topContext()->updateImportsCache();
 }*/
+
+#include <language/duchain/duchaindumper.h>
+
+void DeclarationBuilder::visitSingleImport(ISingleImport *node)
+{
+	//prevent recursive imports
+	//without preventing recursive imports. importing standart go library(2000+ files) takes minutes and sometimes never stops
+	//thankfully go import mechanism doesn't need recursive imports(I think)
+	//if(m_export)
+	//return;
+	
+	QString import = node->getModuleName()->getString();
+	QList<ReferencedTopDUContext> contexts = m_session->contextForImport(import);
+	if(contexts.empty())
+	{
+		qDebug() << "No context for import" << import;
+		return;
+	}
+	
+	//Usually package name matches directory, so try searching for that first.
+	QualifiedIdentifier packageName(import/*.mid(1, import.length()-2)*/);
+	qDebug() << "packageName:" << packageName.toString(false) << contexts.length();
+	bool firstContext = true;
+	for(const ReferencedTopDUContext &context : contexts)
+	{
+		//Don't import itself.
+		if(context.data() == topContext())
+			continue;
+		DeclarationPointer decl = dlang::checkPackageDeclaration(packageName.last(), context);
+		if(!decl && firstContext)
+		{
+			decl = dlang::getFirstDeclaration(context); //Package name differs from directory, so get the real name.
+			if(!decl)
+				continue;
+			DUChainReadLocker lock;
+			packageName = decl->qualifiedIdentifier();
+		}
+		if(!decl) //Contexts belongs to a different package.
+			continue;
+		qDebug() << "Got decl." << packageName.toString(false);
+		DUChainWriteLocker lock;
+		if(firstContext) //Only open declarations once per import(others are redundant).
+		{
+			setComment(decl->comment());
+			currentContext()->addImportedParentContext(context, CursorInRevision(node->getModuleName()->getLine(), node->getModuleName()->getColumn()));
+			NamespaceAliasDeclaration *importDecl = openDeclaration<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), editorFindRange(node->getModuleName(), 0));
+			importDecl->setKind(Declaration::NamespaceAlias);
+			//importDecl->setKind(Declaration::Import);
+			importDecl->setImportIdentifier(packageName);
+			//importDecl->setType(decl->abstractType());
+			closeDeclaration();
+			
+			qDebug() << "Added imported parent context:";
+			DUChainDumper dumper;
+			dumper.dump(context);
+			firstContext = false;
+		}
+	}
+	DUChainWriteLocker lock;
+	topContext()->updateImportsCache();
+}
 
 void DeclarationBuilder::visitModule(IModule *node)
 {
-    setComment(node->getModuleDeclaration()->getComment()->getString());
-    DUChainWriteLocker lock;
-    Declaration* packageDeclaration = openDeclaration<Declaration>(identifierForNode(node->getModuleDeclaration()->getName()), editorFindRange(node->getModuleDeclaration()->getName(), 0));
-    packageDeclaration->setKind(Declaration::Namespace);
-    openContext(node, editorFindRange(node, 0), DUContext::Global, identifierForNode(node->getModuleDeclaration()->getName()));
-    
-    packageDeclaration->setInternalContext(currentContext());
-    lock.unlock();
-    m_thisPackage = identifierForNode(node->getModuleDeclaration()->getName());
-    //import package this context belongs to
-    //importThisPackage();
-    
-    //go::DefaultVisitor::visitSourceFile(node);
-	DeclarationBuilderBase::visitModule(node);
-	
-    closeContext();
-    closeDeclaration();
+	if(node->getModuleDeclaration())
+	{
+		if(node->getModuleDeclaration()->getComment())
+			setComment(node->getModuleDeclaration()->getComment()->getString());
+		
+		DUChainWriteLocker lock;
+		KDevelop::RangeInRevision range = editorFindRange(node->getModuleDeclaration()->getName(), node->getModuleDeclaration()->getName());
+		m_thisPackage = identifierForNode(node->getModuleDeclaration()->getName());
+		
+		Declaration *packageDeclaration = openDeclaration<Declaration>(m_thisPackage, range);
+		packageDeclaration->setKind(Declaration::Namespace);
+		openContext(node, editorFindRange(node, 0), DUContext::Namespace, m_thisPackage);
+		packageDeclaration->setInternalContext(currentContext());
+		lock.unlock();
+		//importThisPackage();
+		//importBuiltins();
+		DeclarationBuilderBase::visitModule(node);
+		closeContext();
+		closeDeclaration();
+	}
 }
 
 void DeclarationBuilder::importThisPackage()
 {
-    QList<ReferencedTopDUContext> contexts = m_session->contextForThisPackage(document());
-    if(contexts.empty())
-	return;
-    
-    for(const ReferencedTopDUContext& context : contexts)
-    {
-        if(context.data() == topContext())
-            continue;
-	//import only contexts with the same package name
-        DeclarationPointer decl = go::checkPackageDeclaration(m_thisPackage.last(), context);
-	if(!decl)
-	    continue;
-        //if our package doesn't have comment, but some file in out package does, copy it
-        if(currentDeclaration<Declaration>()->comment().size() == 0 && decl->comment().size() != 0)
-            currentDeclaration<Declaration>()->setComment(decl->comment());
+	QList<ReferencedTopDUContext> contexts = m_session->contextForThisPackage(document());
+	if(contexts.empty())
+		return;
 	
+	for(const ReferencedTopDUContext &context : contexts)
+	{
+		if(context.data() == topContext())
+			continue;
+		//Only import contexts with the same package name.
+		DeclarationPointer decl = dlang::checkPackageDeclaration(m_thisPackage.last(), context);
+		qDebug() << "Trying to import" << m_thisPackage.last() << decl;
+		if(!decl)
+			continue;
+		//If our package doesn't have comment, but some file in our package does, copy it.
+		if(currentDeclaration<Declaration>()->comment().size() == 0 && decl->comment().size() != 0)
+			currentDeclaration<Declaration>()->setComment(decl->comment());
+		
+		DUChainWriteLocker lock;
+		//TODO: Since package names are identical duchain should find declarations without namespace alias, right?
+		
+		//NamespaceAliasDeclaration* import = openDeclaration<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), RangeInRevision());
+		//import->setKind(Declaration::NamespaceAlias);
+		//import->setImportIdentifier(packageName); //this needs to be actual package name
+		//closeDeclaration();
+		topContext()->addImportedParentContext(context.data());
+	}
 	DUChainWriteLocker lock;
-	//TODO Since package names are identical duchain should find declarations without namespace alias, right?
-	
-	//NamespaceAliasDeclaration* import = openDeclaration<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), RangeInRevision());
-	//import->setKind(Declaration::NamespaceAlias);
-	//import->setImportIdentifier(packageName); //this needs to be actual package name
-	//closeDeclaration();
-	topContext()->addImportedParentContext(context.data());
-    }
-    DUChainWriteLocker lock;
-    topContext()->updateImportsCache();
+	//topContext()->updateImportsCache();
 }
 
-/*void DeclarationBuilder::visitForStmt(go::ForStmtAst* node)
+/*void DeclarationBuilder::visitForStmt(dlang::ForStmtAst* node)
 {
     openContext(node, editorFindRange(node, 0), DUContext::Other); //wrapper context
     if(node->range != -1 && node->autoassign != -1)
     {//manually infer types
-        go::ExpressionVisitor exprVisitor(m_session, currentContext(), this);
+        dlang::ExpressionVisitor exprVisitor(m_session, currentContext(), this);
         exprVisitor.visitRangeClause(node->rangeExpression);
         auto types = exprVisitor.lastTypes();
         if(!types.empty())
@@ -496,13 +526,13 @@ void DeclarationBuilder::importThisPackage()
     closeContext();
 }
 
-void DeclarationBuilder::visitSwitchStmt(go::SwitchStmtAst* node)
+void DeclarationBuilder::visitSwitchStmt(dlang::SwitchStmtAst* node)
 {
     openContext(node, editorFindRange(node, 0), DUContext::Other); //wrapper context
     if(node->typeSwitchStatement && node->typeSwitchStatement->typeSwitchGuard)
     {
-        go::TypeSwitchGuardAst* typeswitch = node->typeSwitchStatement->typeSwitchGuard;
-        go::ExpressionVisitor expVisitor(m_session, currentContext(), this);
+        dlang::TypeSwitchGuardAst* typeswitch = node->typeSwitchStatement->typeSwitchGuard;
+        dlang::ExpressionVisitor expVisitor(m_session, currentContext(), this);
         expVisitor.visitPrimaryExpr(typeswitch->primaryExpr);
         if(!expVisitor.lastTypes().empty())
         {
@@ -515,10 +545,10 @@ void DeclarationBuilder::visitSwitchStmt(go::SwitchStmtAst* node)
     m_switchTypeVariable.clear();
 }
 
-void DeclarationBuilder::visitTypeCaseClause(go::TypeCaseClauseAst* node)
+void DeclarationBuilder::visitTypeCaseClause(dlang::TypeCaseClauseAst* node)
 {
     openContext(node, editorFindRange(node, 0), DUContext::Other);
-    const KDevPG::ListNode<go::TypeAst*>* typeIter = 0;
+    const KDevPG::ListNode<dlang::TypeAst*>* typeIter = 0;
     if(node->typelistSequence)
         typeIter = node->typelistSequence->front();
     if(node->defaultToken == -1 && typeIter && typeIter->next == typeIter)
@@ -534,40 +564,38 @@ void DeclarationBuilder::visitTypeCaseClause(go::TypeCaseClauseAst* node)
             closeDeclaration();
         }
     }
-    go::DefaultVisitor::visitTypeCaseClause(node);
+    dlang::DefaultVisitor::visitTypeCaseClause(node);
     closeContext();
 }
 
-void DeclarationBuilder::visitExprCaseClause(go::ExprCaseClauseAst* node)
+void DeclarationBuilder::visitExprCaseClause(dlang::ExprCaseClauseAst* node)
 {
     openContext(node, editorFindRange(node, 0), DUContext::Other);
-    go::DefaultVisitor::visitExprCaseClause(node);
+    dlang::DefaultVisitor::visitExprCaseClause(node);
     closeContext();
 }
 
-void DeclarationBuilder::visitTypeDecl(go::TypeDeclAst* node)
+void DeclarationBuilder::visitTypeDecl(dlang::TypeDeclAst* node)
 {
     m_lastTypeComment = m_session->commentBeforeToken(node->startToken);
-    go::DefaultVisitor::visitTypeDecl(node);
+    dlang::DefaultVisitor::visitTypeDecl(node);
     m_lastTypeComment = QByteArray();
 }*/
 
 
-go::GoFunctionDeclaration* DeclarationBuilder::declareFunction(IIdentifier* id, const go::GoFunctionType::Ptr& type,
-                                                               DUContext* paramContext, DUContext* retparamContext, const QByteArray& comment)
+KDevelop::FunctionDeclaration *DeclarationBuilder::declareFunction(IIdentifier *id, const KDevelop::FunctionType::Ptr &type, DUContext *paramContext, DUContext *retparamContext, const QByteArray &comment)
 {
-    printf("Definition: %s\n", id->getString());
+	printf("Definition: %s\n", id->getString());
 	setComment(comment);
-    DUChainWriteLocker lock;
-    go::GoFunctionDeclaration* dec = openDefinition<go::GoFunctionDeclaration>(identifierForNode(id), editorFindRange(id, 0));
-    dec->setType<go::GoFunctionType>(type);
-    dec->setKind(Declaration::Type);
-    //dec->setKind(Declaration::Instance);
-    dec->setInternalContext(paramContext);
-    if(retparamContext)
-        dec->setReturnArgsContext(retparamContext);
-    //dec->setInternalFunctionContext(bodyContext);
-    closeDeclaration();
-    return dec;
+	DUChainWriteLocker lock;
+	KDevelop::FunctionDeclaration *dec = openDefinition<KDevelop::FunctionDeclaration>(identifierForNode(id), editorFindRange(id, 0));
+	dec->setType<KDevelop::FunctionType>(type);
+	dec->setKind(Declaration::Type);
+	//dec->setKind(Declaration::Instance);
+	dec->setInternalContext(paramContext);
+	//if(retparamContext)
+	//	dec->setReturnArgsContext(retparamContext);
+	//dec->setInternalFunctionContext(bodyContext);
+	closeDeclaration();
+	return dec;
 }
-

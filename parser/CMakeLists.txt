@@ -1,15 +1,24 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(go_parser_lib_SRC
+#LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_PREFIX}/cmake-d")
+
+add_custom_command(OUTPUT libdparser.so COMMAND cmake -E ./build.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_custom_target(libdparser ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so)
+
+set(d_parser_lib_SRC
     parsesession.cpp
 )
 
-add_library(kdevgoparser STATIC ${go_parser_lib_SRC})
+add_library(kdevdparser STATIC ${d_parser_lib_SRC})
 
-target_link_libraries(kdevgoparser LINK_PRIVATE
+target_link_libraries(kdevdparser LINK_PRIVATE
     KDev::Language
-    dparse
+    ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so
 )
 
-#install(TARGETS kdevgoparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+#add_dependencies(kdevdparser libdparser)
+
+#install(TARGETS libdparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so DESTINATION lib)

@@ -23,11 +23,11 @@
 
 using namespace KDevelop;
 
-NavigationWidget::NavigationWidget(KDevelop::Declaration* decl, KDevelop::TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix)
+NavigationWidget::NavigationWidget(KDevelop::Declaration *decl, KDevelop::TopDUContext *topContext, const QString &htmlPrefix, const QString &htmlSuffix)
 {
-    m_topContext = topContext;
-    m_startContext = NavigationContextPointer(new DeclarationNavigationContext(DeclarationPointer(decl), m_topContext, nullptr));
-    
-    m_startContext->setPrefixSuffix(htmlPrefix, htmlSuffix);
-    setContext(m_startContext);
+	m_topContext = topContext;
+	m_startContext = NavigationContextPointer(new DeclarationNavigationContext(DeclarationPointer(decl), m_topContext, nullptr));
+	
+	m_startContext->setPrefixSuffix(htmlPrefix, htmlSuffix);
+	setContext(m_startContext);
 }

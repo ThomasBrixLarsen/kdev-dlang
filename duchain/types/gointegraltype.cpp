@@ -22,23 +22,22 @@
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
 
 REGISTER_TYPE(GoIntegralType);
 
-GoIntegralType::GoIntegralType(const GoIntegralType& rhs) : IntegralType(copyData<GoIntegralType>(*rhs.d_func()))
+GoIntegralType::GoIntegralType(const GoIntegralType &rhs) : IntegralType(copyData<GoIntegralType>(*rhs.d_func()))
 {
 }
 
-GoIntegralType::GoIntegralType(GoIntegralTypeData& data) : IntegralType(data)
+GoIntegralType::GoIntegralType(GoIntegralTypeData &data) : IntegralType(data)
 {
 }
 
 GoIntegralType::GoIntegralType(uint type) : IntegralType(createData<GoIntegralType>())
 {
 	setDataType(type);
-	setModifiers(ConstModifier);
 }
 
 QString GoIntegralType::toString() const
@@ -49,6 +48,9 @@ QString GoIntegralType::toString() const
 	
 	switch(d->m_dataType)
 	{
+		case TypeVoid:
+			name = "void";
+			break;
 		case TypeUbyte:
 			name = "ubyte";
 			break;
@@ -96,11 +98,10 @@ QString GoIntegralType::toString() const
 			break;
 	}
 	
-	return /*AbstractType::toString() + */name;
+	return AbstractType::toString() + name;
 }
 
-
-KDevelop::AbstractType* GoIntegralType::clone() const
+KDevelop::AbstractType *GoIntegralType::clone() const
 {
 	return new GoIntegralType(*this);
 }
@@ -110,17 +111,17 @@ uint GoIntegralType::hash() const
 	return 4 * KDevelop::IntegralType::hash();
 }
 
-bool GoIntegralType::equals(const KDevelop::AbstractType* rhs) const
+bool GoIntegralType::equals(const KDevelop::AbstractType *rhs) const
 {
-	if(this == rhs )
+	if(this == rhs)
 		return true;
 	
 	if(!IntegralType::equals(rhs))
 		return false;
 	
-	Q_ASSERT(fastCast<const GoIntegralType*>(rhs));
+	Q_ASSERT(fastCast<const GoIntegralType *>(rhs));
 	
-	const GoIntegralType* type = static_cast<const GoIntegralType*>(rhs);
+	const GoIntegralType *type = static_cast<const GoIntegralType *>(rhs);
 	
 	return d_func()->m_dataType == type->d_func()->m_dataType;
 }

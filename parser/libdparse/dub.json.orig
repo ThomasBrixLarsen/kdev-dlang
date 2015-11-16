@@ -1,0 +1,16 @@
+{
+	"name": "libdparse",
+	"targetName": "dparse",
+	"targetType": "library",
+	"description": "Library for lexing and parsing D source code",
+	"license": "BSL-1.0",
+<<<<<<< HEAD
+	"importPaths": ["src"],
+	"sourcePaths": ["src"],
+    "dflags": ["-relocation-model=pic"]
+=======
+        "version": "0.3.0-alpha",
+	"importPaths": ["src", "experimental_allocator"],
+	"sourcePaths": ["src", "experimental_allocator"]
+>>>>>>> c5b458b518ec26c6a59b3d16ffb39d10fe121d27
+}

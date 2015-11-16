@@ -16,24 +16,22 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGCOMPLETIONMODEL_H
-#define GOLANGCOMPLETIONMODEL_H
+#pragma once
 
 #include <language/codecompletion/codecompletionmodel.h>
 
-#include "gocompletionexport.h"
+#include "dcompletionexport.h"
 
-namespace go
+namespace dlang
 {
 
-class GOLANGCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel
+class DLANGCOMPLETION_EXPORT CodeCompletionModel : public KDevelop::CodeCompletionModel
 {
 public:
-    CodeCompletionModel(QObject* parent);
+	CodeCompletionModel(QObject *parent);
+
 protected:
-    virtual KDevelop::CodeCompletionWorker* createCompletionWorker();
+	virtual KDevelop::CodeCompletionWorker *createCompletionWorker();
 };
 
 }
-
-#endif

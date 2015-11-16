@@ -21,56 +21,53 @@
 
 using namespace KDevelop;
 
-namespace go {
-  
+namespace dlang
+{
+
 REGISTER_DUCHAIN_ITEM(GoFunctionDeclaration);
 
-GoFunctionDeclaration::GoFunctionDeclaration(const go::GoFunctionDeclaration& rhs): 
-			    FunctionDeclaration(*new GoFunctionDeclarationData(*rhs.d_func()))
+GoFunctionDeclaration::GoFunctionDeclaration(const dlang::GoFunctionDeclaration &rhs) : FunctionDeclaration(*new GoFunctionDeclarationData(*rhs.d_func()))
 {
-
+	
 }
 
-GoFunctionDeclaration::GoFunctionDeclaration(const RangeInRevision& range, DUContext* context): 
-			    FunctionDeclaration(*new GoFunctionDeclarationData, range)
+GoFunctionDeclaration::GoFunctionDeclaration(const RangeInRevision &range, DUContext *context) : FunctionDeclaration(*new GoFunctionDeclarationData, range)
 {
-    d_func_dynamic()->setClassId(this);
-    if (context) {
-        setContext(context);
-    }
+	d_func_dynamic()->setClassId(this);
+	if(context)
+		setContext(context);
 }
 
-GoFunctionDeclaration::GoFunctionDeclaration(go::GoFunctionDeclarationData& data): FunctionDeclaration(data)
+GoFunctionDeclaration::GoFunctionDeclaration(dlang::GoFunctionDeclarationData &data): FunctionDeclaration(data)
 {
-
+	
 }
 
-GoFunctionDeclaration::GoFunctionDeclaration(go::GoFunctionDeclarationData& data, const RangeInRevision& range): 
-								FunctionDeclaration(data, range)
+GoFunctionDeclaration::GoFunctionDeclaration(dlang::GoFunctionDeclarationData &data, const RangeInRevision &range) : FunctionDeclaration(data, range)
 {
-
+	
 }
 
-Declaration* GoFunctionDeclaration::clonePrivate() const
+Declaration *GoFunctionDeclaration::clonePrivate() const
 {
-    return new GoFunctionDeclaration(*this);
+	return new GoFunctionDeclaration(*this);
 }
 
 
 QString GoFunctionDeclaration::toString() const
 {
-    return KDevelop::FunctionDeclaration::toString();
-    //return QString("test func declaration");
+	return KDevelop::FunctionDeclaration::toString();
+	//return QString("test func declaration");
 }
 
-void GoFunctionDeclaration::setReturnArgsContext(DUContext* context)
+void GoFunctionDeclaration::setReturnArgsContext(DUContext *context)
 {
-    d_func_dynamic()->returnContext = context;
+	d_func_dynamic()->returnContext = context;
 }
 
-DUContext* GoFunctionDeclaration::returnArgsContext() const
+DUContext *GoFunctionDeclaration::returnArgsContext() const
 {
-    return d_func()->returnContext.context();
+	return d_func()->returnContext.context();
 }
 
 }

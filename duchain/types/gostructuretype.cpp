@@ -23,96 +23,95 @@
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
+
 REGISTER_TYPE(GoStructureType);
 
-GoStructureType::GoStructureType(const GoStructureType& rhs)
-  : KDevelop::AbstractType(copyData<GoStructureType>(*rhs.d_func()))
+GoStructureType::GoStructureType(const GoStructureType &rhs) : KDevelop::StructureType(copyData<GoStructureType>(*rhs.d_func()))
 {
+	
 }
 
-GoStructureType::GoStructureType(GoStructureTypeData& data)
-  : KDevelop::AbstractType(data)
+GoStructureType::GoStructureType(GoStructureTypeData &data) : KDevelop::StructureType(data)
 {
+	
 }
 
-GoStructureType::GoStructureType()
-  : KDevelop::AbstractType(createData<GoStructureType>())
+GoStructureType::GoStructureType() : KDevelop::StructureType(createData<GoStructureType>())
 {
+	
 }
 
 QString GoStructureType::toString() const
 {
-    if(d_func()->m_prettyName.index() == 0)
-	return "structure type";
-    return d_func()->m_prettyName.str();
+	if(d_func()->m_prettyName.index() == 0)
+		return "structure type";
+	return d_func()->m_prettyName.str();
 }
 
-void GoStructureType::setContext(DUContext* context)
+void GoStructureType::setContext(DUContext *context)
 {
-    d_func_dynamic()->m_context = context;
+	d_func_dynamic()->m_context = context;
 }
 
-DUContext* GoStructureType::context()
+DUContext *GoStructureType::context()
 {
-    return d_func()->m_context.data();
+	return d_func()->m_context.data();
 }
 
-
-KDevelop::AbstractType* GoStructureType::clone() const
+KDevelop::AbstractType *GoStructureType::clone() const
 {
-    return new GoStructureType(*this);
+	return new GoStructureType(*this);
 }
 
 void GoStructureType::accept0(TypeVisitor *v) const
 {
-  v->visit (this);
+	v->visit(this);
 }
 
 uint GoStructureType::hash() const
 {
-    uint hash = 6 * KDevelop::AbstractType::hash();
-    hash += 6 * d_func()->m_context.hash();
-    hash += 6 * d_func()->m_prettyName.hash();
-    return hash;
+	uint hash = 6 * KDevelop::AbstractType::hash();
+	hash += 6 * d_func()->m_context.hash();
+	hash += 6 * d_func()->m_prettyName.hash();
+	return hash;
 }
 
-bool GoStructureType::equals(const AbstractType* rhs) const
+bool GoStructureType::equals(const AbstractType *rhs) const
 {
-    if(this == rhs)
-	return true;
-    
-    if(!AbstractType::equals(rhs))
-	return false;
-    
-    Q_ASSERT( fastCast<const GoStructureType*>(rhs) );
-
-    const GoStructureType* type = static_cast<const GoStructureType*>(rhs);
-    
-    if(d_func()->m_context.topContextIndex() != type->d_func()->m_context.topContextIndex())
-	return false;
-    
-    if(d_func()->m_context.localIndex() != type->d_func()->m_context.localIndex())
-	return false;
-    
-    if(d_func()->m_context.context() != type->d_func()->m_context.context())
-	return false;
-    
-    //if(d_func()->m_context.data()->localScopeIdentifier() != d_func()->m_context.data()->localScopeIdentifier())
+	if(this == rhs)
+		return true;
+	
+	if(!AbstractType::equals(rhs))
+		return false;
+	
+	Q_ASSERT(fastCast<const GoStructureType *>(rhs));
+	
+	const GoStructureType *type = static_cast<const GoStructureType *>(rhs);
+	
+	if(d_func()->m_context.topContextIndex() != type->d_func()->m_context.topContextIndex())
+		return false;
+	
+	if(d_func()->m_context.localIndex() != type->d_func()->m_context.localIndex())
+		return false;
+	
+	if(d_func()->m_context.context() != type->d_func()->m_context.context())
+		return false;
+	
+	//if(d_func()->m_context.data()->localScopeIdentifier() != d_func()->m_context.data()->localScopeIdentifier())
 	//return false;
-    return true;
+	return true;
 }
 
 void GoStructureType::setPrettyName(QString name)
 {
-    if(name.size() > 40)
-    {
-	name = name.left(39);
-	name.append("...");
-    }
-    d_func_dynamic()->m_prettyName = IndexedString(name);
+	if(name.size() > 40)
+	{
+		name = name.left(39);
+		name.append("...");
+	}
+	d_func_dynamic()->m_prettyName = IndexedString(name);
 }
-
 
 }

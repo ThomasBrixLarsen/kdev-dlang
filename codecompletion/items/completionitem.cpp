@@ -25,73 +25,27 @@
 #include "context.h"
 #include "types/gofunctiontype.h"
 
-namespace go
+namespace dlang
 {
 
-CompletionItem::CompletionItem(KDevelop::DeclarationPointer decl, QExplicitlySharedDataPointer< KDevelop::CodeCompletionContext > context, int inheritanceDepth):
+CompletionItem::CompletionItem(KDevelop::DeclarationPointer decl, QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext> context, int inheritanceDepth) :
     NormalDeclarationCompletionItem(decl, QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), 0),
     m_prefix("")
 {
-    DUChainReadLocker lock;
-    if(!decl)
-        return;
-    //NormalDeclarationCompletionItem fails to get a meaningful prefix in these cases
-    if(decl->abstractType() && decl->abstractType()->whichType() == KDevelop::AbstractType::TypeFunction)
-        m_prefix = decl->abstractType()->toString();
-    if(decl->kind() == KDevelop::Declaration::Import || decl->kind() == KDevelop::Declaration::NamespaceAlias)
-        m_prefix = "namespace";
+	DUChainReadLocker lock;
+	if(!decl)
+		return;
+	
+	//NormalDeclarationCompletionItem fails to get a meaningful prefix in these cases.
+	/*if(decl->abstractType() && decl->abstractType()->whichType() == KDevelop::AbstractType::TypeFunction)
+		m_prefix = decl->abstractType()->toString();*/
+	if(decl->kind() == KDevelop::Declaration::Import || decl->kind() == KDevelop::Declaration::NamespaceAlias)
+		m_prefix = "module";
 }
 
-QVariant CompletionItem::data(const QModelIndex& index, int role, const KDevelop::CodeCompletionModel* model) const
+QVariant CompletionItem::data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const
 {
-    switch(role)
-    {
-        case Qt::DisplayRole:
-        {
-            if (index.column() == CodeCompletionModel::Prefix && m_prefix != "") {
-                return m_prefix;
-            }
-            break;
-        }
-        case CodeCompletionModel::BestMatchesCount:
-            return 5;
-        case CodeCompletionModel::MatchQuality:
-        {
-            if(!declaration())
-                return QVariant();
-            //type aliases are actually different types
-            if(declaration()->isTypeAlias())
-                return QVariant();
-            AbstractType::Ptr typeToMatch = static_cast<go::CodeCompletionContext*>(model->completionContext().data())->typeToMatch();
-            if(!typeToMatch)
-                return QVariant();
-            AbstractType::Ptr declType = declaration()->abstractType();
-            if (!declType)
-                return QVariant();
-            //ignore constants
-            typeToMatch->setModifiers(AbstractType::NoModifiers);
-            declType->setModifiers(AbstractType::NoModifiers);
-            if(declType->equals(typeToMatch.constData()))
-            {
-                return QVariant(10);
-            }
-            else if(declType->whichType() == AbstractType::TypeFunction)
-            {
-                GoFunctionType* function = fastCast<GoFunctionType*>(declType.constData());
-                auto args = function->returnArguments();
-                if(args.size() != 0)
-                {
-                    AbstractType::Ptr first = args.first();
-                    first->setModifiers(AbstractType::NoModifiers);
-                    if(first->equals(typeToMatch.constData()))
-                        return QVariant(10);
-                }
-            }else
-            {
-                return QVariant();
-            }
-        }
-    }
-    return NormalDeclarationCompletionItem::data(index, role, model);
+	return NormalDeclarationCompletionItem::data(index, role, model);
 }
+
 }

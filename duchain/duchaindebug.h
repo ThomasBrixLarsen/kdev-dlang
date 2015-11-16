@@ -16,10 +16,7 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GODUCHAINDEBUG_H
-#define GODUCHAINDEBUG_H
+#pragma once
 
 #include <QLoggingCategory>
 Q_DECLARE_LOGGING_CATEGORY(DUCHAIN)
-
-#endif

@@ -15,17 +15,17 @@ set(completion_SRCS
     completiondebug.cpp
 )
 
-add_library(kdevgocompletion STATIC ${completion_SRCS})
+add_library(kdevdcompletion STATIC ${completion_SRCS})
 
-target_link_libraries(kdevgocompletion LINK_PRIVATE
+target_link_libraries(kdevdcompletion LINK_PRIVATE
     KDev::Language
     KDev::Interfaces
     KDev::Project
-    dparse
-    kdevgoparser
-    kdevgoduchain
+    dparser
+    kdevdparser
+    kdevdduchain
 )
 
-#install(TARGETS kdevgocompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+#install(TARGETS kdevdcompletion DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 #add_subdirectory(tests)

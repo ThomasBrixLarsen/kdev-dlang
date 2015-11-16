@@ -16,10 +16,7 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOCOMPLETIONDEBUG_H
-#define GOCOMPLETIONDEBUG_H
+#pragma once
 
 #include <QLoggingCategory>
 Q_DECLARE_LOGGING_CATEGORY(COMPLETION)
-
-#endif

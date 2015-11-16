@@ -1,9 +1,9 @@
-add_library(kdevgoduchain STATIC
+add_library(kdevdduchain STATIC
 	builders/declarationbuilder.cpp
 	builders/contextbuilder.cpp
 	builders/typebuilder.cpp
 	builders/usebuilder.cpp
-	goducontext.cpp
+	dducontext.cpp
 	helper.cpp
 	duchaindebug.cpp
 	
@@ -22,11 +22,11 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-generate_export_header(kdevgoduchain EXPORT_FILE_NAME goduchainexport.h)
-target_link_libraries(kdevgoduchain
+generate_export_header(kdevdduchain EXPORT_FILE_NAME dduchainexport.h)
+target_link_libraries(kdevdduchain
 LINK_PRIVATE
-    dparse
-    kdevgoparser
+    dparser
+    kdevdparser
 LINK_PUBLIC
     KDev::Interfaces
     KDev::Language
@@ -34,6 +34,6 @@ LINK_PUBLIC
     KDev::Project
  )
 
-#install(TARGETS kdevgoduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+#install(TARGETS kdevdduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 #add_subdirectory(tests)

@@ -16,37 +16,34 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGTESTDUCHAIN_H
-#define GOLANGTESTDUCHAIN_H
+#pragma once
 
 #include <QObject>
 
 class TestDuchain : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
+
 private slots:
-    void initTestCase();
-    void sanityCheck();
-    void cleanupTestCase();
-    void builtinFunctions_data();
-    void builtinFunctions();
-    void test_declareVariables();
-    void test_constants();
-    void test_constants_omittedType();
-    void test_indexexpressions_data();
-    void test_indexexpressions();
-    void test_ifcontexts();
-    void test_funccontexts();
-    void test_rangeclause_data();
-    void test_rangeclause();
-    void test_typeswitch();
-    void test_funcparams_data();
-    void test_funcparams();
-    void test_literals_data();
-    void test_literals();
-    void test_unaryOps_data();
-    void test_unaryOps();
+	void initTestCase();
+	void sanityCheck();
+	void cleanupTestCase();
+	void builtinFunctions_data();
+	void builtinFunctions();
+	void test_declareVariables();
+	void test_constants();
+	void test_constants_omittedType();
+	void test_indexexpressions_data();
+	void test_indexexpressions();
+	void test_ifcontexts();
+	void test_funccontexts();
+	void test_rangeclause_data();
+	void test_rangeclause();
+	void test_typeswitch();
+	void test_funcparams_data();
+	void test_funcparams();
+	void test_literals_data();
+	void test_literals();
+	void test_unaryOps_data();
+	void test_unaryOps();
 };
-
-
-#endif

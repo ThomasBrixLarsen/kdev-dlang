@@ -22,92 +22,92 @@
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
+
 REGISTER_TYPE(GoChanType);
 
-GoChanType::GoChanType(const GoChanType& rhs)
-  : KDevelop::AbstractType(copyData<GoChanType>(*rhs.d_func()))
+GoChanType::GoChanType(const GoChanType &rhs) : KDevelop::AbstractType(copyData<GoChanType>(*rhs.d_func()))
 {
+	
 }
 
-GoChanType::GoChanType(GoChanTypeData& data)
-  : KDevelop::AbstractType(data)
+GoChanType::GoChanType(GoChanTypeData &data) : KDevelop::AbstractType(data)
 {
+	
 }
 
-GoChanType::GoChanType()
-  : KDevelop::AbstractType(createData<GoChanType>())
+GoChanType::GoChanType() : KDevelop::AbstractType(createData<GoChanType>())
 {
 }
 
 void GoChanType::setValueType(AbstractType::Ptr type)
 {
-    d_func_dynamic()->valueType = type->indexed();
+	d_func_dynamic()->valueType = type->indexed();
 }
 
 void GoChanType::setKind(uint kind)
 {
-    d_func_dynamic()->kind = kind;
+	d_func_dynamic()->kind = kind;
 }
 
 AbstractType::Ptr GoChanType::valueType()
 {
-    return d_func()->valueType.abstractType();
+	return d_func()->valueType.abstractType();
 }
 
 uint GoChanType::kind()
 {
-    return d_func()->kind;
+	return d_func()->kind;
 }
 
 QString GoChanType::toString() const
 {
-    QString typeName;
-    if(d_func()->kind == ChanKind::Receive)
-        typeName = "<- chan";
-    else if(d_func()->kind == ChanKind::Send)
-        typeName = "chan <-";
-    else
-        typeName = "chan";
-    typeName = typeName + " "+d_func()->valueType.abstractType()->toString();
-    return typeName;
+	QString typeName;
+	if(d_func()->kind == ChanKind::Receive)
+		typeName = "<- chan";
+	else if(d_func()->kind == ChanKind::Send)
+		typeName = "chan <-";
+	else
+		typeName = "chan";
+	typeName = typeName + " " + d_func()->valueType.abstractType()->toString();
+	return typeName;
 }
 
-KDevelop::AbstractType* GoChanType::clone() const
+KDevelop::AbstractType *GoChanType::clone() const
 {
-    return new GoChanType(*this);
+	return new GoChanType(*this);
 }
 
 uint GoChanType::hash() const
 {
-    uint hash = 6 * KDevelop::AbstractType::hash();
-    hash += 6 * d_func()->valueType.hash();
-    hash += 6 * d_func()->kind;
-    return hash;
+	uint hash = 6 * KDevelop::AbstractType::hash();
+	hash += 6 * d_func()->valueType.hash();
+	hash += 6 * d_func()->kind;
+	return hash;
 }
 
 void GoChanType::accept0(TypeVisitor *v) const
 {
-    v->visit(this);
+	v->visit(this);
 }
 
-bool GoChanType::equals(const AbstractType* rhs) const
+bool GoChanType::equals(const AbstractType *rhs) const
 {
-    if(this == rhs)
-        return true;
-
-    if(!AbstractType::equals(rhs))
-        return false;
-
-    Q_ASSERT( fastCast<const GoChanType*>(rhs) );
-
-    const GoChanType* type = static_cast<const GoChanType*>(rhs);
-
-    if(d_func()->valueType != type->d_func()->valueType)
-        return false;
-
-    return true;
+	if(this == rhs)
+		return true;
+	
+	if(!AbstractType::equals(rhs))
+		return false;
+	
+	Q_ASSERT(fastCast<const GoChanType *>(rhs));
+	
+	const GoChanType *type = static_cast<const GoChanType *>(rhs);
+	
+	if(d_func()->valueType != type->d_func()->valueType)
+		return false;
+	
+	return true;
 }
 
 }

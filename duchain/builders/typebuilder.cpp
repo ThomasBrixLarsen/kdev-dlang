@@ -30,10 +30,10 @@
 
 using namespace KDevelop;
 
-namespace go
+namespace dlang
 {
 
-void TypeBuilder::visitTypeName(IType* node)
+void TypeBuilder::visitTypeName(IType *node)
 {
 	if(!node)
 	{
@@ -56,72 +56,70 @@ void TypeBuilder::visitTypeName(IType* node)
 	}
 }
 
-void TypeBuilder::buildTypeName(IIdentifier* typeName, IIdentifier* fullName)
+void TypeBuilder::buildTypeName(IIdentifier *typeName, IIdentifier *fullName)
 {
-    uint type = IntegralType::TypeNone;
-    QualifiedIdentifier id = identifierForNode(typeName);
-    QString name = id.toString();
-    //Builtin types
-    if(name == "ubyte")
-        type = go::GoIntegralType::TypeUbyte;
-    else if(name == "ushort")
-        type = go::GoIntegralType::TypeUshort;
-    else if(name == "uint")
-        type = go::GoIntegralType::TypeUint;
-    else if(name == "ulong")
-        type = go::GoIntegralType::TypeUlong;
-    else if(name == "byte")
-        type = go::GoIntegralType::TypeUbyte;
-    else if(name == "short")
-        type = go::GoIntegralType::TypeShort;
-    else if(name == "int")
-        type = go::GoIntegralType::TypeInt;
-    else if(name == "long")
-        type = go::GoIntegralType::TypeLong;
-    else if(name == "float")
-        type = go::GoIntegralType::TypeFloat;
-    else if(name == "double")
-        type = go::GoIntegralType::TypeDouble;
+	uint type = IntegralType::TypeNone;
+	QualifiedIdentifier id = identifierForNode(typeName);
+	QString name = id.toString();
+	//Builtin types
+	if(name == "void")
+		type = dlang::GoIntegralType::TypeVoid;
+	else if(name == "ubyte")
+		type = dlang::GoIntegralType::TypeUbyte;
+	else if(name == "ushort")
+		type = dlang::GoIntegralType::TypeUshort;
+	else if(name == "uint")
+		type = dlang::GoIntegralType::TypeUint;
+	else if(name == "ulong")
+		type = dlang::GoIntegralType::TypeUlong;
+	else if(name == "byte")
+		type = dlang::GoIntegralType::TypeUbyte;
+	else if(name == "short")
+		type = dlang::GoIntegralType::TypeShort;
+	else if(name == "int")
+		type = dlang::GoIntegralType::TypeInt;
+	else if(name == "long")
+		type = dlang::GoIntegralType::TypeLong;
+	else if(name == "float")
+		type = dlang::GoIntegralType::TypeFloat;
+	else if(name == "double")
+		type = dlang::GoIntegralType::TypeDouble;
 	else if(name == "real")
-        type = go::GoIntegralType::TypeReal;
-    else if(name == "char")
-        type = go::GoIntegralType::TypeChar;
+		type = dlang::GoIntegralType::TypeReal;
+	else if(name == "char")
+		type = dlang::GoIntegralType::TypeChar;
 	else if(name == "wchar")
-        type = go::GoIntegralType::TypeWchar;
+		type = dlang::GoIntegralType::TypeWchar;
 	else if(name == "dchar")
-        type = go::GoIntegralType::TypeDchar;
-    else if(name == "bool")
-        type = go::GoIntegralType::TypeBool;
-
-    if(type == IntegralType::TypeNone)
-    {
-        //in Go one can create variable of package type, like 'fmt fmt'
-        //TODO support such declarations
-        QualifiedIdentifier id(identifierForNode(typeName));
-        if(fullName)
-            id.push(identifierForNode(fullName));
-        DeclarationPointer decl = go::getTypeDeclaration(id, currentContext());
-        if(decl)
-        {
-            DUChainReadLocker lock;
-            StructureType* type = new StructureType();
-            type->setDeclaration(decl.data());
-            injectType<AbstractType>(AbstractType::Ptr(type));
-            //kDebug() << decl->range();
-            return;
-        }
-        DelayedType* unknown = new DelayedType();
-        unknown->setIdentifier(IndexedTypeIdentifier(id));
-        injectType<AbstractType>(AbstractType::Ptr(unknown));
-        return;
-    }
-    if(type != IntegralType::TypeNone)
-    {
-        injectType<AbstractType>(AbstractType::Ptr(new go::GoIntegralType(type)));
-    }
+		type = dlang::GoIntegralType::TypeDchar;
+	else if(name == "bool")
+		type = dlang::GoIntegralType::TypeBool;
+	
+	if(type == IntegralType::TypeNone)
+	{
+		QualifiedIdentifier id(identifierForNode(typeName));
+		if(fullName)
+			id.push(identifierForNode(fullName));
+		DeclarationPointer decl = dlang::getTypeDeclaration(id, currentContext());
+		if(decl)
+		{
+			DUChainReadLocker lock;
+			StructureType *type = new StructureType();
+			type->setDeclaration(decl.data());
+			injectType<AbstractType>(AbstractType::Ptr(type));
+			//kDebug() << decl->range();
+			return;
+		}
+		DelayedType *unknown = new DelayedType();
+		unknown->setIdentifier(IndexedTypeIdentifier(id));
+		injectType<AbstractType>(AbstractType::Ptr(unknown));
+		return;
+	}
+	if(type != IntegralType::TypeNone)
+		injectType<AbstractType>(AbstractType::Ptr(new dlang::GoIntegralType(type)));
 }
 
-/*void TypeBuilder::visitArrayOrSliceType(go::ArrayOrSliceTypeAst* node)
+/*void TypeBuilder::visitArrayOrSliceType(dlang::ArrayOrSliceTypeAst* node)
 {
     if(node->arrayOrSliceResolve->array)
         visitType(node->arrayOrSliceResolve->array);
@@ -138,7 +136,7 @@ void TypeBuilder::buildTypeName(IIdentifier* typeName, IIdentifier* fullName)
     injectType<ArrayType>(ArrayType::Ptr(array));
 }
 
-void TypeBuilder::visitPointerType(go::PointerTypeAst* node)
+void TypeBuilder::visitPointerType(dlang::PointerTypeAst* node)
 {
     PointerType* type = new PointerType();
     visitType(node->type);
@@ -146,9 +144,9 @@ void TypeBuilder::visitPointerType(go::PointerTypeAst* node)
     injectType<PointerType>(PointerType::Ptr(type));
 }
 
-void TypeBuilder::visitStructType(go::StructTypeAst* node)
+void TypeBuilder::visitStructType(dlang::StructTypeAst* node)
 {
-    openType<go::GoStructureType>(go::GoStructureType::Ptr(new go::GoStructureType));
+    openType<dlang::GoStructureType>(dlang::GoStructureType::Ptr(new dlang::GoStructureType));
     {
         DUChainWriteLocker lock;
         openContext(node, editorFindRange(node, 0), DUContext::ContextType::Class, m_contextIdentifier);
@@ -156,24 +154,24 @@ void TypeBuilder::visitStructType(go::StructTypeAst* node)
     TypeBuilderBase::visitStructType(node);
     {
         DUChainWriteLocker lock;
-        currentType<go::GoStructureType>()->setContext(currentContext());
+        currentType<dlang::GoStructureType>()->setContext(currentContext());
         closeContext();
     }
-    currentType<go::GoStructureType>()->setPrettyName(m_session->textForNode(node));
-    currentType<go::GoStructureType>()->setStructureType();
+    currentType<dlang::GoStructureType>()->setPrettyName(m_session->textForNode(node));
+    currentType<dlang::GoStructureType>()->setStructureType();
     closeType();
 }
 
-void TypeBuilder::visitFieldDecl(go::FieldDeclAst* node)
+void TypeBuilder::visitFieldDecl(dlang::FieldDeclAst* node)
 {
     StructureType::Ptr structure = currentType<StructureType>();
-    QList<go::IdentifierAst*> names;
+    QList<dlang::IdentifierAst*> names;
     if(node->anonFieldStar)
     {
         PointerType* type = new PointerType();
         visitTypeName(node->anonFieldStar->typeName);
         type->setBaseType(lastType());
-        go::IdentifierAst* id = node->anonFieldStar->typeName->type_resolve->fullName ?
+        dlang::IdentifierAst* id = node->anonFieldStar->typeName->type_resolve->fullName ?
                             node->anonFieldStar->typeName->type_resolve->fullName :
                             node->anonFieldStar->typeName->name;
 
@@ -197,7 +195,7 @@ void TypeBuilder::visitFieldDecl(go::FieldDeclAst* node)
     }else
     {
         buildTypeName(node->varid, node->fullname);
-        go::IdentifierAst* id = node->fullname ? node->fullname : node->varid;
+        dlang::IdentifierAst* id = node->fullname ? node->fullname : node->varid;
         names.append(id);
     }
 
@@ -208,9 +206,9 @@ void TypeBuilder::visitFieldDecl(go::FieldDeclAst* node)
 }
 
 
-void TypeBuilder::visitInterfaceType(go::InterfaceTypeAst* node)
+void TypeBuilder::visitInterfaceType(dlang::InterfaceTypeAst* node)
 {
-    openType<go::GoStructureType>(go::GoStructureType::Ptr(new go::GoStructureType));
+    openType<dlang::GoStructureType>(dlang::GoStructureType::Ptr(new dlang::GoStructureType));
     //ClassDeclaration* decl;
     {
         DUChainWriteLocker lock;
@@ -223,34 +221,34 @@ void TypeBuilder::visitInterfaceType(go::InterfaceTypeAst* node)
         DUChainWriteLocker lock;
         //decl->setInternalContext(currentContext());
         //decl->setClassType(ClassDeclarationData::Interface);
-        currentType<go::GoStructureType>()->setContext(currentContext());
+        currentType<dlang::GoStructureType>()->setContext(currentContext());
         closeContext();
         //closeDeclaration();
-        //currentType<go::GoStructureType>()->setDeclaration(decl);
+        //currentType<dlang::GoStructureType>()->setDeclaration(decl);
         //decl->setIdentifier(Identifier(QString("interface type")));
     }
-    currentType<go::GoStructureType>()->setPrettyName(m_session->textForNode(node));
-    currentType<go::GoStructureType>()->setInterfaceType();
+    currentType<dlang::GoStructureType>()->setPrettyName(m_session->textForNode(node));
+    currentType<dlang::GoStructureType>()->setInterfaceType();
     closeType();
 }
 
-void TypeBuilder::visitMethodSpec(go::MethodSpecAst* node)
+void TypeBuilder::visitMethodSpec(dlang::MethodSpecAst* node)
 {
     if(node->signature)
     {
         parseSignature(node->signature, true, node->methodName);
     }else{
         buildTypeName(node->methodName, node->fullName);
-        go::IdentifierAst* id = node->fullName ? node->fullName : node->methodName;
+        dlang::IdentifierAst* id = node->fullName ? node->fullName : node->methodName;
         {
             declareVariable(id, lastType());
         }
     }
 }
 
-void TypeBuilder::visitMapType(go::MapTypeAst* node)
+void TypeBuilder::visitMapType(dlang::MapTypeAst* node)
 {
-    go::GoMapType* type = new go::GoMapType();
+    dlang::GoMapType* type = new dlang::GoMapType();
     visitType(node->keyType);
     type->setKeyType(lastType());
     visitType(node->elemType);
@@ -259,197 +257,225 @@ void TypeBuilder::visitMapType(go::MapTypeAst* node)
     injectType(AbstractType::Ptr(type));
 }
 
-void TypeBuilder::visitChanType(go::ChanTypeAst* node)
+void TypeBuilder::visitChanType(dlang::ChanTypeAst* node)
 {
     visitType(node->rtype ? node->rtype : node->stype);
-    go::GoChanType::Ptr type(new go::GoChanType());
+    dlang::GoChanType::Ptr type(new dlang::GoChanType());
     if(node->stype)
-        type->setKind(go::GoChanType::Receive);
+        type->setKind(dlang::GoChanType::Receive);
     else if(node->send != -1)
-        type->setKind(go::GoChanType::Send);
+        type->setKind(dlang::GoChanType::Send);
     else
-        type->setKind(go::GoChanType::SendAndReceive);
+        type->setKind(dlang::GoChanType::SendAndReceive);
     DUChainReadLocker lock;
     type->setValueType(lastType());
     injectType(type);
 }
 
-void TypeBuilder::visitFunctionType(go::FunctionTypeAst* node)
+void TypeBuilder::visitFunctionType(dlang::FunctionTypeAst* node)
 {
     parseSignature(node->signature, false);
 }*/
 
-void TypeBuilder::visitParameter(IParameter* node)
+void TypeBuilder::visitParameter(IParameter *node)
 {
-    //parameter grammar rule is written in such a way that full types won't be parsed automatically
-    //so we do it manually(see go.g:parameter)
-    //also if type is just identifier it is impossible to say right now whether it is really a type
-    //or a identifier. This will be decided in parseParameres method
-    //if(node->idOrType && node->fulltype)
-	visitTypeName(node->getType());
-    TypeBuilderBase::visitParameter(node);
+	//if(node->idOrType && node->fulltype)
+	TypeBuilderBase::visitParameter(node);
 }
 
-
-go::GoFunctionDeclaration* TypeBuilder::parseSignature(IFunctionDeclaration* node, bool declareParameters, IIdentifier* name, const QByteArray& comment)
+void TypeBuilder::visitClassDeclaration(IClassDeclaration *node)
 {
-    go::GoFunctionType::Ptr type(new go::GoFunctionType());
-    openType<go::GoFunctionType>(type);
+	openType<dlang::GoStructureType>(dlang::GoStructureType::Ptr(new dlang::GoStructureType));
+	{
+		DUChainWriteLocker lock;
+		openContext(node, editorFindRange(node, 0), DUContext::ContextType::Class, node->getName());
+	}
+	TypeBuilderBase::visitClassDeclaration(node);
+	{
+		DUChainWriteLocker lock;
+		currentType<dlang::GoStructureType>()->setContext(currentContext());
+		closeContext();
+	}
+	currentType<dlang::GoStructureType>()->setPrettyName(node->getName()->getString());
+	currentType<dlang::GoStructureType>()->setStructureType();
+	closeType();
+}
 
-    DUContext* parametersContext;
-    if(declareParameters) parametersContext = openContext(node->getParameters(),
-                                               editorFindRange(node->getParameters(), 0),
-                                               DUContext::ContextType::Function,
-                                               name);
+void TypeBuilder::visitStructDeclaration(IStructDeclaration *node)
+{
+	openType<dlang::GoStructureType>(dlang::GoStructureType::Ptr(new dlang::GoStructureType));
+	{
+		DUChainWriteLocker lock;
+		openContext(node, editorFindRange(node, 0), DUContext::ContextType::Class, node->getName());
+	}
+	TypeBuilderBase::visitStructDeclaration(node);
+	{
+		DUChainWriteLocker lock;
+		currentType<dlang::GoStructureType>()->setContext(currentContext());
+		closeContext();
+	}
+	currentType<dlang::GoStructureType>()->setPrettyName(node->getName()->getString());
+	currentType<dlang::GoStructureType>()->setStructureType();
+	closeType();
+}
 
-    parseParameters(node->getParameters(), true, declareParameters);
-    if(declareParameters) closeContext();
-
-    DUContext* returnArgsContext=0;
-
-    /*if(node->result)
-    {
-        visitResult(node->result);
-        if(node->result->parameters)
-        {
-            if(declareParameters) returnArgsContext = openContext(node->result,
-                                                editorFindRange(node->result, 0),
-                                                DUContext::ContextType::Function,
-                                                name);
-            parseParameters(node->result->parameters, false, declareParameters);
-            if(declareParameters) closeContext();
-
-        }
-        if(!node->result->parameters && lastType())
-            type->addReturnArgument(lastType());
-    }*/
+KDevelop::FunctionDeclaration *TypeBuilder::parseSignature(IFunctionDeclaration *node, bool declareParameters, IIdentifier *name, const QByteArray &comment)
+{
+	KDevelop::FunctionType::Ptr type(new KDevelop::FunctionType());
+	openType<KDevelop::FunctionType>(type);
+	
+	DUContext *parametersContext;
+	if(declareParameters)
+		parametersContext = openContext(node->getParameters(), editorFindRange(node->getParameters(), 0), DUContext::ContextType::Function, name);
+	parseParameters(node->getParameters(), true, declareParameters);
+	if(declareParameters)
+		closeContext();
+	
+	DUContext *returnArgsContext=0;
+	
+	/*if(node->result)
+	{
+	    visitResult(node->result);
+	    if(node->result->parameters)
+	    {
+	        if(declareParameters) returnArgsContext = openContext(node->result,
+	                                            editorFindRange(node->result, 0),
+	                                            DUContext::ContextType::Function,
+	                                            name);
+	        parseParameters(node->result->parameters, false, declareParameters);
+	        if(declareParameters) closeContext();
+	
+	    }
+	    if(!node->result->parameters && lastType())
+	        type->addReturnArgument(lastType());
+	}*/
 	visitTypeName(node->getReturnType());
-	type->addReturnArgument(lastType());
-    closeType();
-
-    if(declareParameters)
-    {
-        return declareFunction(name, type, parametersContext, returnArgsContext, comment);
-    }
-    return 0;
+	addArgumentHelper(type, lastType(), false);
+	//type->addReturnArgument(lastType());
+	closeType();
+	
+	if(declareParameters)
+		return declareFunction(name, type, parametersContext, returnArgsContext, comment);
+	return 0;
 }
 
-void TypeBuilder::parseParameters(IParameters* node, bool parseArguments, bool declareParameters)
+void TypeBuilder::parseParameters(IParameters *node, bool parseArguments, bool declareParameters)
 {
-    //code below is a bit ugly because of problems with parsing go parameter list(see details at parser/go.g:331)
-    go::GoFunctionType::Ptr function;
-    function = currentType<go::GoFunctionType>();
+	KDevelop::FunctionType::Ptr function;
+	function = currentType<KDevelop::FunctionType>();
 	for(int i=0; i<node->getNumParameters(); i++)
 	{
 		auto parameter = node->getParameter(i);
 		visitParameter(parameter);
-		declareVariable(parameter->getName(), lastType());
+		if(declareParameters)
+			declareVariable(parameter->getName(), lastType());
+		addArgumentHelper(function, lastType(), parseArguments);
 	}
-    /*if(node->parameter)
-    {
-        QList<go::IdentifierAst*> paramNames;
-        go::ParameterAst* param=node->parameter;
-        visitParameter(param);
-        //variadic arguments
-        if(param->unnamedvartype || param->vartype)
-        {
-            function->setModifiers(go::GoFunctionType::VariadicArgument);
-            ArrayType* atype = new ArrayType();
-            atype->setElementType(lastType());
-            injectType(AbstractType::Ptr(atype));
-        }
-        if(!param->complexType && !param->parenType && !param->unnamedvartype &&
-            !param->type && !param->vartype && !param->fulltype)
-            paramNames.append(param->idOrType); //we only have an identifier
-        else
-        {
-            addArgumentHelper(function, lastType(), parseArguments);
-            //if we have a parameter name(but it's not part of fullname) open declaration
-            if(param->idOrType && !param->fulltype && declareParameters)
-                declareVariable(param->idOrType, lastType());
-        }
-
-        if(node->parameterListSequence)
-        {
-            auto elem = node->parameterListSequence->front();
-            while(true)
-            {
-                go::ParameterAst* param=elem->element;
-                visitParameter(param);
-                //variadic arguments
-                if(param->unnamedvartype || param->vartype)
-                {
-                    function->setModifiers(go::GoFunctionType::VariadicArgument);
-                    ArrayType* atype = new ArrayType();
-                    atype->setElementType(lastType());
-                    injectType(AbstractType::Ptr(atype));
-                }
-                if(param->complexType || param->parenType || param->unnamedvartype || param->fulltype)
-                {//we have a unnamed parameter list of types
-                    AbstractType::Ptr lType = lastType();
-                    for(auto id : paramNames)
-                    {
-                        buildTypeName(id);
-                        addArgumentHelper(function, lastType(), parseArguments);
-                    }
-                    addArgumentHelper(function, lType, parseArguments);
-                    paramNames.clear();
-                }else if(!param->complexType && !param->parenType && !param->unnamedvartype &&
-                    !param->type && !param->vartype && !param->fulltype)
-                {//just another identifier
-                    paramNames.append(param->idOrType);
-                }else
-                {//identifier with type, all previous identifiers are of the same type
-                    for(auto id : paramNames)
-                    {
-                        addArgumentHelper(function, lastType(), parseArguments);
-                        if(declareParameters) declareVariable(id, lastType());
-                    }
-                    addArgumentHelper(function, lastType(), parseArguments);
-                    if(declareParameters) declareVariable(param->idOrType, lastType());
-                    paramNames.clear();
-                }
-                if(elem->hasNext())
-                    elem = elem->next;
-                else break;
-
-            }
-            if(!paramNames.empty())
-            {//we have only identifiers which means they are all type names
-                //foreach(auto id, paramNames)
-                for(auto id : paramNames)
-                {
-                    buildTypeName(id);
-                    addArgumentHelper(function, lastType(), parseArguments);
-                }
-                paramNames.clear();
-            }
-
-        }else if(!paramNames.empty())
-        {
-            //one identifier that we have is a type
-            buildTypeName(param->idOrType);
-            addArgumentHelper(function, lastType(), parseArguments);
-        }
-    }*/
+	/*if(node->parameter)
+	{
+	    QList<dlang::IdentifierAst*> paramNames;
+	    dlang::ParameterAst* param=node->parameter;
+	    visitParameter(param);
+	    //variadic arguments
+	    if(param->unnamedvartype || param->vartype)
+	    {
+	        function->setModifiers(dlang::GoFunctionType::VariadicArgument);
+	        ArrayType* atype = new ArrayType();
+	        atype->setElementType(lastType());
+	        injectType(AbstractType::Ptr(atype));
+	    }
+	    if(!param->complexType && !param->parenType && !param->unnamedvartype &&
+	        !param->type && !param->vartype && !param->fulltype)
+	        paramNames.append(param->idOrType); //we only have an identifier
+	    else
+	    {
+	        addArgumentHelper(function, lastType(), parseArguments);
+	        //if we have a parameter name(but it's not part of fullname) open declaration
+	        if(param->idOrType && !param->fulltype && declareParameters)
+	            declareVariable(param->idOrType, lastType());
+	    }
+	
+	    if(node->parameterListSequence)
+	    {
+	        auto elem = node->parameterListSequence->front();
+	        while(true)
+	        {
+	            dlang::ParameterAst* param=elem->element;
+	            visitParameter(param);
+	            //variadic arguments
+	            if(param->unnamedvartype || param->vartype)
+	            {
+	                function->setModifiers(dlang::GoFunctionType::VariadicArgument);
+	                ArrayType* atype = new ArrayType();
+	                atype->setElementType(lastType());
+	                injectType(AbstractType::Ptr(atype));
+	            }
+	            if(param->complexType || param->parenType || param->unnamedvartype || param->fulltype)
+	            {//we have a unnamed parameter list of types
+	                AbstractType::Ptr lType = lastType();
+	                for(auto id : paramNames)
+	                {
+	                    buildTypeName(id);
+	                    addArgumentHelper(function, lastType(), parseArguments);
+	                }
+	                addArgumentHelper(function, lType, parseArguments);
+	                paramNames.clear();
+	            }else if(!param->complexType && !param->parenType && !param->unnamedvartype &&
+	                !param->type && !param->vartype && !param->fulltype)
+	            {//just another identifier
+	                paramNames.append(param->idOrType);
+	            }else
+	            {//identifier with type, all previous identifiers are of the same type
+	                for(auto id : paramNames)
+	                {
+	                    addArgumentHelper(function, lastType(), parseArguments);
+	                    if(declareParameters) declareVariable(id, lastType());
+	                }
+	                addArgumentHelper(function, lastType(), parseArguments);
+	                if(declareParameters) declareVariable(param->idOrType, lastType());
+	                paramNames.clear();
+	            }
+	            if(elem->hasNext())
+	                elem = elem->next;
+	            else break;
+	
+	        }
+	        if(!paramNames.empty())
+	        {//we have only identifiers which means they are all type names
+	            //foreach(auto id, paramNames)
+	            for(auto id : paramNames)
+	            {
+	                buildTypeName(id);
+	                addArgumentHelper(function, lastType(), parseArguments);
+	            }
+	            paramNames.clear();
+	        }
+	
+	    }else if(!paramNames.empty())
+	    {
+	        //one identifier that we have is a type
+	        buildTypeName(param->idOrType);
+	        addArgumentHelper(function, lastType(), parseArguments);
+	    }
+	}*/
 }
 
-void TypeBuilder::addArgumentHelper(go::GoFunctionType::Ptr function, AbstractType::Ptr argument, bool parseArguments)
+void TypeBuilder::addArgumentHelper(KDevelop::FunctionType::Ptr function, AbstractType::Ptr argument, bool parseArguments)
 {
-    DUChainWriteLocker lock;
-    if(argument)
-    {
-        if(parseArguments)
-            function->addArgument(argument);
-        else
-            function->addReturnArgument(argument);
-    }
+	DUChainWriteLocker lock;
+	if(argument)
+	{
+		if(parseArguments)
+			function->addArgument(argument);
+		else
+			function->setReturnType(argument);
+	}
 }
 
 //TODO call this from DeclarationBuilder::visitFunctionDecl
 /*void TypeBuilder::buildFunction(SignatureAst* node, BlockAst* block)
 {
-    go::GoFunctionDeclaration* decl = parseSignature(node, true);
+    dlang::GoFunctionDeclaration* decl = parseSignature(node, true);
     AbstractType::Ptr type = lastType();
     if(block)
     {

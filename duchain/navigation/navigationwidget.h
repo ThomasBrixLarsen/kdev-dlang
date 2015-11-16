@@ -16,17 +16,13 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGNAVWIDGET_H
-#define GOLANGNAVWIDGET_H
+#pragma once
 
 #include <language/duchain/navigation/abstractnavigationwidget.h>
-#include "../goduchainexport.h"
+#include "../dduchainexport.h"
 
-class KDEVGODUCHAIN_EXPORT NavigationWidget : public KDevelop::AbstractNavigationWidget
+class KDEVDDUCHAIN_EXPORT NavigationWidget : public KDevelop::AbstractNavigationWidget
 {
 public:
-    NavigationWidget(KDevelop::Declaration* decl, KDevelop::TopDUContext* topContext, const QString& htmlPrefix, const QString& htmlSuffix);
-  
+	NavigationWidget(KDevelop::Declaration *decl, KDevelop::TopDUContext *topContext, const QString &htmlPrefix, const QString &htmlSuffix);
 };
-
-#endif

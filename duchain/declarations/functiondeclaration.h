@@ -16,59 +16,58 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGFUNCDECL_H
-#define GOLANGFUNCDECL_H
+#pragma once
 
 #include <language/duchain/functiondeclaration.h>
 
-#include "goduchainexport.h"
+#include "dduchainexport.h"
 
-namespace go {
+namespace dlang
+{
 
 class GoFunctionDeclarationData : public KDevelop::FunctionDeclarationData
 {
 public:
-    GoFunctionDeclarationData() : KDevelop::FunctionDeclarationData()
-    {
-    }
-    
-    GoFunctionDeclarationData(const GoFunctionDeclarationData& rhs) : KDevelop::FunctionDeclarationData(rhs), returnContext(rhs.returnContext)
-    {
-    }
-    
-    KDevelop::IndexedDUContext returnContext;
+	GoFunctionDeclarationData() : KDevelop::FunctionDeclarationData()
+	{
+		
+	}
+	
+	GoFunctionDeclarationData(const GoFunctionDeclarationData &rhs) : KDevelop::FunctionDeclarationData(rhs), returnContext(rhs.returnContext)
+	{
+		
+	}
+	
+	KDevelop::IndexedDUContext returnContext;
 };
 
 //typedef KDevelop::FunctionDeclarationData GoFunctionDeclarationData;
-    
-    
-class KDEVGODUCHAIN_EXPORT GoFunctionDeclaration : public KDevelop::FunctionDeclaration
+
+class KDEVDDUCHAIN_EXPORT GoFunctionDeclaration : public KDevelop::FunctionDeclaration
 {
 public:
-    
-    GoFunctionDeclaration(const GoFunctionDeclaration& rhs);
-    GoFunctionDeclaration(const KDevelop::RangeInRevision& range, KDevelop::DUContext* context);
-    GoFunctionDeclaration(GoFunctionDeclarationData& data);
-    GoFunctionDeclaration(GoFunctionDeclarationData& data, const KDevelop::RangeInRevision& range);
-    
-    
-    virtual QString toString() const;
-    
-    void setReturnArgsContext(KDevelop::DUContext* context);
-    
-    KDevelop::DUContext* returnArgsContext() const;
-    
-    enum {
-	Identity = 121 
-    };
-    
-    virtual KDevelop::Declaration* clonePrivate() const;
-    
+
+	GoFunctionDeclaration(const GoFunctionDeclaration &rhs);
+	GoFunctionDeclaration(const KDevelop::RangeInRevision &range, KDevelop::DUContext *context);
+	GoFunctionDeclaration(GoFunctionDeclarationData &data);
+	GoFunctionDeclaration(GoFunctionDeclarationData &data, const KDevelop::RangeInRevision &range);
+	
+	virtual QString toString() const;
+	
+	void setReturnArgsContext(KDevelop::DUContext *context);
+	
+	KDevelop::DUContext *returnArgsContext() const;
+	
+	enum
+	{
+		Identity = 121
+	};
+	
+	virtual KDevelop::Declaration *clonePrivate() const;
+	
 private:
-    DUCHAIN_DECLARE_DATA(GoFunctionDeclaration);
-    
+	DUCHAIN_DECLARE_DATA(GoFunctionDeclaration);
+	
 };
 
 }
-
-#endif

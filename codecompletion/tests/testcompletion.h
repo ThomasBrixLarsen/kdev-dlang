@@ -16,25 +16,23 @@
 *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
 *************************************************************************************/
 
-#ifndef GOLANGTESTCOMPLETION_H
-#define GOLANGTESTCOMPLETION_H
+#pragma once
 
 #include <QObject>
 
 class TestCompletion : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
+
 private slots:
-    void initTestCase();
-    void cleanupTestCase();
-    void test_basicCompletion();
-    void test_functionCallTips_data();
-    void test_functionCallTips();
-    void test_typeMatching_data();
-    void test_typeMatching();
-    void test_commentCompletion_data();
-    void test_commentCompletion();
-
+	void initTestCase();
+	void cleanupTestCase();
+	void test_basicCompletion();
+	void test_functionCallTips_data();
+	void test_functionCallTips();
+	void test_typeMatching_data();
+	void test_typeMatching();
+	void test_commentCompletion_data();
+	void test_commentCompletion();
+	
 };
-
-#endif
