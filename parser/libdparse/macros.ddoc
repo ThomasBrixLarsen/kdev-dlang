@@ -1,4 +1,0 @@
-GRAMMAR = <pre class="grammar">$0</pre>
-RULEDEF = $(B $(DDOC_ANCHOR $0) $0)
-RULE = $(LINK2 #$0, $(B $0))
-LITERAL = $(D_STRING $(I $0))
