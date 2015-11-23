@@ -98,7 +98,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::normalCompletion()
 
 QList<CompletionTreeItemPointer> CodeCompletionContext::functionCallTips()
 {
-	printf("functionCallTips: %s\n", m_text.toLocal8Bit().data());
 	QStack<ExpressionStackEntry> stack = expressionStack(m_text);
 	QList<CompletionTreeItemPointer> items;
 	int depth = 1;

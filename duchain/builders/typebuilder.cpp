@@ -120,9 +120,7 @@ void TypeBuilder::buildTypeName(IIdentifier *typeName, IIdentifier *fullName)
 void TypeBuilder::visitParameter(IParameter *node)
 {
 	TypeBuilderBase::visitParameter(node);
-	printf("Adding parameter to %s.\n", currentFunctionType->toString().toLocal8Bit().data());
 	currentFunctionType->addArgument(lastType());
-	printf("1 Adding parameter to %s.\n", currentFunctionType->toString().toLocal8Bit().data());
 }
 
 void TypeBuilder::visitFuncDeclaration(IFunctionDeclaration *node)

@@ -7,19 +7,17 @@ Features
 --------------------
 **NOTE**: It is still a WIP, so only a (small) part of the D language features is supported at this time. 
 Some of the most important features include:
- -   Code highlighting
- -   KDevelop navigation widgets
- -   Code completion
+ -   Code highlighting.
+ -   KDevelop navigation widgets.
+ -   Code completion.
 
 **HOWTO install this plugin**
 
-I haven't tested the plugin with stable KDevelop versions so I can't say for sure, but most likely you will need to install KDevelop from git.
-
 1) Install KDevelop 4.90.90 or better.
 
-2) Install the LDC D compiler.
+2) Install the LDC D compiler version 0.16.1 or better.
 
-3) Go to parser and execute the build script: ./build.sh
+3) Go to parser/ and execute the build script: ./build.sh
    This builds the D part of the plugin.
 
 4) Install the D Plugin as you would for a typical cmake project.
@@ -39,6 +37,7 @@ Definition-Use chain code is organized like most other language plugins for KDev
 
 **Completion**
 Completion code is mostly based on completion for KDevelop Go and QmlJS plugins, so you can use that for details.
+
 
 Road map
 -----------------------
