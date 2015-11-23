@@ -1,20 +1,21 @@
 /*************************************************************************************
-*  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
-*                                                                                   *
-*  This program is free software; you can redistribute it and/or                    *
-*  modify it under the terms of the GNU General Public License                      *
-*  as published by the Free Software Foundation; either version 2                   *
-*  of the License, or (at your option) any later version.                           *
-*                                                                                   *
-*  This program is distributed in the hope that it will be useful,                  *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-*  GNU General Public License for more details.                                     *
-*                                                                                   *
-*  You should have received a copy of the GNU General Public License                *
-*  along with this program; if not, write to the Free Software                      *
-*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-*************************************************************************************/
+ *  Copyright (C) 2015 by Thomas Brix Larsen <brix@brix-verden.dk>                   *
+ *  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
 
 #pragma once
 
@@ -42,7 +43,7 @@ public:
 	}
 
 private:
-	//See QmlJS plugin completion for details
+	//See QmlJS plugin completion for details.
 	struct ExpressionStackEntry
 	{
 		int startPosition;
@@ -50,7 +51,8 @@ private:
 		int operatorEnd;
 		int commas;
 	};
-	
+
+private:
 	QStack<ExpressionStackEntry> expressionStack(const QString &expression);
 	
 	KDevelop::AbstractType::Ptr lastType(const QString &expression);
@@ -62,7 +64,7 @@ private:
 	QList<KDevelop::CompletionTreeItemPointer> normalCompletion();
 	
 	/**
-	 * Creates FunctionCallTips and sets m_typeToMatch
+	 * Creates FunctionCallTips and sets m_typeToMatch.
 	 **/
 	QList<KDevelop::CompletionTreeItemPointer> functionCallTips();
 	
@@ -74,10 +76,11 @@ private:
 	KDevelop::CompletionTreeItemPointer itemForDeclaration(QPair<KDevelop::Declaration *, int> declaration);
 	
 	/**
-	 * returns true if cursor is in comment and completion is not needed
+	 * Returns true if cursor is in comment and completion is not needed.
 	 **/
 	bool isInsideCommentOrString();
-	
+
+private:
 	KDevelop::AbstractType::Ptr m_typeToMatch;
 	QString m_fullText;
 };

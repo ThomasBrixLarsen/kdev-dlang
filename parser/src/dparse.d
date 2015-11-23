@@ -56,6 +56,8 @@ enum Kind
 extern(C++) interface INode
 {
 	Kind getKind();
+	void* getContext();
+	void setContext(void* context);
 }
 
 extern(C++) interface IIdentifier : INode
@@ -127,6 +129,10 @@ extern(C++) interface IType : INode
 	IIdentifier getName();
 	bool isArray();
 	bool isPointer();
+	ulong startLine();
+	ulong startColumn();
+	ulong endLine();
+	ulong endColumn();
 }
 
 extern(C++) interface IDeclarationsAndStatements : INode
@@ -218,6 +224,19 @@ extern(C++) interface IStatement : INode
 	// IDefaultStatement defaultStatement();
 }
 
+template ContextMethods()
+{
+	extern(C++) void* getContext()
+	{
+		return context;
+	}
+	extern(C++) void setContext(void* context)
+	{
+		this.context = context;
+	}
+	__gshared void* context;
+}
+
 class CStatement : IStatement
 {
 	this(const Statement statement)
@@ -249,6 +268,8 @@ class CStatement : IStatement
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IStatementNoCaseNoDefault getStatementNoCaseNoDefault()
 	{
@@ -334,6 +355,8 @@ class CStatementNoCaseNoDefault : IStatementNoCaseNoDefault
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IExpressionStatement getExpressionStatement()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -396,6 +419,8 @@ class CExpressionStatement : IExpressionStatement
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong numItems()
 	{
@@ -511,6 +536,8 @@ class CExpressionNode : IExpressionNode
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IPrimaryExpression getPrimaryExpression()
 	{
@@ -649,6 +676,8 @@ class CPrimaryExpression : IPrimaryExpression
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IIdentifier getIdentifier()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -708,6 +737,8 @@ class CAddExpression : IAddExpression
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IExpressionNode getLeft()
 	{
@@ -787,6 +818,8 @@ class CUnaryExpression : IUnaryExpression
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IPrimaryExpression getPrimaryExpression()
 	{
@@ -900,6 +933,8 @@ class CAssignExpression : IAssignExpression
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IExpressionNode getAssignedExpression()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -976,6 +1011,8 @@ class CInitializer : IInitializer
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IExpressionNode getAssignedExpression()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -1035,6 +1072,8 @@ class CImportDeclaration : IImportDeclaration
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong numImports()
 	{
@@ -1110,6 +1149,8 @@ class CSingleImport : ISingleImport
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IIdentifier getRename()
 	{
@@ -1188,6 +1229,8 @@ class CFunctionCallExpression : IFunctionCallExpression
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IType getType()
 	{
@@ -1333,6 +1376,8 @@ class CIdentifier : IIdentifier
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) char* getString()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -1423,6 +1468,8 @@ class CModule : IModule
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong numDeclarations()
 	{
@@ -1519,6 +1566,8 @@ class CModuleDeclaration : IModuleDeclaration
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IIdentifier getName()
 	{
@@ -1630,6 +1679,8 @@ class CBlockStatement : IBlockStatement
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IDeclarationsAndStatements getDeclarationsAndStatements()
 	{
@@ -1786,6 +1837,8 @@ class CFunctionBody : IFunctionBody
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IBlockStatement getBlockStatement()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -1844,6 +1897,8 @@ class CFunctionDeclaration : IFunctionDeclaration
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IIdentifier getName()
 	{
@@ -1985,6 +2040,8 @@ class CParameters : IParameters
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong startLine()
 	{
@@ -2139,6 +2196,8 @@ class CParameter : IParameter
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IIdentifier getName()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -2216,6 +2275,8 @@ class CType : IType
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IIdentifier getName()
 	{
@@ -2295,6 +2356,70 @@ class CType : IType
 		}
 		assert(0);
 	}
+	
+	extern(C++) ulong startLine()
+	{
+		//scope(failure) writefln("fffff %s", __LINE__);
+		try
+		{
+			writeln("CType.startLine()");
+			return type.startLine;
+		}
+		catch(Throwable e)
+		{
+			writefln("e: %s", e);
+			raise(SIGSEGV);
+		}
+		assert(0);
+	}
+	
+	extern(C++) ulong startColumn()
+	{
+		//scope(failure) writefln("fffff %s", __LINE__);
+		try
+		{
+			writeln("CType.startColumn()");
+			return type.startColumn;
+		}
+		catch(Throwable e)
+		{
+			writefln("e: %s", e);
+			raise(SIGSEGV);
+		}
+		assert(0);
+	}
+	
+	extern(C++) ulong endLine()
+	{
+		//scope(failure) writefln("fffff %s", __LINE__);
+		try
+		{
+			writeln("CType.endLine()");
+			return type.endLine;
+		}
+		catch(Throwable e)
+		{
+			writefln("e: %s", e);
+			raise(SIGSEGV);
+		}
+		assert(0);
+	}
+	
+	extern(C++) ulong endColumn()
+	{
+		//scope(failure) writefln("fffff %s", __LINE__);
+		try
+		{
+			writeln("CType.endColumn()");
+			return type.endColumn;
+		}
+		catch(Throwable e)
+		{
+			writefln("e: %s", e);
+			raise(SIGSEGV);
+		}
+		assert(0);
+	}
 
 private:
 	const Type type;
@@ -2334,6 +2459,8 @@ class CDeclarationsAndStatements : IDeclarationsAndStatements
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong numDeclarationOrStatements()
 	{
@@ -2414,6 +2541,8 @@ class CDeclaration : IDeclaration
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IClassDeclaration getClassDeclaration()
 	{
@@ -2557,6 +2686,8 @@ class CVariableDeclaration : IVariableDeclaration
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IType getType()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -2672,6 +2803,8 @@ class CDeclarator : IDeclarator
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IIdentifier getName()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -2768,6 +2901,8 @@ class CClassDeclaration : IClassDeclaration
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) IIdentifier getName()
 	{
@@ -2871,6 +3006,8 @@ class CStructDeclaration : IStructDeclaration
 		assert(0);
 	}
 	
+	mixin ContextMethods;
+	
 	extern(C++) IIdentifier getName()
 	{
 		//scope(failure) writefln("fffff %s", __LINE__);
@@ -2970,6 +3107,8 @@ class CStructBody : IStructBody
 		}
 		assert(0);
 	}
+	
+	mixin ContextMethods;
 	
 	extern(C++) ulong numDeclarations()
 	{
@@ -3295,7 +3434,11 @@ extern(C++) IModule parseSourceFile(char* sourceFile, char* sourceData)
 	//scope(failure) writefln("fffff %s", __LINE__);
 	try
 	{
+		import core.memory;
 		import std.string;
+		
+		GC.disable(); //FIXME: Make it work with GC!
+		
 		writefln("parseSourceFile(%s)", fromStringz(sourceFile));
 		
 		thread_attachThis();

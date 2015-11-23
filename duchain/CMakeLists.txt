@@ -3,19 +3,8 @@ add_library(kdevdduchain STATIC
 	builders/contextbuilder.cpp
 	builders/typebuilder.cpp
 	builders/usebuilder.cpp
-	dducontext.cpp
 	helper.cpp
 	duchaindebug.cpp
-	
-	types/gointegraltype.cpp
-	types/gofunctiontype.cpp
-	types/gostructuretype.cpp
-	types/gomaptype.cpp
-	types/gochantype.cpp
-	declarations/functiondeclaration.cpp
-	
-	navigation/navigationwidget.cpp
-	navigation/declarationnavigationcontext.cpp
 )
 
 include_directories(
@@ -33,7 +22,3 @@ LINK_PUBLIC
     KDev::Shell
     KDev::Project
  )
-
-#install(TARGETS kdevdduchain DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-#add_subdirectory(tests)

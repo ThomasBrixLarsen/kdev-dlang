@@ -17,24 +17,41 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
+/**
+ * This plugin is heavily influenced by kdev-go, kdev-php and kdev-qmljs plugins.
+ * If you have problems figuring out how something works, try looking for
+ * similar code in these plugins, it should be better documented there.
+ */
+
 #pragma once
 
-#include <language/codecompletion/normaldeclarationcompletionitem.h>
+#include <interfaces/iplugin.h>
+#include <language/interfaces/ilanguagesupport.h>
 
-using namespace KDevelop;
+#include "dhighlighting.h"
 
-namespace dlang
+namespace KDevelop
 {
+class IProject;
+class IDocument;
+class ParseJob;
+}
 
-class ImportCompletionItem : public KDevelop::NormalDeclarationCompletionItem
+class DPlugin : public KDevelop::IPlugin, public KDevelop::ILanguageSupport
 {
+	Q_OBJECT
+	Q_INTERFACES(KDevelop::ILanguageSupport)
+
 public:
-	ImportCompletionItem(QString packagename);
-	virtual QVariant data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const;
-	void execute(KTextEditor::View *view, const KTextEditor::Range &word) override;
+	explicit DPlugin(QObject *parent, const QVariantList &args);
+	
+	virtual ~DPlugin();
+	
+	virtual KDevelop::ParseJob *createParseJob(const KDevelop::IndexedString &url) override;
+	virtual QString name() const override;
+	
+	KDevelop::ICodeHighlighting *codeHighlighting() const override;
 
 private:
-	QString m_packageName;
+	Highlighting *m_highlighting;
 };
-
-}

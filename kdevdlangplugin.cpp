@@ -17,24 +17,57 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
  *************************************************************************************/
 
-#pragma once
+#include "kdevdlangplugin.h"
 
-#include <language/codecompletion/normaldeclarationcompletionitem.h>
+#include <ddebug.h>
+#include <KPluginFactory>
+#include <KAboutData>
+#include <language/codecompletion/codecompletion.h>
+#include <interfaces/icore.h>
+#include <interfaces/ilanguagecontroller.h>
+
+#include "codecompletion/model.h"
+#include "dlangparsejob.h"
+
+#include "parser/dparser.h"
+
+K_PLUGIN_FACTORY_WITH_JSON(DPluginFactory, "kdevdlang.json", registerPlugin<DPlugin>();)
 
 using namespace KDevelop;
 
-namespace dlang
+DPlugin::DPlugin(QObject *parent, const QVariantList &) : KDevelop::IPlugin("kdevdlangplugin", parent), ILanguageSupport()
 {
-
-class ImportCompletionItem : public KDevelop::NormalDeclarationCompletionItem
-{
-public:
-	ImportCompletionItem(QString packagename);
-	virtual QVariant data(const QModelIndex &index, int role, const KDevelop::CodeCompletionModel *model) const;
-	void execute(KTextEditor::View *view, const KTextEditor::Range &word) override;
-
-private:
-	QString m_packageName;
-};
-
+	KDEV_USE_EXTENSION_INTERFACE(ILanguageSupport)
+	
+	qCDebug(D) << "D Language Plugin is loaded\n";
+	
+	initDParser();
+	
+	CodeCompletionModel *codeCompletion = new dlang::CodeCompletionModel(this);
+	new KDevelop::CodeCompletion(this, codeCompletion, name());
+	
+	m_highlighting = new Highlighting(this);
 }
+
+DPlugin::~DPlugin()
+{
+	deinitDParser();
+}
+
+ParseJob *DPlugin::createParseJob(const IndexedString &url)
+{
+	qCDebug(D) << "Creating dlang parse job\n";
+	return new DParseJob(url, this);
+}
+
+QString DPlugin::name() const
+{
+	return "D";
+}
+
+KDevelop::ICodeHighlighting *DPlugin::codeHighlighting() const
+{
+	return m_highlighting;
+}
+
+#include "kdevdlangplugin.moc"

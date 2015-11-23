@@ -138,8 +138,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			printf("kind is type\n");
 			auto f = (IType *)from;
-			line = f->getName()->getLine();
-			column = f->getName()->getColumn();
+			line = f->startLine();
+			column = f->startColumn();
 			break;
 		}
 		case Kind::primaryExpression:
@@ -173,7 +173,7 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			printf("kind is module\n");
 			auto lines = m_contents.split('\n');
 			lineEnd = lines.length()+1;
-			columnEnd = lines[lines.length()-1].length();
+			columnEnd = lines[lines.length()-1].length()+1;
 			break;
 		}
 		case Kind::moduleDeclaration:
@@ -244,8 +244,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			printf("kind is type\n");
 			auto f = (IType *)to;
-			lineEnd = f->getName()->getLine();
-			columnEnd = f->getName()->getColumn() + strlen(f->getName()->getString());
+			lineEnd = f->endLine();
+			columnEnd = f->endColumn();
 			break;
 		}
 		case Kind::primaryExpression:
@@ -315,16 +315,6 @@ QList<ReferencedTopDUContext> ParseSession::contextForImport(QString package)
 {
 	printf("ParseSession::contextForImport (%s)\n", package.toLocal8Bit().data());
 	QStringList files;
-	//try canonical paths first
-	if(m_canonicalImports && m_canonicalImports->contains(package))
-	{
-		QDir path((*m_canonicalImports)[package]);
-		if(path.exists())
-		{
-			for(const QString &file : path.entryList(QStringList("*.d"), QDir::Files | QDir::NoSymLinks))
-				files.append(path.filePath(file));
-		}
-	}
 	if(files.empty())
 	{
 		printf("Include paths:\n%s\n", QStringList(m_includePaths).join("\n").toLocal8Bit().data());

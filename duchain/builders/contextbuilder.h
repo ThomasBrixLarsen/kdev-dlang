@@ -1,20 +1,21 @@
 /*************************************************************************************
-*  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
-*                                                                                   *
-*  This program is free software; you can redistribute it and/or                    *
-*  modify it under the terms of the GNU General Public License                      *
-*  as published by the Free Software Foundation; either version 2                   *
-*  of the License, or (at your option) any later version.                           *
-*                                                                                   *
-*  This program is distributed in the hope that it will be useful,                  *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-*  GNU General Public License for more details.                                     *
-*                                                                                   *
-*  You should have received a copy of the GNU General Public License                *
-*  along with this program; if not, write to the Free Software                      *
-*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-*************************************************************************************/
+ *  Copyright (C) 2015 by Thomas Brix Larsen <brix@brix-verden.dk>                   *
+ *  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
 
 #pragma once
 
@@ -49,10 +50,9 @@ public:
 	ContextBuilder();
 	virtual ~ContextBuilder();
 	
-	virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext());
+	virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext()) override;
 	
-	virtual void startVisiting(INode *node);
-	//virtual void visitIfStmt(dlang::IfStmtAst* node);
+	virtual void startVisiting(INode *node) override;
 	virtual void visitBlock(IBlockStatement *node);
 	virtual void visitBody(IFunctionBody *node);
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
@@ -77,16 +77,16 @@ public:
 	virtual void visitInitializer(IInitializer *node);
 	virtual void visitImportDeclaration(IImportDeclaration *node);
 	virtual void visitFunctionCallExpression(IFunctionCallExpression *node);
-	virtual void visitSingleImport(ISingleImport *node) = 0;
+	virtual void visitSingleImport(ISingleImport *node);
 	virtual void visitTypeName(IType *node) = 0;
 	
-	virtual KDevelop::DUContext *contextFromNode(INode *node);
+	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
-	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context);
+	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;
 	
-	virtual KDevelop::RangeInRevision editorFindRange(INode *fromNode, INode *toNode);
+	virtual KDevelop::RangeInRevision editorFindRange(INode *fromNode, INode *toNode) override;
 	
-	virtual KDevelop::QualifiedIdentifier identifierForNode(IIdentifier *node);
+	virtual KDevelop::QualifiedIdentifier identifierForNode(IIdentifier *node) override;
 	
 	KDevelop::QualifiedIdentifier identifierForIndex(qint64 index);
 	
@@ -104,18 +104,10 @@ public:
 	{
 		return m_editor.data();
 	}
-	
-	/**
-	 * Extracts identifier from expression.
-	 * Grammar sometimes allows expressions where only identifiers should be allowed to simplify
-	 * parsing. This function extracts that identifiers.
-	 **/
-	//IIdentifier* identifierAstFromExpressionAst(dlang::ExpressionAst* node);
 
 protected:
 	ParseSession *m_session;
 	
 	bool m_mapAst; //Make KDevelop::AbstractContextBuilder happy.
 	QScopedPointer<Editor> m_editor; //Make KDevelop::AbstractUseBuilder happy.
-	QMap<INode *, KDevelop::DUContext *> nodeContext;
 };

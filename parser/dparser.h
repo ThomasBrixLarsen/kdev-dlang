@@ -42,6 +42,8 @@ class KDE_EXPORT INode
 {
 public:
 	virtual Kind getKind();
+	virtual void *getContext();
+	virtual void setContext(void *context);
 };
 
 class KDE_EXPORT IIdentifier : public INode
@@ -58,6 +60,10 @@ public:
 	virtual IIdentifier *getName();
 	virtual bool isArray();
 	virtual bool isPointer();
+	virtual ulong startLine();
+	virtual ulong startColumn();
+	virtual ulong endLine();
+	virtual ulong endColumn();
 };
 
 class KDE_EXPORT IModuleDeclaration : public INode

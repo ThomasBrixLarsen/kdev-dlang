@@ -1,20 +1,21 @@
 /*************************************************************************************
-*  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
-*                                                                                   *
-*  This program is free software; you can redistribute it and/or                    *
-*  modify it under the terms of the GNU General Public License                      *
-*  as published by the Free Software Foundation; either version 2                   *
-*  of the License, or (at your option) any later version.                           *
-*                                                                                   *
-*  This program is distributed in the hope that it will be useful,                  *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-*  GNU General Public License for more details.                                     *
-*                                                                                   *
-*  You should have received a copy of the GNU General Public License                *
-*  along with this program; if not, write to the Free Software                      *
-*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-*************************************************************************************/
+ *  Copyright (C) 2015 by Thomas Brix Larsen <brix@brix-verden.dk>                   *
+ *  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
 
 //Completion code is mostly based on KDevelop QmlJS plugin which should be referenced for more details amd comments.
 
@@ -23,15 +24,15 @@
 #include <QtCore/QDir>
 
 #include <language/codecompletion/normaldeclarationcompletionitem.h>
+#include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/pointertype.h>
+#include <language/duchain/types/structuretype.h>
 
-#include "types/gostructuretype.h"
 #include "items/completionitem.h"
 #include "items/functionitem.h"
 #include "items/importcompletionitem.h"
 #include "helper.h"
 #include "completiondebug.h"
-#include "types/gofunctiontype.h"
 
 #include <language/duchain/duchainlock.h>
 
@@ -56,8 +57,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::completionItems(bool &ab
 		m_text = m_text.mid(m_text.lastIndexOf(';'));
 	
 	//TODO: Fix for D.
-	//"import" + [optional package alias] + [opening double quote] + [cursor at EOL].
-	if(m_text.contains(QRegExp("import[^\"]*\"[^\"]*$")))
+	if(m_text.contains(QRegExp("import.*$")))
 	{
 		items << importCompletion();
 		return items;
@@ -98,6 +98,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::normalCompletion()
 
 QList<CompletionTreeItemPointer> CodeCompletionContext::functionCallTips()
 {
+	printf("functionCallTips: %s\n", m_text.toLocal8Bit().data());
 	QStack<ExpressionStackEntry> stack = expressionStack(m_text);
 	QList<CompletionTreeItemPointer> items;
 	int depth = 1;
@@ -131,7 +132,7 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::functionCallTips()
 	return items;
 }
 
-QList< CompletionTreeItemPointer > CodeCompletionContext::importAndMemberCompletion()
+QList<CompletionTreeItemPointer> CodeCompletionContext::importAndMemberCompletion()
 {
 	QList<CompletionTreeItemPointer> items;
 	AbstractType::Ptr lasttype = lastType(m_text.left(m_text.size()-1));
@@ -153,7 +154,6 @@ QList< CompletionTreeItemPointer > CodeCompletionContext::importAndMemberComplet
 			Declaration *lastdeclaration = fastCast<StructureType *>(lasttype.constData())->declaration(m_duContext->topContext());
 			if(lastdeclaration->kind() == Declaration::Namespace)
 			{
-				//auto decls = m_duContext->findDeclarations(lastdeclaration->qualifiedIdentifier());
 				auto decls = getDeclarations(lastdeclaration->qualifiedIdentifier(), m_duContext.data());
 				for(Declaration *declaration : decls)
 				{
@@ -180,13 +180,12 @@ QList< CompletionTreeItemPointer > CodeCompletionContext::importAndMemberComplet
 		do
 		{
 			count++;
-			GoStructureType *structure = fastCast<GoStructureType *>(lasttype.constData());
+			StructureType *structure = fastCast<StructureType *>(lasttype.constData());
 			if(structure)
 			{
 				//Get members.
-				DUContext *context = structure->context();
+				DUContext *context = structure->internalContext(m_duContext->topContext());
 				DUChainReadLocker lock;
-				//auto declarations = context->findDeclarations(identifierForNode(node->selector));
 				auto declarations = context->allDeclarations(CursorInRevision::invalid(), m_duContext->topContext(), false);
 				lock.unlock();
 				for(const QPair<Declaration *, int> &decl : declarations)
@@ -212,7 +211,6 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::importCompletion()
 	QList<CompletionTreeItemPointer> items;
 	QString fullPath = m_text;
 	
-	//import "parentPackage.childModule"
 	QStringList pathChain = fullPath.split('.', QString::SkipEmptyParts);
 	qCDebug(COMPLETION) << pathChain;
 	for(const QString &path : searchPaths)
@@ -229,11 +227,12 @@ QList<CompletionTreeItemPointer> CodeCompletionContext::importCompletion()
 			}
 			if(!dir.exists() || !isValid)
 				continue;
-			for(const QString &package : dir.entryList(QDir::Dirs))
+			for(const QFileInfo &package : dir.entryInfoList(QDir::Dirs|QDir::Files))
 			{
-				if(package.startsWith('.'))
-					continue;
-				items << CompletionTreeItemPointer(new ImportCompletionItem(package));
+				if(package.isFile() && (package.fileName().endsWith(".d") || package.fileName().endsWith(".di")))
+					items << CompletionTreeItemPointer(new ImportCompletionItem(package.baseName()));
+				else if(package.isDir())
+					items << CompletionTreeItemPointer(new ImportCompletionItem(package.fileName()));
 			}
 		}
 	}
@@ -358,7 +357,7 @@ DeclarationPointer CodeCompletionContext::lastDeclaration(const QString &express
 	return DeclarationPointer();
 }
 
-CompletionTreeItemPointer CodeCompletionContext::itemForDeclaration(QPair<Declaration *, int > declaration)
+CompletionTreeItemPointer CodeCompletionContext::itemForDeclaration(QPair<Declaration *, int> declaration)
 {
 	if(declaration.first->isFunctionDeclaration())
 		return CompletionTreeItemPointer(new FunctionCompletionItem(DeclarationPointer(declaration.first)));

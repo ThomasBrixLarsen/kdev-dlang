@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(kdevdplugin)
+project(kdevdlangplugin)
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 90)
@@ -33,14 +33,14 @@ add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(codecompletion)
 
-kdevplatform_add_plugin(kdevdplugin JSON kdevd.json SOURCES
-    kdevdplugin.cpp
+kdevplatform_add_plugin(kdevdlangplugin JSON kdevdlang.json SOURCES
+    kdevdlangplugin.cpp
     dlangparsejob.cpp
     dhighlighting.cpp
     ddebug.cpp
 )
 
-target_link_libraries(kdevdplugin
+target_link_libraries(kdevdlangplugin
     KDev::Interfaces
     KDev::Language
     KF5::ThreadWeaver

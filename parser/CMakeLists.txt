@@ -1,8 +1,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-#LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_PREFIX}/cmake-d")
-
 add_custom_command(OUTPUT libdparser.so COMMAND cmake -E ./build.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(libdparser ALL DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so)
@@ -18,7 +16,4 @@ target_link_libraries(kdevdparser LINK_PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so
 )
 
-#add_dependencies(kdevdparser libdparser)
-
-#install(TARGETS libdparser DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/libdparser.so DESTINATION lib)

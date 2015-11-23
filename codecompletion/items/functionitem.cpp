@@ -1,30 +1,30 @@
 /*************************************************************************************
-*  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
-*                                                                                   *
-*  This program is free software; you can redistribute it and/or                    *
-*  modify it under the terms of the GNU General Public License                      *
-*  as published by the Free Software Foundation; either version 2                   *
-*  of the License, or (at your option) any later version.                           *
-*                                                                                   *
-*  This program is distributed in the hope that it will be useful,                  *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
-*  GNU General Public License for more details.                                     *
-*                                                                                   *
-*  You should have received a copy of the GNU General Public License                *
-*  along with this program; if not, write to the Free Software                      *
-*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
-*************************************************************************************/
+ *  Copyright (C) 2015 by Thomas Brix Larsen <brix@brix-verden.dk>                   *
+ *  Copyright (C) 2014 by Pavel Petrushkov <onehundredof@gmail.com>                  *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA   *
+ *************************************************************************************/
 
 #include "functionitem.h"
 
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
 #include <language/duchain/declaration.h>
+#include <language/duchain/functiondeclaration.h>
 #include <language/codecompletion/codecompletionmodel.h>
-
-#include "types/gofunctiontype.h"
-#include "declarations/functiondeclaration.h"
+#include <language/duchain/types/functiontype.h>
 
 namespace dlang
 {
@@ -33,7 +33,7 @@ FunctionCompletionItem::FunctionCompletionItem(DeclarationPointer decl, int dept
     CompletionItem(decl, QExplicitlySharedDataPointer<KDevelop::CodeCompletionContext>(), 0),
     m_depth(depth), m_atArgument(atArgument)
 {
-	auto function = decl.dynamicCast<GoFunctionDeclaration>();
+	auto function = decl.dynamicCast<KDevelop::FunctionDeclaration>();
 	KDevelop::FunctionType::Ptr type(fastCast<KDevelop::FunctionType *>(decl->abstractType().constData()));
 	if(!type)
 		return;
@@ -77,25 +77,7 @@ FunctionCompletionItem::FunctionCompletionItem(DeclarationPointer decl, int dept
 		}
 	}
 	m_arguments += ")";
-	DUContext *returnContext = 0;
-	if(function)
-		returnContext = function->returnArgsContext();
-	m_prefix = "";
-	if(returnContext)
-	{
-		DUChainReadLocker lock;
-		auto args = returnContext->allDeclarations(CursorInRevision::invalid(), decl->topContext(), false);
-		int count = 0;
-		for(auto arg : args)
-		{
-			m_prefix += (arg.first->toString());
-			count++;
-			if(count < args.size())
-				m_prefix += ", ";
-		}
-	}
-	//If there was no return context or it didn't contain anything try type.
-	if(!returnContext || m_prefix == "")
+	if(m_prefix == "")
 	{
 		DUChainReadLocker lock;
 		m_prefix += type->returnType()->toString();
