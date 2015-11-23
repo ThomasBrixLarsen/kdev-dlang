@@ -32,6 +32,7 @@ enable_testing()
 add_subdirectory(parser)
 add_subdirectory(duchain)
 add_subdirectory(codecompletion)
+add_subdirectory(app_templates)
 
 kdevplatform_add_plugin(kdevdlangplugin JSON kdevdlang.json SOURCES
     kdevdlangplugin.cpp

@@ -1,0 +1,8 @@
+# KDE Config File
+[General]
+Name=Simple D Application
+Name[x-test]=xxSimple D Applicationxx
+Category=D
+Comment=Generate a simple D application
+Comment[x-test]=xxGenerate a simple D applicationxx
+ShowFilesAfterGeneration=%{dest}/%{APPNAMELC}.d
