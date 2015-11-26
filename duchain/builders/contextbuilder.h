@@ -107,6 +107,7 @@ public:
 
 protected:
 	ParseSession *m_session;
+	QStringList identifierChain;
 	
 	bool m_mapAst; //Make KDevelop::AbstractContextBuilder happy.
 	QScopedPointer<Editor> m_editor; //Make KDevelop::AbstractUseBuilder happy.

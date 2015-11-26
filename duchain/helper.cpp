@@ -83,7 +83,7 @@ DeclarationPointer getTypeOrVarDeclaration(QualifiedIdentifier id, DUContext *co
 		auto declarations = context->findDeclarations(id, CursorInRevision(INT_MAX, INT_MAX));
 		for(Declaration *decl : declarations)
 		{
-			if((decl->kind() == Declaration::Import) || (decl->kind() == Declaration::Namespace) || (decl->kind() == Declaration::NamespaceAlias))
+			if(decl->kind() == Declaration::Import || decl->kind() == Declaration::Namespace || decl->kind() == Declaration::NamespaceAlias)
 				continue;
 			return DeclarationPointer(decl);
 		}

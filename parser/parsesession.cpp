@@ -249,8 +249,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			auto f = ((IUnaryExpression *)to)->getIdentifier();
 			if(f)
 			{
-				line = f->getLine();
-				column = f->getColumn() + strlen(f->getString());
+				lineEnd = f->getLine();
+				columnEnd = f->getColumn() + strlen(f->getString());
 			}
 			break;
 		}

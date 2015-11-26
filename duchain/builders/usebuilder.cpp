@@ -100,7 +100,7 @@ void UseBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 	}
 	DeclarationPointer decl = getDeclaration(id, context);
 	if(decl)
-		newUse(node, editorFindRange(node->getIdentifier(), node->getIdentifier()), decl);
+		newUse(node, decl);
 }
 
 void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
@@ -109,7 +109,6 @@ void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 	if(!node->getIdentifier() || !currentContext())
 		return;
 	
-	QualifiedIdentifier id(identifierForNode(node->getIdentifier()));
 	DUContext *context = nullptr;
 	{
 		DUChainReadLocker lock;
@@ -117,12 +116,23 @@ void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 	}
 	if(!context)
 	{
-		qDebug() << "No context found for" << id;
+		qDebug() << "No context found for" << node->getIdentifier()->getString();
 		return;
 	}
+	
+	QualifiedIdentifier id;
+	for(const QString &str : identifierChain)
+	{
+		auto t = getTypeOrVarDeclaration(QualifiedIdentifier(str), context);
+		if(!t)
+			continue;
+		for(const QString &part : t->type<AbstractType>()->toString().split("::", QString::SkipEmptyParts))
+			id.push(Identifier(part));
+	}
+	id.push(identifierForNode(node->getIdentifier()));
 	DeclarationPointer decl = getDeclaration(id, context);
-	//if(decl)
-		//newUse(node, decl);
+	if(decl)
+		newUse(node, decl);
 }
 
 }

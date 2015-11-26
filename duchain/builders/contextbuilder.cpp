@@ -269,6 +269,8 @@ void ContextBuilder::visitExpressionNode(IExpressionNode *node)
 
 void ContextBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 {
+	if(node->getIdentifier())
+		identifierChain.append(QString::fromUtf8(node->getIdentifier()->getString()));
 	Q_UNUSED(node)
 }
 
@@ -321,8 +323,10 @@ void ContextBuilder::visitImportDeclaration(IImportDeclaration *node)
 
 void ContextBuilder::visitFunctionCallExpression(IFunctionCallExpression *node)
 {
+	identifierChain.clear();
 	if(auto n = node->getUnaryExpression())
 		visitUnaryExpression(n);
 	else if(auto n = node->getType())
 		visitTypeName(n);
+	identifierChain.clear();
 }
