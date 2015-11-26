@@ -232,7 +232,7 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			//printf("kind is type\n");
 			auto f = (IType *)to;
 			lineEnd = f->endLine();
-			columnEnd = f->endColumn();
+			columnEnd = f->endColumn()-1;
 			break;
 		}
 		case Kind::primaryExpression:

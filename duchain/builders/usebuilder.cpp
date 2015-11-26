@@ -45,11 +45,10 @@ void UseBuilder::startVisiting(INode *node)
 
 void UseBuilder::visitTypeName(IType *node)
 {
-	/*if(!node || !currentContext())
+	if(!node || !currentContext())
 		return;
+	
 	QualifiedIdentifier id(identifierForNode(node->getName()));
-	//if(node->type_resolve->fullName)
-	//	id.push(identifierForNode(node->type_resolve->fullName));
 	DUContext *context = nullptr;
 	{
 		DUChainReadLocker lock;
@@ -62,12 +61,7 @@ void UseBuilder::visitTypeName(IType *node)
 	}
 	DeclarationPointer decl = getTypeDeclaration(id, context);
 	if(decl)
-	{
-		printf("--New use: %s of %s, context: %s\n", node->getName()->getString(), decl.data()->toString().toLocal8Bit().constData(), decl->context()->scopeIdentifier(true).toString().toLocal8Bit().constData());
-		//newUse(node, decl);
-	}
-	else
-		printf("--Failed to find declaration for typeName use: %s\n", node->getName()->getString());*/
+		newUse(node, decl);
 }
 
 void UseBuilder::visitVarDeclaration(IVariableDeclaration *node)
