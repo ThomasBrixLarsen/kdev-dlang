@@ -113,6 +113,17 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			}
 			break;
 		}
+		case Kind::structDeclaration:
+		{
+			auto f = (IStructDeclaration *)from;
+			if(f->getStructBody())
+			{
+				auto g = (IStructBody *)f->getStructBody();
+				line = g->startLine();
+				column = g->startColumn() + 1;
+			}
+			break;
+		}
 		case Kind::structBody:
 		{
 			//printf("kind is structBody\n");
@@ -211,6 +222,17 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			//printf("kind is classDeclaration\n");
 			auto f = (IClassDeclaration *)to;
+			if(f->getStructBody())
+			{
+				auto g = (IStructBody *)f->getStructBody();
+				lineEnd = g->endLine();
+				columnEnd = g->endColumn()+1;
+			}
+			break;
+		}
+		case Kind::structDeclaration:
+		{
+			auto f = (IStructDeclaration *)to;
 			if(f->getStructBody())
 			{
 				auto g = (IStructBody *)f->getStructBody();

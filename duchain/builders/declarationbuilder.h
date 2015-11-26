@@ -55,6 +55,7 @@ private:
 
 private:
 	bool m_export;
+	bool inClassScope;
 	
 	bool m_preBuilding;
 	int m_ownPriority;

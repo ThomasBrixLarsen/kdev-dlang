@@ -40,7 +40,7 @@
 using namespace KDevelop;
 
 
-DeclarationBuilder::DeclarationBuilder(ParseSession *session, bool forExport) : m_export(forExport), m_preBuilding(false), m_ownPriority(0)
+DeclarationBuilder::DeclarationBuilder(ParseSession *session, bool forExport) : m_export(forExport), inClassScope(false), m_preBuilding(false), m_ownPriority(0)
 {
 	setParseSession(session);
 }
@@ -87,28 +87,34 @@ void DeclarationBuilder::declareVariable(IIdentifier *id, const AbstractType::Pt
 
 void DeclarationBuilder::visitClassDeclaration(IClassDeclaration *node)
 {
+	inClassScope = true;
 	DeclarationBuilderBase::visitClassDeclaration(node);
 	if(node->getComment())
 		setComment(node->getComment()->getString());
 	DUChainWriteLocker lock;
-	Declaration *dec = openDefinition<Declaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
+	ClassDeclaration *dec = openDefinition<ClassDeclaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
 	dec->setType(lastType());
 	dec->setKind(KDevelop::Declaration::Type);
 	dec->setInternalContext(lastContext());
+	dec->setClassType(ClassDeclarationData::Class);
 	closeDeclaration();
+	inClassScope = false;
 }
 
 void DeclarationBuilder::visitStructDeclaration(IStructDeclaration *node)
 {
+	inClassScope = true;
 	DeclarationBuilderBase::visitStructDeclaration(node);
 	if(node->getComment())
 		setComment(node->getComment()->getString());
 	DUChainWriteLocker lock;
-	Declaration *dec = openDefinition<Declaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
+	ClassDeclaration *dec = openDefinition<ClassDeclaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
 	dec->setType(lastType());
 	dec->setKind(KDevelop::Declaration::Type);
 	dec->setInternalContext(lastContext());
+	dec->setClassType(ClassDeclarationData::Struct);
 	closeDeclaration();
+	inClassScope = false;
 }
 
 void DeclarationBuilder::visitParameter(IParameter *node)
@@ -125,16 +131,32 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 {
 	TypeBuilder::visitFuncDeclaration(node);
 	DUChainWriteLocker lock;
-	FunctionDeclaration *newMethod = openDefinition<FunctionDeclaration>(node->getName(), node);
-	if(node->getComment())
-		newMethod->setComment(QString::fromUtf8(node->getComment()->getString()));
-	newMethod->setKind(KDevelop::Declaration::Type);
-	lock.unlock();
-	ContextBuilder::visitFuncDeclaration(node);
-	lock.lock();
-	closeDeclaration();
-	newMethod->setInternalContext(lastContext());
-	newMethod->setType(currentFunctionType);
+	if(inClassScope)
+	{
+		ClassFunctionDeclaration *newMethod = openDefinition<ClassFunctionDeclaration>(node->getName(), node);
+		if(node->getComment())
+			newMethod->setComment(QString::fromUtf8(node->getComment()->getString()));
+		newMethod->setKind(KDevelop::Declaration::Type);
+		lock.unlock();
+		ContextBuilder::visitFuncDeclaration(node);
+		lock.lock();
+		closeDeclaration();
+		newMethod->setInternalContext(lastContext());
+		newMethod->setType(currentFunctionType);
+	}
+	else
+	{
+		FunctionDeclaration *newMethod = openDefinition<FunctionDeclaration>(node->getName(), node);
+		if(node->getComment())
+			newMethod->setComment(QString::fromUtf8(node->getComment()->getString()));
+		newMethod->setKind(KDevelop::Declaration::Type);
+		lock.unlock();
+		ContextBuilder::visitFuncDeclaration(node);
+		lock.lock();
+		closeDeclaration();
+		newMethod->setInternalContext(lastContext());
+		newMethod->setType(currentFunctionType);
+	}
 }
 
 void DeclarationBuilder::visitSingleImport(ISingleImport *node)
