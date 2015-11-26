@@ -3445,19 +3445,10 @@ extern(C++) IModule parseSourceFile(char* sourceFile, char* sourceData)
 		
 		LexerConfig config;
 		config.fileName = fromStringz(sourceFile).idup;
-		
-		if(config.fileName !in moduleCache)
-		{
-			auto source = cast(ubyte[])fromStringz(sourceData);
-			auto tokens = getTokensForParser(source, config, new StringCache(StringCache.defaultBucketCount));
-			
-			auto mod = parseModule(tokens, config.fileName);
-			
-			//auto visitor = new Visitor;
-			//mod.accept(visitor);
-			moduleCache[config.fileName] = new CModule(mod);
-		}
-		return moduleCache[config.fileName];
+		auto source = cast(ubyte[])fromStringz(sourceData);
+		auto tokens = getTokensForParser(source, config, new StringCache(StringCache.defaultBucketCount));
+		keepAlive[config.fileName] = new CModule(parseModule(tokens, config.fileName));
+		return keepAlive[config.fileName];
 	}
 	catch(Throwable e)
 	{
@@ -3467,4 +3458,4 @@ extern(C++) IModule parseSourceFile(char* sourceFile, char* sourceData)
 	assert(0);
 }
 
-__gshared CModule[string] moduleCache;
+__gshared CModule[string] keepAlive;
