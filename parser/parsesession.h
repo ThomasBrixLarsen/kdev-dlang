@@ -53,7 +53,7 @@ public:
 	
 	KDevelop::IndexedString url();
 	
-	QList<KDevelop::ReferencedTopDUContext> contextForImport(QString package);
+	QList<KDevelop::ReferencedTopDUContext> contextForImport(KDevelop::QualifiedIdentifier package);
 	
 	QList<KDevelop::ReferencedTopDUContext> contextForThisPackage(KDevelop::IndexedString package);
 	

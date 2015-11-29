@@ -36,7 +36,7 @@ ContextBuilder::~ContextBuilder()
 
 KDevelop::ReferencedTopDUContext ContextBuilder::build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext)
 {
-	return KDevelop::AbstractContextBuilder< INode, IIdentifier >::build(url, node, updateContext);
+	return KDevelop::AbstractContextBuilder<INode, IToken>::build(url, node, updateContext);
 }
 
 void ContextBuilder::startVisiting(INode *node)
@@ -72,11 +72,38 @@ KDevelop::RangeInRevision ContextBuilder::editorFindRange(INode *fromNode, INode
 	return m_session->findRange(fromNode, toNode? toNode : fromNode);
 }
 
-KDevelop::QualifiedIdentifier ContextBuilder::identifierForNode(IIdentifier *node)
+KDevelop::QualifiedIdentifier ContextBuilder::identifierForNode(IToken *node)
 {
-	if(!node || node == (IIdentifier *)0x1)
+	if(!node || node == (IToken *)0x1)
 		return QualifiedIdentifier();
-	return QualifiedIdentifier(node->getString());
+	return QualifiedIdentifier(node->getText());
+}
+
+KDevelop::QualifiedIdentifier ContextBuilder::identifierForNode(IIdentifierChain *node)
+{
+	if(!node)
+		return QualifiedIdentifier();
+	QualifiedIdentifier ident;
+	for(int i=0; i<node->numIdentifiers(); i++)
+		ident.push(Identifier(node->getIdentifier(i)->getText()));
+	return ident;
+}
+
+KDevelop::QualifiedIdentifier ContextBuilder::identifierForNode(IIdentifierOrTemplateChain *node)
+{
+	if(!node)
+		return QualifiedIdentifier();
+	QualifiedIdentifier ident;
+	for(int i=0; i<node->numIdentifiersOrTemplateInstances(); i++)
+		ident.push(Identifier(node->getIdentifiersOrTemplateInstance(i)->getIdentifier()->getText()));
+	return ident;
+}
+
+KDevelop::QualifiedIdentifier ContextBuilder::identifierForNode(ISymbol *node)
+{
+	if(!node)
+		return QualifiedIdentifier();
+	return identifierForNode(node->getIdentifierOrTemplateChain());
 }
 
 KDevelop::QualifiedIdentifier ContextBuilder::identifierForIndex(qint64 index)
@@ -111,9 +138,9 @@ DUContext *ContextBuilder::newContext(const RangeInRevision &range)
 	return new KDevelop::DUContext(range, currentContext());
 }
 
-QualifiedIdentifier ContextBuilder::createFullName(IIdentifier *package, IIdentifier *typeName)
+QualifiedIdentifier ContextBuilder::createFullName(IToken *package, IToken *typeName)
 {
-	QualifiedIdentifier id(QString::fromLocal8Bit(package->getString()) + "." + QString::fromLocal8Bit(typeName->getString()));
+	QualifiedIdentifier id(QString::fromLocal8Bit(package->getText()) + "." + QString::fromLocal8Bit(typeName->getText()));
 	return id;
 }
 
@@ -125,9 +152,9 @@ ParseSession *ContextBuilder::parseSession()
 void ContextBuilder::visitSingleImport(ISingleImport *node)
 {
 	DUChainWriteLocker lock;
-	QList<ReferencedTopDUContext> contexts = m_session->contextForImport(node->getModuleName()->getString());
-	if(contexts.length() > 0)
-		currentContext()->addImportedParentContext(contexts[0], CursorInRevision(node->getModuleName()->getLine(), node->getModuleName()->getColumn()));
+	QList<ReferencedTopDUContext> contexts = m_session->contextForImport(identifierForNode(node->getIdentifierChain()));
+	if(contexts.length() > 0 && node->getIdentifierChain()->numIdentifiers() > 0)
+		currentContext()->addImportedParentContext(contexts[0], CursorInRevision(node->getIdentifierChain()->getIdentifier(0)->getLine(), node->getIdentifierChain()->getIdentifier(0)->getColumn()));
 	topContext()->updateImportsCache();
 }
 
@@ -137,7 +164,7 @@ void ContextBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	
 	if(node->getParameters())
 	{
-		for(int i=0; i<node->getParameters()->getNumParameters(); i++)
+		for(int i=0; i<node->getParameters()->numParameters(); i++)
 		{
 			if(auto n = node->getParameters()->getParameter(i))
 				visitParameter(n);
@@ -167,21 +194,16 @@ void ContextBuilder::visitBlock(IBlockStatement *node)
 
 void ContextBuilder::visitDeclarationsAndStatements(IDeclarationsAndStatements *node)
 {
-	for(int i=0; i<node->numDeclarationOrStatements(); i++)
+	for(int i=0; i<node->numDeclarationsAndStatements(); i++)
 	{
-		if(node->getDeclarationOrStatement(i))
-			visitDeclarationOrStatement(node->getDeclarationOrStatement(i));
+		if(node->getDeclarationsAndStatement(i))
+		{
+			if(node->getDeclarationsAndStatement(i)->getDeclaration())
+				visitDeclaration(node->getDeclarationsAndStatement(i)->getDeclaration());
+			if(node->getDeclarationsAndStatement(i)->getStatement())
+				visitStatement(node->getDeclarationsAndStatement(i)->getStatement());
+		}
 	}
-}
-
-void ContextBuilder::visitDeclarationOrStatement(INode *node)
-{
-	if(!node)
-		return;
-	if(node->getKind() == Kind::declaration)
-		visitDeclaration((IDeclaration *)node);
-	else if(node->getKind() == Kind::statement)
-		visitStatement((IStatement *)node);
 }
 
 void ContextBuilder::visitDeclaration(IDeclaration *node)
@@ -249,8 +271,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 
 void ContextBuilder::visitExpressionStatement(IExpressionStatement *node)
 {
-	for(int i=0; i<node->numItems(); i++)
-		visitExpressionNode(node->getItem(i));
+	for(int i=0; i<node->getExpression()->numItems(); i++)
+		visitExpressionNode(node->getExpression()->getItem(i));
 }
 
 void ContextBuilder::visitExpressionNode(IExpressionNode *node)
@@ -269,8 +291,8 @@ void ContextBuilder::visitExpressionNode(IExpressionNode *node)
 
 void ContextBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 {
-	if(node->getIdentifier())
-		identifierChain.append(QString::fromUtf8(node->getIdentifier()->getString()));
+	if(node->getIdentifierOrTemplateInstance())
+		identifierChain.append(QString::fromUtf8(node->getIdentifierOrTemplateInstance()->getIdentifier()->getText()));
 	Q_UNUSED(node)
 }
 
@@ -294,8 +316,8 @@ void ContextBuilder::visitUnaryExpression(IUnaryExpression *node)
 
 void ContextBuilder::visitAssignExpression(IAssignExpression *node)
 {
-	if(auto n = node->getAssignedExpression())
-		visitExpressionNode(n);
+	if(auto n = node->getExpression()->getAssignExpression())
+		visitAssignExpression(n);
 	else if(auto n = node->getTernaryExpression())
 		visitExpressionNode(n);
 }
@@ -308,15 +330,17 @@ void ContextBuilder::visitDeclarator(IDeclarator *node)
 
 void ContextBuilder::visitInitializer(IInitializer *node)
 {
-	if(auto n = node->getAssignedExpression())
+	if(!node->getNonVoidInitializer())
+		return;
+	if(auto n = node->getNonVoidInitializer()->getAssignExpression())
 		visitExpressionNode(n);
 }
 
 void ContextBuilder::visitImportDeclaration(IImportDeclaration *node)
 {
-	for(int i=0; i<node->numImports(); i++)
+	for(int i=0; i<node->numSingleImports(); i++)
 	{
-		if(auto n = node->getImport(i))
+		if(auto n = node->getSingleImport(i))
 			visitSingleImport(n);
 	}
 }

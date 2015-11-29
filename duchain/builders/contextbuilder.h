@@ -24,7 +24,7 @@
 #include "parser/parsesession.h"
 #include "duchain/dduchainexport.h"
 
-typedef KDevelop::AbstractContextBuilder<INode, IIdentifier> ContextBuilderBase;
+typedef KDevelop::AbstractContextBuilder<INode, IToken> ContextBuilderBase;
 
 class Editor
 {
@@ -59,7 +59,6 @@ public:
 	virtual void visitParameter(IParameter *node);
 	virtual void visitModule(IModule *node);
 	virtual void visitDeclarationsAndStatements(IDeclarationsAndStatements *node);
-	virtual void visitDeclarationOrStatement(INode *node);
 	virtual void visitDeclaration(IDeclaration *node);
 	virtual void visitVarDeclaration(IVariableDeclaration *node);
 	virtual void visitClassDeclaration(IClassDeclaration *node);
@@ -86,7 +85,10 @@ public:
 	
 	virtual KDevelop::RangeInRevision editorFindRange(INode *fromNode, INode *toNode) override;
 	
-	virtual KDevelop::QualifiedIdentifier identifierForNode(IIdentifier *node) override;
+	virtual KDevelop::QualifiedIdentifier identifierForNode(IToken *node) override;
+	virtual KDevelop::QualifiedIdentifier identifierForNode(IIdentifierChain *node);
+	virtual KDevelop::QualifiedIdentifier identifierForNode(IIdentifierOrTemplateChain *node);
+	virtual KDevelop::QualifiedIdentifier identifierForNode(ISymbol *node);
 	
 	KDevelop::QualifiedIdentifier identifierForIndex(qint64 index);
 	
@@ -96,7 +98,7 @@ public:
 	
 	virtual KDevelop::DUContext *newContext(const KDevelop::RangeInRevision &range) override;
 	
-	KDevelop::QualifiedIdentifier createFullName(IIdentifier *package, IIdentifier *typeName);
+	KDevelop::QualifiedIdentifier createFullName(IToken *package, IToken *typeName);
 	
 	ParseSession *parseSession();
 	

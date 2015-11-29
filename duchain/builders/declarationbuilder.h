@@ -29,7 +29,7 @@
 #include "typebuilder.h"
 #include "parser/dparser.h"
 
-typedef KDevelop::AbstractDeclarationBuilder<INode, IIdentifier, dlang::TypeBuilder> DeclarationBuilderBase;
+typedef KDevelop::AbstractDeclarationBuilder<INode, IToken, dlang::TypeBuilder> DeclarationBuilderBase;
 
 class KDEVDDUCHAIN_EXPORT DeclarationBuilder : public DeclarationBuilderBase
 {
@@ -51,7 +51,7 @@ private:
 	/**
 	 * Declares variable with identifier @param id of type @param type.
 	 **/
-	virtual void declareVariable(IIdentifier *id, const KDevelop::AbstractType::Ptr &type) override;
+	virtual void declareVariable(IToken *id, const KDevelop::AbstractType::Ptr &type) override;
 
 private:
 	bool m_export;

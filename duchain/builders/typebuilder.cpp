@@ -39,27 +39,35 @@ void TypeBuilder::visitTypeName(IType *node)
 		injectType<AbstractType>(AbstractType::Ptr(new IntegralType(IntegralType::TypeNone)));
 		return;
 	}
-	buildTypeName(node->getName(), nullptr);
-	if(node->isArray())
+	if(node->getType2()->getSymbol())
+		buildTypeName(identifierForNode(node->getType2()->getSymbol()));
+	else if(node->getType2()->getIdentifierOrTemplateChain())
+		buildTypeName(identifierForNode(node->getType2()->getIdentifierOrTemplateChain()));
+	else
+		buildTypeName(QualifiedIdentifier(node->getType2()->getBuiltinType()));
+	for(int i=0; i<node->numTypeSuffixes(); i++)
 	{
-		KDevelop::ArrayType::Ptr array(new KDevelop::ArrayType());
-		array->setElementType(lastType());
-		array->setDimension(0);
-		injectType(array);
-	}
-	if(node->isPointer())
-	{
-		KDevelop::PointerType::Ptr pointer(new KDevelop::PointerType());
-		pointer->setBaseType(lastType());
-		injectType(pointer);
+		if(node->getTypeSuffix(i)->getArray())
+		{
+			KDevelop::ArrayType::Ptr array(new KDevelop::ArrayType());
+			array->setElementType(lastType());
+			array->setDimension(0);
+			injectType(array);
+		}
+		
+		if(QString(node->getTypeSuffix(i)->getStar()->getText()) != "")
+		{
+			KDevelop::PointerType::Ptr pointer(new KDevelop::PointerType());
+			pointer->setBaseType(lastType());
+			injectType(pointer);
+		}
 	}
 }
 
-void TypeBuilder::buildTypeName(IIdentifier *typeName, IIdentifier *fullName)
+void TypeBuilder::buildTypeName(QualifiedIdentifier typeName)
 {
 	uint type = IntegralType::TypeNone;
-	QualifiedIdentifier id = identifierForNode(typeName);
-	QString name = id.toString();
+	QString name = typeName.toString();
 	//Builtin types.
 	if(name == "void")
 		type = KDevelop::IntegralType::TypeVoid;
@@ -96,10 +104,7 @@ void TypeBuilder::buildTypeName(IIdentifier *typeName, IIdentifier *fullName)
 	
 	if(type == IntegralType::TypeNone)
 	{
-		QualifiedIdentifier id(identifierForNode(typeName));
-		if(fullName)
-			id.push(identifierForNode(fullName));
-		DeclarationPointer decl = dlang::getTypeDeclaration(id, currentContext());
+		DeclarationPointer decl = dlang::getTypeDeclaration(typeName, currentContext());
 		if(decl)
 		{
 			DUChainReadLocker lock;
@@ -109,7 +114,7 @@ void TypeBuilder::buildTypeName(IIdentifier *typeName, IIdentifier *fullName)
 			return;
 		}
 		DelayedType *unknown = new DelayedType();
-		unknown->setIdentifier(IndexedTypeIdentifier(id));
+		unknown->setIdentifier(IndexedTypeIdentifier(typeName));
 		injectType<AbstractType>(AbstractType::Ptr(unknown));
 		return;
 	}

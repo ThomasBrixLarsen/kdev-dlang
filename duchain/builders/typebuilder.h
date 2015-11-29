@@ -30,7 +30,7 @@
 namespace dlang
 {
 
-typedef KDevelop::AbstractTypeBuilder<INode, IIdentifier, ContextBuilder> TypeBuilderBase;
+typedef KDevelop::AbstractTypeBuilder<INode, IToken, ContextBuilder> TypeBuilderBase;
 
 class KDEVDDUCHAIN_EXPORT TypeBuilder : public TypeBuilderBase
 {
@@ -41,7 +41,7 @@ public:
 	virtual void visitStructDeclaration(IStructDeclaration *node);
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
 	
-	void buildTypeName(IIdentifier *typeName, IIdentifier *fullName = 0);
+	void buildTypeName(KDevelop::QualifiedIdentifier typeName);
 	
 	KDevelop::AbstractType::Ptr getLastType()
 	{
@@ -49,7 +49,7 @@ public:
 	}
 
 protected:
-	virtual void declareVariable(IIdentifier *id, const KDevelop::AbstractType::Ptr &type) = 0;
+	virtual void declareVariable(IToken *id, const KDevelop::AbstractType::Ptr &type) = 0;
 	
 	KDevelop::QualifiedIdentifier m_contextIdentifier;
 	

@@ -72,8 +72,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getBlockStatement())
 			{
 				auto g = (IBlockStatement *)f->getBlockStatement();
-				line = g->startLine();
-				column = g->startColumn() + 1;
+				line = g->getStartLine();
+				column = g->getStartColumn() + 1;
 			}
 			break;
 		}
@@ -81,24 +81,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			//printf("kind is blockStatement\n");
 			auto f = (IBlockStatement *)from;
-			line = f->startLine();
-			column = f->startColumn() + 1;
-			break;
-		}
-		case Kind::identifier:
-		{
-			//printf("kind is identifier\n");
-			auto f = (IIdentifier *)from;
-			line = f->getLine();
-			column = f->getColumn();
+			line = f->getStartLine();
+			column = f->getStartColumn() + 1;
 			break;
 		}
 		case Kind::parameters:
 		{
 			//printf("kind is parameters\n");
 			auto f = (IParameters *)from;
-			line = f->startLine();
-			column = f->startColumn();
+			line = f->getStartLine();
+			column = f->getStartColumn();
 			break;
 		}
 		case Kind::classDeclaration:
@@ -108,8 +100,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getStructBody())
 			{
 				auto g = (IStructBody *)f->getStructBody();
-				line = g->startLine();
-				column = g->startColumn() + 1;
+				line = g->getStartLine();
+				column = g->getStartColumn() + 1;
 			}
 			break;
 		}
@@ -119,8 +111,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getStructBody())
 			{
 				auto g = (IStructBody *)f->getStructBody();
-				line = g->startLine();
-				column = g->startColumn() + 1;
+				line = g->getStartLine();
+				column = g->getStartColumn() + 1;
 			}
 			break;
 		}
@@ -128,22 +120,22 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			//printf("kind is structBody\n");
 			auto f = (IStructBody *)from;
-			line = f->startLine();
-			column = f->startColumn() + 1;
+			line = f->getStartLine();
+			column = f->getStartColumn() + 1;
 			break;
 		}
 		case Kind::type:
 		{
 			//printf("kind is type\n");
 			auto f = (IType *)from;
-			line = f->startLine();
-			column = f->startColumn();
+			line = f->getStartLine();
+			column = f->getStartColumn();
 			break;
 		}
 		case Kind::primaryExpression:
 		{
 			//printf("kind is primaryExpression\n");
-			auto f = ((IPrimaryExpression *)from)->getIdentifier();
+			auto f = ((IPrimaryExpression *)from)->getIdentifierOrTemplateInstance()->getIdentifier();
 			line = f->getLine();
 			column = f->getColumn();
 			break;
@@ -151,7 +143,28 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		case Kind::unaryExpression:
 		{
 			//printf("kind is unaryExpression\n");
-			auto f = ((IUnaryExpression *)from)->getIdentifier();
+			auto f = ((IUnaryExpression *)from)->getIdentifierOrTemplateInstance()->getIdentifier();
+			if(f)
+			{
+				line = f->getLine();
+				column = f->getColumn();
+			}
+			break;
+		}
+		case Kind::identifierChain:
+		{
+			auto f = (IIdentifierChain*)from;
+			if(f && f->numIdentifiers() > 0)
+			{
+				auto identifier = f->getIdentifier(0);
+				line = identifier->getLine();
+				column = identifier->getColumn();
+			}
+			break;
+		}
+		case Kind::token:
+		{
+			auto f = (IToken*)from;
 			if(f)
 			{
 				line = f->getLine();
@@ -189,8 +202,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getBlockStatement())
 			{
 				auto g = (IBlockStatement *)f->getBlockStatement();
-				lineEnd = g->endLine();
-				columnEnd = g->endColumn()+1;
+				lineEnd = g->getEndLine();
+				columnEnd = g->getEndColumn()+1;
 			}
 			break;
 		}
@@ -198,24 +211,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			//printf("kind is blockStatement\n");
 			auto f = (IBlockStatement *)to;
-			lineEnd = f->endLine();
-			columnEnd = f->endColumn()+1;
-			break;
-		}
-		case Kind::identifier:
-		{
-			//printf("kind is identifier\n");
-			auto f = (IIdentifier *)to;
-			lineEnd = f->getLine();
-			columnEnd = f->getColumn() + strlen(f->getString());
+			lineEnd = f->getEndLine();
+			columnEnd = f->getEndColumn()+1;
 			break;
 		}
 		case Kind::parameters:
 		{
 			//printf("kind is parameters\n");
 			auto f = (IParameters *)to;
-			lineEnd = f->endLine();
-			columnEnd = f->endColumn();
+			lineEnd = f->getEndLine();
+			columnEnd = f->getEndColumn();
 			break;
 		}
 		case Kind::classDeclaration:
@@ -225,8 +230,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getStructBody())
 			{
 				auto g = (IStructBody *)f->getStructBody();
-				lineEnd = g->endLine();
-				columnEnd = g->endColumn()+1;
+				lineEnd = g->getEndLine();
+				columnEnd = g->getEndColumn()+1;
 			}
 			break;
 		}
@@ -236,8 +241,8 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			if(f->getStructBody())
 			{
 				auto g = (IStructBody *)f->getStructBody();
-				lineEnd = g->endLine();
-				columnEnd = g->endColumn()+1;
+				lineEnd = g->getEndLine();
+				columnEnd = g->getEndColumn()+1;
 			}
 			break;
 		}
@@ -245,34 +250,55 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		{
 			//printf("kind is structBody\n");
 			auto f = (IStructBody *)to;
-			lineEnd = f->endLine();
-			columnEnd = f->endColumn()+1;
+			lineEnd = f->getEndLine();
+			columnEnd = f->getEndColumn()+1;
 			break;
 		}
 		case Kind::type:
 		{
 			//printf("kind is type\n");
 			auto f = (IType *)to;
-			lineEnd = f->endLine();
-			columnEnd = f->endColumn()-1;
+			lineEnd = f->getEndLine();
+			columnEnd = f->getEndColumn()-1;
 			break;
 		}
 		case Kind::primaryExpression:
 		{
 			//printf("kind is primaryExpression\n");
-			auto f = ((IPrimaryExpression *)to)->getIdentifier();
+			auto f = ((IPrimaryExpression *)to)->getIdentifierOrTemplateInstance()->getIdentifier();
 			lineEnd = f->getLine();
-			columnEnd = f->getColumn() + strlen(f->getString());
+			columnEnd = f->getColumn() + strlen(f->getText());
 			break;
 		}
 		case Kind::unaryExpression:
 		{
 			//printf("kind is unaryExpression\n");
-			auto f = ((IUnaryExpression *)to)->getIdentifier();
+			auto f = ((IUnaryExpression *)to)->getIdentifierOrTemplateInstance()->getIdentifier();
 			if(f)
 			{
 				lineEnd = f->getLine();
-				columnEnd = f->getColumn() + strlen(f->getString());
+				columnEnd = f->getColumn() + strlen(f->getText());
+			}
+			break;
+		}
+		case Kind::identifierChain:
+		{
+			auto f = (IIdentifierChain*)to;
+			if(f && f->numIdentifiers() > 0)
+			{
+				auto identifier = f->getIdentifier(f->numIdentifiers()-1);
+				lineEnd = identifier->getLine();
+				columnEnd = identifier->getColumn() + strlen(identifier->getText());
+			}
+			break;
+		}
+		case Kind::token:
+		{
+			auto f = (IToken*)to;
+			if(f)
+			{
+				lineEnd = f->getLine();
+				columnEnd = f->getColumn() + strlen(f->getText());
 			}
 			break;
 		}
@@ -314,34 +340,33 @@ void ParseSession::setCurrentDocument(const KDevelop::IndexedString &document)
  * 	 100000: reparse of opened file, after all recursive imports
  * layers higher than 99998 are NOT parsed right now because its too slow
  */
-QList<ReferencedTopDUContext> ParseSession::contextForImport(QString package)
+QList<ReferencedTopDUContext> ParseSession::contextForImport(KDevelop::QualifiedIdentifier package)
 {
 	QStringList files;
 	if(files.empty())
 	{
-		QStringList packages = package.split(".");
 		for(const QString &pathname : m_includePaths)
 		{
 			QDir path(pathname);
 			if(path.exists())
 			{
 				bool canFind = true;
-				for(int i=0; i<packages.length()-1; i++)
+				for(int i=0; i<package.count()-1; i++)
 				{
-					if(!path.cd(packages[i]))
+					if(!path.cd(package.at(i).toString()))
 					{
 						canFind = false;
 						break;
 					}
 				}
-				if(packages.length() == 1)
-					canFind = path.exists(packages[0]+".d") || path.exists(packages[0]+".di");
+				if(package.count() == 1)
+					canFind = path.exists(package.at(0).toString()+".d") || path.exists(package.at(0).toString()+".di");
 				if(canFind)
 				{
-					if(path.exists(packages[packages.length()-1]+".d"))
-						files.append(path.filePath(packages[packages.length()-1]+".d"));
-					else if(path.exists(packages[packages.length()-1]+".di"))
-						files.append(path.filePath(packages[packages.length()-1]+".di"));
+					if(path.exists(package.at(package.count()-1).toString()+".d"))
+						files.append(path.filePath(package.at(package.count()-1).toString()+".d"));
+					else if(path.exists(package.at(package.count()-1).toString()+".di"))
+						files.append(path.filePath(package.at(package.count()-1).toString()+".di"));
 					break;
 				}
 			}

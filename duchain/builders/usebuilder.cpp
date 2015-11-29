@@ -48,7 +48,7 @@ void UseBuilder::visitTypeName(IType *node)
 	if(!node || !currentContext())
 		return;
 	
-	QualifiedIdentifier id(identifierForNode(node->getName()));
+	QualifiedIdentifier id = identifierForNode(node->getType2()->getSymbol());
 	DUContext *context = nullptr;
 	{
 		DUChainReadLocker lock;
@@ -84,14 +84,14 @@ void UseBuilder::visitBlock(IBlockStatement *node)
 void UseBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 {
 	UseBuilderBase::visitPrimaryExpression(node);
-	if(!node->getIdentifier() || !currentContext())
+	if(!node->getIdentifierOrTemplateInstance() || !node->getIdentifierOrTemplateInstance()->getIdentifier() || !currentContext())
 		return;
 	
-	QualifiedIdentifier id(identifierForNode(node->getIdentifier()));
+	QualifiedIdentifier id(identifierForNode(node->getIdentifierOrTemplateInstance()->getIdentifier()));
 	DUContext *context = nullptr;
 	{
 		DUChainReadLocker lock;
-		context = currentContext()->findContextIncluding(editorFindRange(node->getIdentifier(), 0));
+		context = currentContext()->findContextIncluding(editorFindRange(node->getIdentifierOrTemplateInstance()->getIdentifier(), 0));
 	}
 	if(!context)
 	{
@@ -106,17 +106,17 @@ void UseBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 {
 	UseBuilderBase::visitUnaryExpression(node);
-	if(!node->getIdentifier() || !currentContext())
+	if(!node->getIdentifierOrTemplateInstance() || !node->getIdentifierOrTemplateInstance()->getIdentifier() || !currentContext())
 		return;
 	
 	DUContext *context = nullptr;
 	{
 		DUChainReadLocker lock;
-		context = currentContext()->findContextIncluding(editorFindRange(node->getIdentifier(), 0));
+		context = currentContext()->findContextIncluding(editorFindRange(node->getIdentifierOrTemplateInstance()->getIdentifier(), 0));
 	}
 	if(!context)
 	{
-		qDebug() << "No context found for" << node->getIdentifier()->getString();
+		qDebug() << "No context found for" << node->getIdentifierOrTemplateInstance()->getIdentifier()->getText();
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 		for(const QString &part : t->type<AbstractType>()->toString().split("::", QString::SkipEmptyParts))
 			id.push(Identifier(part));
 	}
-	id.push(identifierForNode(node->getIdentifier()));
+	id.push(identifierForNode(node->getIdentifierOrTemplateInstance()->getIdentifier()));
 	DeclarationPointer decl = getDeclaration(id, context);
 	if(decl)
 		newUse(node, decl);

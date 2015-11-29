@@ -76,7 +76,7 @@ void DeclarationBuilder::visitVarDeclaration(IVariableDeclaration *node)
 		declareVariable(node->getDeclarator(i)->getName(), lastType());
 }
 
-void DeclarationBuilder::declareVariable(IIdentifier *id, const AbstractType::Ptr &type)
+void DeclarationBuilder::declareVariable(IToken *id, const AbstractType::Ptr &type)
 {
 	DUChainWriteLocker lock;
 	Declaration *dec = openDefinition<Declaration>(identifierForNode(id), editorFindRange(id, id));
@@ -90,7 +90,7 @@ void DeclarationBuilder::visitClassDeclaration(IClassDeclaration *node)
 	inClassScope = true;
 	DeclarationBuilderBase::visitClassDeclaration(node);
 	if(node->getComment())
-		setComment(node->getComment()->getString());
+		setComment(node->getComment());
 	DUChainWriteLocker lock;
 	ClassDeclaration *dec = openDefinition<ClassDeclaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
 	dec->setType(lastType());
@@ -106,7 +106,7 @@ void DeclarationBuilder::visitStructDeclaration(IStructDeclaration *node)
 	inClassScope = true;
 	DeclarationBuilderBase::visitStructDeclaration(node);
 	if(node->getComment())
-		setComment(node->getComment()->getString());
+		setComment(node->getComment());
 	DUChainWriteLocker lock;
 	ClassDeclaration *dec = openDefinition<ClassDeclaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
 	dec->setType(lastType());
@@ -135,7 +135,7 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	{
 		ClassFunctionDeclaration *newMethod = openDefinition<ClassFunctionDeclaration>(node->getName(), node);
 		if(node->getComment())
-			newMethod->setComment(QString::fromUtf8(node->getComment()->getString()));
+			newMethod->setComment(QString::fromUtf8(node->getComment()));
 		newMethod->setKind(KDevelop::Declaration::Type);
 		lock.unlock();
 		ContextBuilder::visitFuncDeclaration(node);
@@ -148,7 +148,7 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	{
 		FunctionDeclaration *newMethod = openDefinition<FunctionDeclaration>(node->getName(), node);
 		if(node->getComment())
-			newMethod->setComment(QString::fromUtf8(node->getComment()->getString()));
+			newMethod->setComment(QString::fromUtf8(node->getComment()));
 		newMethod->setKind(KDevelop::Declaration::Type);
 		lock.unlock();
 		ContextBuilder::visitFuncDeclaration(node);
@@ -162,8 +162,8 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 void DeclarationBuilder::visitSingleImport(ISingleImport *node)
 {
 	DUChainWriteLocker lock;
-	QualifiedIdentifier import = identifierForNode(node->getModuleName());
-	NamespaceAliasDeclaration *importDecl = openDefinition<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), editorFindRange(node->getModuleName(), 0));
+	QualifiedIdentifier import = identifierForNode(node->getIdentifierChain());
+	NamespaceAliasDeclaration *importDecl = openDefinition<NamespaceAliasDeclaration>(QualifiedIdentifier(globalImportIdentifier()), editorFindRange(node->getIdentifierChain(), 0));
 	importDecl->setImportIdentifier(import);
 	closeDeclaration();
 	DeclarationBuilderBase::visitSingleImport(node);
@@ -174,11 +174,12 @@ void DeclarationBuilder::visitModule(IModule *node)
 	if(node->getModuleDeclaration())
 	{
 		if(node->getModuleDeclaration()->getComment())
-			setComment(node->getModuleDeclaration()->getComment()->getString());
+			setComment(node->getModuleDeclaration()->getComment());
 		
 		DUChainWriteLocker lock;
-		KDevelop::RangeInRevision range = editorFindRange(node->getModuleDeclaration()->getName(), node->getModuleDeclaration()->getName());
-		auto m_thisPackage = identifierForNode(node->getModuleDeclaration()->getName());
+		
+		auto m_thisPackage = identifierForNode(node->getModuleDeclaration()->getModuleName());
+		KDevelop::RangeInRevision range = editorFindRange(node->getModuleDeclaration()->getModuleName(), node->getModuleDeclaration()->getModuleName());
 		
 		Declaration *packageDeclaration = openDeclaration<Declaration>(m_thisPackage, range);
 		packageDeclaration->setKind(Declaration::Namespace);

@@ -26,7 +26,7 @@
 namespace dlang
 {
 
-typedef KDevelop::AbstractUseBuilder<INode, IIdentifier, ContextBuilder> UseBuilderBase;
+typedef KDevelop::AbstractUseBuilder<INode, IToken, ContextBuilder> UseBuilderBase;
 
 class KDEVDDUCHAIN_EXPORT UseBuilder : public UseBuilderBase
 {
