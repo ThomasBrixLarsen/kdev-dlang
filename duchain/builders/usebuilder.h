@@ -36,9 +36,6 @@ public:
 	virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext());
 	virtual void startVisiting(INode *node);
 	virtual void visitTypeName(IType *node);
-	virtual void visitVarDeclaration(IVariableDeclaration *node);
-	virtual void visitDeclarator(IDeclarator *node);
-	virtual void visitBlock(IBlockStatement *node);
 	virtual void visitPrimaryExpression(IPrimaryExpression *node);
 	virtual void visitUnaryExpression(IUnaryExpression *node);
 

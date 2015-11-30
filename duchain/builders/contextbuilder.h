@@ -53,7 +53,7 @@ public:
 	virtual KDevelop::ReferencedTopDUContext build(const KDevelop::IndexedString &url, INode *node, KDevelop::ReferencedTopDUContext updateContext = KDevelop::ReferencedTopDUContext()) override;
 	
 	virtual void startVisiting(INode *node) override;
-	virtual void visitBlock(IBlockStatement *node);
+	virtual void visitBlock(IBlockStatement *node, bool openContext);
 	virtual void visitBody(IFunctionBody *node);
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
 	virtual void visitParameter(IParameter *node);
@@ -68,6 +68,7 @@ public:
 	virtual void visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *node);
 	virtual void visitExpressionStatement(IExpressionStatement *node);
 	virtual void visitExpressionNode(IExpressionNode *node);
+	virtual void visitExpression(IExpression *node);
 	virtual void visitPrimaryExpression(IPrimaryExpression *node);
 	virtual void visitAddExpression(IAddExpression *node);
 	virtual void visitUnaryExpression(IUnaryExpression *node);
@@ -78,7 +79,13 @@ public:
 	virtual void visitFunctionCallExpression(IFunctionCallExpression *node);
 	virtual void visitSingleImport(ISingleImport *node);
 	virtual void visitTypeName(IType *node) = 0;
-	
+	virtual void visitIfStatement(IIfStatement *node);
+	virtual void visitCmpExpression(ICmpExpression *node);
+	virtual void visitRelExpression(IRelExpression *node);
+	virtual void visitEqualExpression(IEqualExpression *node);
+	virtual void visitShiftExpression(IShiftExpression *node);
+	virtual void visitIdentityExpression(IIdentityExpression *node);
+	virtual void visitInExpression(IInExpression *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;

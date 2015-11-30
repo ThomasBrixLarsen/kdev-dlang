@@ -172,24 +172,26 @@ void ContextBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	}
 	
 	if(auto n = node->getFunctionBody())
-	{
-		openContext(node->getFunctionBody(), DUContext::Other);
 		visitBody(n);
-		closeContext();
-	}
 	closeContext();
 }
 
 void ContextBuilder::visitBody(IFunctionBody *node)
 {
+	openContext(node, DUContext::Other);
 	if(auto n = node->getBlockStatement())
-		visitBlock(n);
+		visitBlock(n, false);
+	closeContext();
 }
 
-void ContextBuilder::visitBlock(IBlockStatement *node)
+void ContextBuilder::visitBlock(IBlockStatement *node, bool openContext)
 {
+	if(openContext)
+		ContextBuilder::openContext(node, DUContext::Other);
 	if(node->getDeclarationsAndStatements())
 		visitDeclarationsAndStatements(node->getDeclarationsAndStatements());
+	if(openContext)
+		closeContext();
 }
 
 void ContextBuilder::visitDeclarationsAndStatements(IDeclarationsAndStatements *node)
@@ -218,6 +220,8 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 		visitStructDeclaration(n);
 	else if(auto n = node->getVariableDeclaration())
 		visitVarDeclaration(n);
+	for(int i=0; i<node->numDeclarations(); i++)
+		visitDeclaration(node->getDeclaration(i));
 }
 
 void ContextBuilder::visitClassDeclaration(IClassDeclaration *node)
@@ -267,16 +271,40 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 {
 	if(auto n = node->getExpressionStatement())
 		visitExpressionStatement(n);
+	if(auto n = node->getIfStatement())
+		visitIfStatement(n);
+	if(auto n = node->getBlockStatement())
+		visitBlock(n, true);
+}
+
+void ContextBuilder::visitIfStatement(IIfStatement *node)
+{
+	if(node->getThenStatement())
+	{
+		visitExpression(node->getExpression());
+		if(auto n = node->getThenStatement()->getDeclaration())
+			visitDeclaration(n);
+		if(auto n = node->getThenStatement()->getStatement())
+			visitStatement(n);
+	}
+	if(node->getElseStatement())
+	{
+		if(auto n = node->getElseStatement()->getDeclaration())
+			visitDeclaration(n);
+		if(auto n = node->getElseStatement()->getStatement())
+			visitStatement(n);
+	}
 }
 
 void ContextBuilder::visitExpressionStatement(IExpressionStatement *node)
 {
-	for(int i=0; i<node->getExpression()->numItems(); i++)
-		visitExpressionNode(node->getExpression()->getItem(i));
+	visitExpression(node->getExpression());
 }
 
 void ContextBuilder::visitExpressionNode(IExpressionNode *node)
 {
+	if(!node)
+		return;
 	if(auto n = node->getPrimaryExpression())
 		visitPrimaryExpression(n);
 	else if(auto n = node->getAddExpression())
@@ -287,6 +315,65 @@ void ContextBuilder::visitExpressionNode(IExpressionNode *node)
 		visitFunctionCallExpression(n);
 	else if(auto n = node->getUnaryExpression())
 		visitUnaryExpression(n);
+	else if(auto n = node->getExpression())
+		visitExpression(n);
+	else if(auto n = node->getCmpExpression())
+		visitCmpExpression(n);
+	else if(auto n = node->getRelExpression())
+		visitRelExpression(n);
+	else if(auto n = node->getEqualExpression())
+		visitEqualExpression(n);
+	else if(auto n = node->getShiftExpression())
+		visitShiftExpression(n);
+	else if(auto n = node->getIdentityExpression())
+		visitIdentityExpression(n);
+	else if(auto n = node->getInExpression())
+		visitInExpression(n);
+}
+
+void ContextBuilder::visitExpression(IExpression *node)
+{
+	for(int i=0; i<node->numItems(); i++)
+		visitExpressionNode(node->getItem(i));
+}
+
+void ContextBuilder::visitInExpression(IInExpression *node)
+{
+	visitExpressionNode(node->getLeft());
+	visitExpressionNode(node->getRight());
+}
+
+void ContextBuilder::visitIdentityExpression(IIdentityExpression *node)
+{
+	visitExpressionNode(node->getLeft());
+	visitExpressionNode(node->getRight());
+}
+
+void ContextBuilder::visitShiftExpression(IShiftExpression *node)
+{
+	visitExpressionNode(node->getLeft());
+	visitExpressionNode(node->getRight());
+}
+
+void ContextBuilder::visitEqualExpression(IEqualExpression *node)
+{
+	visitExpressionNode(node->getLeft());
+	visitExpressionNode(node->getRight());
+}
+
+void ContextBuilder::visitRelExpression(IRelExpression *node)
+{
+	visitExpressionNode(node->getLeft());
+	visitExpressionNode(node->getRight());
+}
+
+void ContextBuilder::visitCmpExpression(ICmpExpression *node)
+{
+	visitExpressionNode(node->getShiftExpression());
+	visitExpressionNode(node->getEqualExpression());
+	visitExpressionNode(node->getIdentityExpression());
+	visitExpressionNode(node->getRelExpression());
+	visitExpressionNode(node->getInExpression());
 }
 
 void ContextBuilder::visitPrimaryExpression(IPrimaryExpression *node)
@@ -316,9 +403,9 @@ void ContextBuilder::visitUnaryExpression(IUnaryExpression *node)
 
 void ContextBuilder::visitAssignExpression(IAssignExpression *node)
 {
-	if(auto n = node->getExpression()->getAssignExpression())
-		visitAssignExpression(n);
-	else if(auto n = node->getTernaryExpression())
+	if(auto n = node->getExpression())
+		visitExpressionNode(n);
+	if(auto n = node->getTernaryExpression())
 		visitExpressionNode(n);
 }
 

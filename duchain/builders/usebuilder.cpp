@@ -64,23 +64,6 @@ void UseBuilder::visitTypeName(IType *node)
 		newUse(node, decl);
 }
 
-void UseBuilder::visitVarDeclaration(IVariableDeclaration *node)
-{
-	UseBuilderBase::visitVarDeclaration(node);
-}
-
-void UseBuilder::visitDeclarator(IDeclarator *node)
-{
-	if(!node || !currentContext())
-		return;
-	UseBuilderBase::visitDeclarator(node);
-}
-
-void UseBuilder::visitBlock(IBlockStatement *node)
-{
-	UseBuilderBase::visitBlock(node);
-}
-
 void UseBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 {
 	UseBuilderBase::visitPrimaryExpression(node);
