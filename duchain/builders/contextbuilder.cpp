@@ -437,7 +437,18 @@ void ContextBuilder::visitFunctionCallExpression(IFunctionCallExpression *node)
 	identifierChain.clear();
 	if(auto n = node->getUnaryExpression())
 		visitUnaryExpression(n);
-	else if(auto n = node->getType())
+	if(auto n = node->getType())
 		visitTypeName(n);
+	if(auto n = node->getArguments())
+		visitArguments(n);
 	identifierChain.clear();
+}
+
+void ContextBuilder::visitArguments(IArguments *node)
+{
+	auto list = node->getArgumentList();
+	if(!list)
+		return;
+	for(int i=0; i<list->numItems(); i++)
+		visitExpressionNode(list->getItem(i));
 }

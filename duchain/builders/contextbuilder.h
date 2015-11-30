@@ -86,6 +86,7 @@ public:
 	virtual void visitShiftExpression(IShiftExpression *node);
 	virtual void visitIdentityExpression(IIdentityExpression *node);
 	virtual void visitInExpression(IInExpression *node);
+	virtual void visitArguments(IArguments *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;
