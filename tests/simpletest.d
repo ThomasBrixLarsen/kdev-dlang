@@ -38,4 +38,6 @@ void main(string[] args)
 		alpha--;
 	for(int i=0; i<10; i++)
 		alpha += i;
+	foreach(index; 0..10)
+		alpha += index;
 }

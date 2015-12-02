@@ -46,6 +46,7 @@ public:
 	virtual void visitStructDeclaration(IStructDeclaration *node) override;
 	virtual void visitSingleImport(ISingleImport *node) override;
 	virtual void visitParameter(IParameter *node) override;
+	virtual void visitForeachType(IForeachType *node) override;
 
 private:
 	/**

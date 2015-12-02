@@ -192,3 +192,13 @@ void DeclarationBuilder::visitModule(IModule *node)
 		topContext()->updateImportsCache();
 	}
 }
+
+void DeclarationBuilder::visitForeachType(IForeachType *node)
+{
+	TypeBuilder::visitForeachType(node);
+	DUChainWriteLocker lock;
+	Declaration *argument = openDeclaration<Declaration>(node->getIdentifier(), node);
+	argument->setKind(Declaration::Instance);
+	argument->setAbstractType(lastType());
+	closeDeclaration();
+}

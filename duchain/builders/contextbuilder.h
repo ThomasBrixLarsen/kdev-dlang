@@ -90,7 +90,9 @@ public:
 	virtual void visitReturnStatement(IReturnStatement *node);
 	virtual void visitWhileStatement(IWhileStatement *node);
 	virtual void visitForStatement(IForStatement *node);
+	virtual void visitForeachStatement(IForeachStatement *node);
 	virtual void visitDeclarationOrStatement(IDeclarationOrStatement *node);
+	virtual void visitForeachType(IForeachType *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;
