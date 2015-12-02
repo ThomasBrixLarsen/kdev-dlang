@@ -277,6 +277,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitBlock(n, true);
 	if(auto n = node->getReturnStatement())
 		visitReturnStatement(n);
+	if(auto n = node->getWhileStatement())
+		visitWhileStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -459,4 +461,22 @@ void ContextBuilder::visitReturnStatement(IReturnStatement *node)
 {
 	if(auto n = node->getExpression())
 		visitExpression(n);
+}
+
+void ContextBuilder::visitWhileStatement(IWhileStatement *node)
+{
+	ContextBuilder::openContext(node, DUContext::Other);
+	if(auto n = node->getDeclarationOrStatement())
+		visitDeclarationOrStatement(n);
+	if(auto n = node->getExpression())
+		visitExpression(n);
+	closeContext();
+}
+
+void ContextBuilder::visitDeclarationOrStatement(IDeclarationOrStatement *node)
+{
+	if(auto n = node->getDeclaration())
+		visitDeclaration(n);
+	if(auto n = node->getStatement())
+		visitStatement(n);
 }

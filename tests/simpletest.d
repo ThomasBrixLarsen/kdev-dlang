@@ -34,4 +34,6 @@ void main(string[] args)
 	alpha;
 	string hello = "Hello world!";
 	writeln(hello);
+	while(alpha > 3)
+		alpha--;
 }

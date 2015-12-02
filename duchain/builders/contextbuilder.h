@@ -88,6 +88,8 @@ public:
 	virtual void visitInExpression(IInExpression *node);
 	virtual void visitArguments(IArguments *node);
 	virtual void visitReturnStatement(IReturnStatement *node);
+	virtual void visitWhileStatement(IWhileStatement *node);
+	virtual void visitDeclarationOrStatement(IDeclarationOrStatement *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;
