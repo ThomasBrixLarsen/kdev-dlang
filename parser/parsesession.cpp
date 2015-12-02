@@ -161,6 +161,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			}
 			break;
 		}
+		case Kind::forStatement:
+		{
+			auto f = (IForStatement *)from;
+			if(f)
+			{
+				line = f->getStartLine();
+				column = f->getStartColumn();
+			}
+			break;
+		}
 		case Kind::identifierChain:
 		{
 			auto f = (IIdentifierChain*)from;
@@ -294,6 +304,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		case Kind::whileStatement:
 		{
 			auto f = (IWhileStatement *)to;
+			if(f)
+			{
+				lineEnd = f->getEndLine();
+				columnEnd = f->getEndColumn();
+			}
+			break;
+		}
+		case Kind::forStatement:
+		{
+			auto f = (IForStatement *)to;
 			if(f)
 			{
 				lineEnd = f->getEndLine();

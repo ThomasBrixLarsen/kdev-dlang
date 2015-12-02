@@ -36,4 +36,6 @@ void main(string[] args)
 	writeln(hello);
 	while(alpha > 3)
 		alpha--;
+	for(int i=0; i<10; i++)
+		alpha += i;
 }
