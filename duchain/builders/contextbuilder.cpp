@@ -275,6 +275,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitIfStatement(n);
 	if(auto n = node->getBlockStatement())
 		visitBlock(n, true);
+	if(auto n = node->getReturnStatement())
+		visitReturnStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -451,4 +453,10 @@ void ContextBuilder::visitArguments(IArguments *node)
 		return;
 	for(int i=0; i<list->numItems(); i++)
 		visitExpressionNode(list->getItem(i));
+}
+
+void ContextBuilder::visitReturnStatement(IReturnStatement *node)
+{
+	if(auto n = node->getExpression())
+		visitExpression(n);
 }
