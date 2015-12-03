@@ -283,6 +283,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitForStatement(n);
 	if(auto n = node->getForeachStatement())
 		visitForeachStatement(n);
+	if(auto n = node->getDoStatement())
+		visitDoStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -516,6 +518,18 @@ void ContextBuilder::visitDeclarationOrStatement(IDeclarationOrStatement *node)
 		visitDeclaration(n);
 	if(auto n = node->getStatement())
 		visitStatement(n);
+}
+
+void ContextBuilder::visitDoStatement(IDoStatement *node)
+{
+	//Do.
+	ContextBuilder::openContext(node, DUContext::Other);
+	if(auto n = node->getStatementNoCaseNoDefault())
+		visitStatementNoCaseNoDefault(n);
+	closeContext();
+	//While.
+	if(auto n = node->getExpression())
+		visitExpression(n);
 }
 
 void ContextBuilder::visitForeachType(IForeachType *node)

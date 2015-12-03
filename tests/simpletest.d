@@ -40,4 +40,9 @@ void main(string[] args)
 		alpha += i;
 	foreach(index; 0..10)
 		alpha += index;
+	do
+	{
+		int doVar = 2;
+	}
+	while(doVar--); //Should not work because doVar is in another scope.
 }
