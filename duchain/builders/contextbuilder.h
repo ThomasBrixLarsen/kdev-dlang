@@ -118,6 +118,8 @@ public:
 	virtual void visitScopeGuardStatement(IScopeGuardStatement *node);
 	virtual void visitWithStatement(IWithStatement *node);
 	virtual void visitSynchronizedStatement(ISynchronizedStatement *node);
+	virtual void visitStaticAssertStatement(IStaticAssertStatement *node);
+	virtual void visitAssertExpression(IAssertExpression *node);
 	virtual void visitToken(IToken *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	

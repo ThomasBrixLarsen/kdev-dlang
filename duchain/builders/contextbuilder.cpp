@@ -324,6 +324,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitWithStatement(n);
 	if(auto n = node->getSynchronizedStatement())
 		visitSynchronizedStatement(n);
+	if(auto n = node->getStaticAssertStatement())
+		visitStaticAssertStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -754,6 +756,20 @@ void ContextBuilder::visitSynchronizedStatement(ISynchronizedStatement *node)
 	//TODO: Open context.
 	if(auto n = node->getStatementNoCaseNoDefault())
 		visitStatementNoCaseNoDefault(n);
+}
+
+void ContextBuilder::visitStaticAssertStatement(IStaticAssertStatement *node)
+{
+	if(auto n = node->getAssertExpression())
+		visitAssertExpression(n);
+}
+
+void ContextBuilder::visitAssertExpression(IAssertExpression *node)
+{
+	if(auto n = node->getAssertion())
+		visitExpressionNode(n);
+	if(auto n = node->getMessage())
+		visitExpressionNode(n);
 }
 
 void ContextBuilder::visitToken(IToken *node)
