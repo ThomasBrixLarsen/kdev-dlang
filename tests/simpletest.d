@@ -4,6 +4,8 @@ import std.algorithm;
 
 import importedstuff;
 
+debug = Print;
+
 /**
 Test of function comments.
 */
@@ -65,6 +67,10 @@ AGAIN:
 			goto AGAIN;
 		case 2:
 			break;
+	}
+	debug(Print)
+	{
+		writeln("debug print");
 	}
 	return c;
 }

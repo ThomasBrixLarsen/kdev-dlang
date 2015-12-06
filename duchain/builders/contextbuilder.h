@@ -80,6 +80,13 @@ public:
 	virtual void visitSingleImport(ISingleImport *node);
 	virtual void visitTypeName(IType *node) = 0;
 	virtual void visitIfStatement(IIfStatement *node);
+	virtual void visitConditionalStatement(IConditionalStatement *node);
+	virtual void visitCompileCondition(ICompileCondition *node);
+	virtual void visitDebugSpecification(IDebugSpecification *node);
+	virtual void visitDebugCondition(IDebugCondition *node);
+	virtual void visitStaticIfCondition(IStaticIfCondition *node);
+	virtual void visitVersionSpecification(IVersionSpecification *node);
+	virtual void visitVersionCondition(IVersionCondition *node);
 	virtual void visitCmpExpression(ICmpExpression *node);
 	virtual void visitRelExpression(IRelExpression *node);
 	virtual void visitEqualExpression(IEqualExpression *node);

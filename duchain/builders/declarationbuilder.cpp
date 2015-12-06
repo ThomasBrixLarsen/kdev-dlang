@@ -211,3 +211,21 @@ void DeclarationBuilder::visitLabeledStatement(ILabeledStatement *node)
 	label->setKind(Declaration::Type);
 	closeDeclaration();
 }
+
+void DeclarationBuilder::visitDebugSpecification(IDebugSpecification *node)
+{
+	DeclarationBuilderBase::visitDebugSpecification(node);
+	DUChainWriteLocker lock;
+	Declaration *label = openDeclaration<Declaration>(node->getIdentifierOrInteger(), node);
+	label->setKind(Declaration::Type);
+	closeDeclaration();
+}
+
+void DeclarationBuilder::visitVersionSpecification(IVersionSpecification *node)
+{
+	DeclarationBuilderBase::visitVersionSpecification(node);
+	DUChainWriteLocker lock;
+	Declaration *label = openDeclaration<Declaration>(node->getToken(), node);
+	label->setKind(Declaration::Type);
+	closeDeclaration();
+}

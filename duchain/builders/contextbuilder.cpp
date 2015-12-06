@@ -220,6 +220,11 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 		visitStructDeclaration(n);
 	else if(auto n = node->getVariableDeclaration())
 		visitVarDeclaration(n);
+	else if(auto n = node->getDebugSpecification())
+		visitDebugSpecification(n);
+	else if(auto n = node->getVersionSpecification())
+		visitVersionSpecification(n);
+	
 	for(int i=0; i<node->numDeclarations(); i++)
 		visitDeclaration(node->getDeclaration(i));
 }
@@ -279,6 +284,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitExpressionStatement(n);
 	if(auto n = node->getIfStatement())
 		visitIfStatement(n);
+	if(auto n = node->getConditionalStatement())
+		visitConditionalStatement(n);
 	if(auto n = node->getBlockStatement())
 		visitBlock(n, true);
 	if(auto n = node->getReturnStatement())
@@ -322,6 +329,56 @@ void ContextBuilder::visitIfStatement(IIfStatement *node)
 		if(auto n = node->getElseStatement()->getStatement())
 			visitStatement(n);
 	}
+}
+
+void ContextBuilder::visitConditionalStatement(IConditionalStatement *node)
+{
+	if(auto n = node->getCompileCondition())
+		visitCompileCondition(n);
+	//TODO: Open context.
+	if(auto n = node->getTrueStatement())
+		visitDeclarationOrStatement(n);
+	//TODO: Open context.
+	if(auto n = node->getFalseStatement())
+		visitDeclarationOrStatement(n);
+}
+
+void ContextBuilder::visitCompileCondition(ICompileCondition *node)
+{
+	if(auto n = node->getDebugCondition())
+		visitDebugCondition(n);
+	if(auto n = node->getStaticIfCondition())
+		visitStaticIfCondition(n);
+	if(auto n = node->getVersionCondition())
+		visitVersionCondition(n);
+}
+
+void ContextBuilder::visitDebugSpecification(IDebugSpecification *node)
+{
+	Q_UNUSED(node)
+}
+
+void ContextBuilder::visitDebugCondition(IDebugCondition *node)
+{
+	if(auto n = node->getIdentifierOrInteger())
+		visitToken(n);
+}
+
+void ContextBuilder::visitStaticIfCondition(IStaticIfCondition *node)
+{
+	if(auto n = node->getAssignExpression())
+		visitExpressionNode(n);
+}
+
+void ContextBuilder::visitVersionSpecification(IVersionSpecification *node)
+{
+	Q_UNUSED(node)
+}
+
+void ContextBuilder::visitVersionCondition(IVersionCondition *node)
+{
+	if(auto n = node->getToken())
+		visitToken(n);
 }
 
 void ContextBuilder::visitExpressionStatement(IExpressionStatement *node)

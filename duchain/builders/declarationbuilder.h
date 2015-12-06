@@ -48,6 +48,8 @@ public:
 	virtual void visitParameter(IParameter *node) override;
 	virtual void visitForeachType(IForeachType *node) override;
 	virtual void visitLabeledStatement(ILabeledStatement *node) override;
+	virtual void visitDebugSpecification(IDebugSpecification *node) override;
+	virtual void visitVersionSpecification(IVersionSpecification *node) override;
 
 private:
 	/**
