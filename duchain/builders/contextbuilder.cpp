@@ -320,6 +320,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitThrowStatement(n);
 	if(auto n = node->getScopeGuardStatement())
 		visitScopeGuardStatement(n);
+	if(auto n = node->getWithStatement())
+		visitWithStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -683,6 +685,7 @@ void ContextBuilder::visitGotoStatement(IGotoStatement *node)
 
 void ContextBuilder::visitTryStatement(ITryStatement *node)
 {
+	//TODO: Open context.
 	if(auto n = node->getDeclarationOrStatement())
 		visitDeclarationOrStatement(n);
 	if(auto n = node->getCatches())
@@ -698,6 +701,7 @@ void ContextBuilder::visitTryStatement(ITryStatement *node)
 
 void ContextBuilder::visitCatch(ICatch *node)
 {
+	//TODO: Open context.
 	if(auto n = node->getDeclarationOrStatement())
 		visitDeclarationOrStatement(n);
 	if(auto n = node->getType())
@@ -706,12 +710,14 @@ void ContextBuilder::visitCatch(ICatch *node)
 
 void ContextBuilder::visitLastCatch(ILastCatch *node)
 {
+	//TODO: Open context.
 	if(auto n = node->getStatementNoCaseNoDefault())
 		visitStatementNoCaseNoDefault(n);
 }
 
 void ContextBuilder::visitFinally(IFinally *node)
 {
+	//TODO: Open context.
 	if(auto n = node->getDeclarationOrStatement())
 		visitDeclarationOrStatement(n);
 }
@@ -724,6 +730,17 @@ void ContextBuilder::visitThrowStatement(IThrowStatement *node)
 
 void ContextBuilder::visitScopeGuardStatement(IScopeGuardStatement *node)
 {
+	//TODO: Open context.
+	if(auto n = node->getStatementNoCaseNoDefault())
+		visitStatementNoCaseNoDefault(n);
+}
+
+void ContextBuilder::visitWithStatement(IWithStatement *node)
+{
+	//TODO: Use expression for namespace.
+	if(auto n = node->getExpression())
+		visitExpression(n);
+	//TODO: Open context.
 	if(auto n = node->getStatementNoCaseNoDefault())
 		visitStatementNoCaseNoDefault(n);
 }

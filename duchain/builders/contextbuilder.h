@@ -116,6 +116,7 @@ public:
 	virtual void visitFinally(IFinally *node);
 	virtual void visitThrowStatement(IThrowStatement *node);
 	virtual void visitScopeGuardStatement(IScopeGuardStatement *node);
+	virtual void visitWithStatement(IWithStatement *node);
 	virtual void visitToken(IToken *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
