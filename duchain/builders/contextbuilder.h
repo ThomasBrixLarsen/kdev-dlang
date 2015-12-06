@@ -120,6 +120,7 @@ public:
 	virtual void visitSynchronizedStatement(ISynchronizedStatement *node);
 	virtual void visitStaticAssertStatement(IStaticAssertStatement *node);
 	virtual void visitAssertExpression(IAssertExpression *node);
+	virtual void visitAsmStatement(IAsmStatement *node);
 	virtual void visitToken(IToken *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	

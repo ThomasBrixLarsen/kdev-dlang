@@ -326,6 +326,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitSynchronizedStatement(n);
 	if(auto n = node->getStaticAssertStatement())
 		visitStaticAssertStatement(n);
+	if(auto n = node->getAsmStatement())
+		visitAsmStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -770,6 +772,12 @@ void ContextBuilder::visitAssertExpression(IAssertExpression *node)
 		visitExpressionNode(n);
 	if(auto n = node->getMessage())
 		visitExpressionNode(n);
+}
+
+void ContextBuilder::visitAsmStatement(IAsmStatement *node)
+{
+	//TODO: Can we do anything for asm support?
+	Q_UNUSED(node)
 }
 
 void ContextBuilder::visitToken(IToken *node)
