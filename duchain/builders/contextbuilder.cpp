@@ -265,6 +265,12 @@ void ContextBuilder::visitStatement(IStatement *node)
 {
 	if(auto n = node->getStatementNoCaseNoDefault())
 		visitStatementNoCaseNoDefault(n);
+	if(auto n = node->getCaseStatement())
+		visitCaseStatement(n);
+	if(auto n = node->getCaseRangeStatement())
+		visitCaseRangeStatement(n);
+	if(auto n = node->getDefaultStatement())
+		visitDefaultStatement(n);
 }
 
 void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *node)
@@ -285,6 +291,10 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitForeachStatement(n);
 	if(auto n = node->getDoStatement())
 		visitDoStatement(n);
+	if(auto n = node->getSwitchStatement())
+		visitSwitchStatement(n);
+	if(auto n = node->getFinalSwitchStatement())
+		visitFinalSwitchStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -532,6 +542,43 @@ void ContextBuilder::visitDoStatement(IDoStatement *node)
 		visitExpression(n);
 }
 
+void ContextBuilder::visitSwitchStatement(ISwitchStatement *node)
+{
+	if(auto n = node->getExpression())
+		visitExpression(n);
+	if(auto n = node->getStatement())
+		visitStatement(n);
+}
+
+void ContextBuilder::visitFinalSwitchStatement(IFinalSwitchStatement *node)
+{
+	if(auto n = node->getSwitchStatement())
+		visitSwitchStatement(n);
+}
+
+void ContextBuilder::visitCaseStatement(ICaseStatement *node)
+{
+	for(int i=0; i<node->getArgumentList()->numItems(); i++)
+		visitExpressionNode(node->getArgumentList()->getItem(i));
+	if(auto n = node->getDeclarationsAndStatements())
+		visitDeclarationsAndStatements(n);
+}
+
+void ContextBuilder::visitCaseRangeStatement(ICaseRangeStatement *node)
+{
+	if(auto n = node->getLow())
+		visitExpressionNode(n);
+	if(auto n = node->getHigh())
+		visitExpressionNode(n);
+	if(auto n = node->getDeclarationsAndStatements())
+		visitDeclarationsAndStatements(n);
+}
+
+void ContextBuilder::visitDefaultStatement(IDefaultStatement *node)
+{
+	if(auto n = node->getDeclarationsAndStatements())
+		visitDeclarationsAndStatements(n);
+}
 void ContextBuilder::visitForeachType(IForeachType *node)
 {
 	if(auto n = node->getType())

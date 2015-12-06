@@ -45,4 +45,22 @@ void main(string[] args)
 		int doVar = 2;
 	}
 	while(doVar--); //Should not work because doVar is in another scope.
+	switch(alpha)
+	{
+		case 1:
+			writeln("1");
+			break;
+		case 2:
+			writeln("2");
+			break;
+		default:
+			assert(0);
+	}
+	final switch(alpha)
+	{
+		case 1:
+			alpha++;
+		case 2:
+			break;
+	}
 }
