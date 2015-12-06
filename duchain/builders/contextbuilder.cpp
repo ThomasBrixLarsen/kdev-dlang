@@ -322,6 +322,8 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitScopeGuardStatement(n);
 	if(auto n = node->getWithStatement())
 		visitWithStatement(n);
+	if(auto n = node->getSynchronizedStatement())
+		visitSynchronizedStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -738,6 +740,15 @@ void ContextBuilder::visitScopeGuardStatement(IScopeGuardStatement *node)
 void ContextBuilder::visitWithStatement(IWithStatement *node)
 {
 	//TODO: Use expression for namespace.
+	if(auto n = node->getExpression())
+		visitExpression(n);
+	//TODO: Open context.
+	if(auto n = node->getStatementNoCaseNoDefault())
+		visitStatementNoCaseNoDefault(n);
+}
+
+void ContextBuilder::visitSynchronizedStatement(ISynchronizedStatement *node)
+{
 	if(auto n = node->getExpression())
 		visitExpression(n);
 	//TODO: Open context.
