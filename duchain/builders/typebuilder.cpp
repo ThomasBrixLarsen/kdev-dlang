@@ -182,4 +182,22 @@ void TypeBuilder::visitStructDeclaration(IStructDeclaration *node)
 	closeType();
 }
 
+void TypeBuilder::visitInterfaceDeclaration(IInterfaceDeclaration *node)
+{
+	openType<KDevelop::StructureType>(KDevelop::StructureType::Ptr(new KDevelop::StructureType));
+	{
+		DUChainWriteLocker lock;
+		openContext(node, editorFindRange(node, 0), DUContext::ContextType::Class, node->getName());
+	}
+	TypeBuilderBase::visitInterfaceDeclaration(node);
+	{
+		DUChainWriteLocker lock;
+		//currentType<KDevelop::StructureType>()->setContext(currentContext());
+		closeContext();
+	}
+	//currentType<KDevelop::StructureType>()->setPrettyName(node->getName()->getString());
+	//currentType<KDevelop::StructureType>()->setStructureType();
+	closeType();
+}
+
 }

@@ -63,6 +63,7 @@ public:
 	virtual void visitVarDeclaration(IVariableDeclaration *node);
 	virtual void visitClassDeclaration(IClassDeclaration *node);
 	virtual void visitStructDeclaration(IStructDeclaration *node);
+	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node);
 	virtual void visitStructBody(IStructBody *node);
 	virtual void visitStatement(IStatement *node);
 	virtual void visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *node);

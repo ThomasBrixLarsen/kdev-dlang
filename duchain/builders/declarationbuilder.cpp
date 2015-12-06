@@ -117,6 +117,22 @@ void DeclarationBuilder::visitStructDeclaration(IStructDeclaration *node)
 	inClassScope = false;
 }
 
+void DeclarationBuilder::visitInterfaceDeclaration(IInterfaceDeclaration *node)
+{
+	inClassScope = true;
+	DeclarationBuilderBase::visitInterfaceDeclaration(node);
+	if(node->getComment())
+		setComment(node->getComment());
+	DUChainWriteLocker lock;
+	ClassDeclaration *dec = openDefinition<ClassDeclaration>(identifierForNode(node->getName()), editorFindRange(node->getName(), 0));
+	dec->setType(lastType());
+	dec->setKind(KDevelop::Declaration::Type);
+	dec->setInternalContext(lastContext());
+	dec->setClassType(ClassDeclarationData::Interface);
+	closeDeclaration();
+	inClassScope = false;
+}
+
 void DeclarationBuilder::visitParameter(IParameter *node)
 {
 	TypeBuilder::visitParameter(node);

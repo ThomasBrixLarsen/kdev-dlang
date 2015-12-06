@@ -39,6 +39,7 @@ public:
 	virtual void visitParameter(IParameter *node);
 	virtual void visitClassDeclaration(IClassDeclaration *node);
 	virtual void visitStructDeclaration(IStructDeclaration *node);
+	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node);
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
 	
 	void buildTypeName(KDevelop::QualifiedIdentifier typeName);

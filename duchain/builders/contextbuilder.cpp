@@ -224,7 +224,8 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 		visitDebugSpecification(n);
 	else if(auto n = node->getVersionSpecification())
 		visitVersionSpecification(n);
-	
+	else if(auto n = node->getInterfaceDeclaration())
+		visitInterfaceDeclaration(n);
 	for(int i=0; i<node->numDeclarations(); i++)
 		visitDeclaration(node->getDeclaration(i));
 }

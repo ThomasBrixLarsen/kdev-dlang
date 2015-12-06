@@ -44,6 +44,7 @@ public:
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node) override;
 	virtual void visitClassDeclaration(IClassDeclaration *node) override;
 	virtual void visitStructDeclaration(IStructDeclaration *node) override;
+	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node) override;
 	virtual void visitSingleImport(ISingleImport *node) override;
 	virtual void visitParameter(IParameter *node) override;
 	virtual void visitForeachType(IForeachType *node) override;
