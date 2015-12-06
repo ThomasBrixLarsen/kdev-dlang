@@ -232,6 +232,8 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 
 void ContextBuilder::visitClassDeclaration(IClassDeclaration *node)
 {
+	if(auto n = node->getBaseClassList())
+		visitBaseClassList(n);
 	if(auto n = node->getStructBody())
 		visitStructBody(n);
 }
@@ -240,6 +242,29 @@ void ContextBuilder::visitStructDeclaration(IStructDeclaration *node)
 {
 	if(auto n = node->getStructBody())
 		visitStructBody(n);
+}
+
+void ContextBuilder::visitInterfaceDeclaration(IInterfaceDeclaration *node)
+{
+	if(auto n = node->getStructBody())
+		visitStructBody(n);
+}
+
+void ContextBuilder::visitBaseClassList(IBaseClassList *node)
+{
+	for(int i=0; i<node->numItems(); i++)
+		visitBaseClass(node->getItem(i));
+}
+
+void ContextBuilder::visitBaseClass(IBaseClass *node)
+{
+	if(auto n = node->getType2())
+	{
+		if(auto t = n->getSymbol())
+			visitSymbol(t);
+		if(auto t = n->getType())
+			visitTypeName(t);
+	}
 }
 
 void ContextBuilder::visitStructBody(IStructBody *node)
@@ -782,6 +807,11 @@ void ContextBuilder::visitAsmStatement(IAsmStatement *node)
 }
 
 void ContextBuilder::visitToken(IToken *node)
+{
+	Q_UNUSED(node)
+}
+
+void ContextBuilder::visitSymbol(ISymbol *node)
 {
 	Q_UNUSED(node)
 }

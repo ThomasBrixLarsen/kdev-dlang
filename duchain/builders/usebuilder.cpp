@@ -142,4 +142,27 @@ void UseBuilder::visitToken(IToken *node)
 		newUse(node, decl);
 }
 
+void UseBuilder::visitSymbol(ISymbol *node)
+{
+	UseBuilderBase::visitSymbol(node);
+	if(!node || !currentContext())
+		return;
+	
+	QualifiedIdentifier id = identifierForNode(node);
+	
+	DUContext *context = nullptr;
+	{
+		DUChainReadLocker lock;
+		context = currentContext()->findContextIncluding(editorFindRange(node, 0));
+	}
+	if(!context)
+	{
+		qDebug() << "No context found for" << id.toString(false).toLocal8Bit().data();
+		return;
+	}
+	
+	DeclarationPointer decl = getDeclaration(id, context);
+	if(decl)
+		newUse(node, decl);
+}
 }

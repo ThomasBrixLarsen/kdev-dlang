@@ -212,6 +212,25 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			}
 			break;
 		}
+		case Kind::symbol:
+		{
+			auto f = (ISymbol*)from;
+			if(f)
+			{
+				if(auto n = f->getIdentifierOrTemplateChain())
+				{
+					if(n->numIdentifiersOrTemplateInstances() > 0)
+					{
+						if(auto k = n->getIdentifiersOrTemplateInstance(0)->getIdentifier())
+						{
+							line = k->getLine();
+							column = k->getColumn();
+						}
+					}
+				}
+			}
+			break;
+		}
 		default:
 			printf("Unhandled from kind: %d\n", from->getKind());
 	}
@@ -379,6 +398,25 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			{
 				lineEnd = f->getLine();
 				columnEnd = f->getColumn() + strlen(f->getText());
+			}
+			break;
+		}
+		case Kind::symbol:
+		{
+			auto f = (ISymbol*)to;
+			if(f)
+			{
+				if(auto n = f->getIdentifierOrTemplateChain())
+				{
+					if(n->numIdentifiersOrTemplateInstances() > 0)
+					{
+						if(auto k = n->getIdentifiersOrTemplateInstance(n->numIdentifiersOrTemplateInstances()-1)->getIdentifier())
+						{
+							lineEnd = k->getLine();
+							columnEnd = k->getColumn() + strlen(k->getText());
+						}
+					}
+				}
 			}
 			break;
 		}

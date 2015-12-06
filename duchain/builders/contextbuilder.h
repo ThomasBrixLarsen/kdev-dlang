@@ -64,6 +64,8 @@ public:
 	virtual void visitClassDeclaration(IClassDeclaration *node);
 	virtual void visitStructDeclaration(IStructDeclaration *node);
 	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node);
+	virtual void visitBaseClassList(IBaseClassList *node);
+	virtual void visitBaseClass(IBaseClass *node);
 	virtual void visitStructBody(IStructBody *node);
 	virtual void visitStatement(IStatement *node);
 	virtual void visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *node);
@@ -123,6 +125,7 @@ public:
 	virtual void visitAssertExpression(IAssertExpression *node);
 	virtual void visitAsmStatement(IAsmStatement *node);
 	virtual void visitToken(IToken *node);
+	virtual void visitSymbol(ISymbol *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;
