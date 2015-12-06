@@ -47,6 +47,7 @@ public:
 	virtual void visitSingleImport(ISingleImport *node) override;
 	virtual void visitParameter(IParameter *node) override;
 	virtual void visitForeachType(IForeachType *node) override;
+	virtual void visitLabeledStatement(ILabeledStatement *node) override;
 
 private:
 	/**

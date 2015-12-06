@@ -202,3 +202,12 @@ void DeclarationBuilder::visitForeachType(IForeachType *node)
 	argument->setAbstractType(lastType());
 	closeDeclaration();
 }
+
+void DeclarationBuilder::visitLabeledStatement(ILabeledStatement *node)
+{
+	DeclarationBuilderBase::visitLabeledStatement(node);
+	DUChainWriteLocker lock;
+	Declaration *label = openDeclaration<Declaration>(node->getIdentifier(), node);
+	label->setKind(Declaration::Type);
+	closeDeclaration();
+}

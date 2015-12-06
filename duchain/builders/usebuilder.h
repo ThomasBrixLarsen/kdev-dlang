@@ -38,6 +38,7 @@ public:
 	virtual void visitTypeName(IType *node);
 	virtual void visitPrimaryExpression(IPrimaryExpression *node);
 	virtual void visitUnaryExpression(IUnaryExpression *node);
+	virtual void visitToken(IToken *node);
 
 private:
 	QStack<KDevelop::AbstractType::Ptr> m_types;

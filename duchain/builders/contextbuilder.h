@@ -99,6 +99,11 @@ public:
 	virtual void visitCaseStatement(ICaseStatement *node);
 	virtual void visitCaseRangeStatement(ICaseRangeStatement *node);
 	virtual void visitDefaultStatement(IDefaultStatement *node);
+	virtual void visitLabeledStatement(ILabeledStatement *node);
+	virtual void visitBreakStatement(IBreakStatement *node);
+	virtual void visitContinueStatement(IContinueStatement *node);
+	virtual void visitGotoStatement(IGotoStatement *node);
+	virtual void visitToken(IToken *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	
 	virtual void setContextOnNode(INode *node, KDevelop::DUContext *context) override;

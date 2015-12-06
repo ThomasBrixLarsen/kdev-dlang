@@ -1,7 +1,6 @@
 module simpletest;
 
-import std.stdio;
-import std.math;
+import std.algorithm;
 
 import importedstuff;
 
@@ -18,16 +17,17 @@ void writeln(string text)
  */
 class Test
 {
-	int test()
+	int test3()
 	{
-		return 2;
+		int ret = 2;
+		return ret;
 	}
 }
 
-void main(string[] args)
+int main(string[] args)
 {
 	Test test, test2;
-	test.test();
+	test.test3();
 	int alpha = 5;
 	int b = max(alpha, 1);
 	int c = alpha + b;
@@ -45,6 +45,8 @@ void main(string[] args)
 		int doVar = 2;
 	}
 	while(doVar--); //Should not work because doVar is in another scope.
+	alpha = 1;
+AGAIN:
 	switch(alpha)
 	{
 		case 1:
@@ -60,7 +62,9 @@ void main(string[] args)
 	{
 		case 1:
 			alpha++;
+			goto AGAIN;
 		case 2:
 			break;
 	}
+	return c;
 }

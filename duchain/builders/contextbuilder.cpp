@@ -295,6 +295,14 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitSwitchStatement(n);
 	if(auto n = node->getFinalSwitchStatement())
 		visitFinalSwitchStatement(n);
+	if(auto n = node->getLabeledStatement())
+		visitLabeledStatement(n);
+	if(auto n = node->getBreakStatement())
+		visitBreakStatement(n);
+	if(auto n = node->getContinueStatement())
+		visitContinueStatement(n);
+	if(auto n = node->getGotoStatement())
+		visitGotoStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -579,6 +587,38 @@ void ContextBuilder::visitDefaultStatement(IDefaultStatement *node)
 	if(auto n = node->getDeclarationsAndStatements())
 		visitDeclarationsAndStatements(n);
 }
+
+void ContextBuilder::visitLabeledStatement(ILabeledStatement *node)
+{
+	if(auto n = node->getDeclarationOrStatement())
+		visitDeclarationOrStatement(n);
+}
+
+void ContextBuilder::visitBreakStatement(IBreakStatement *node)
+{
+	if(auto n = node->getLabel())
+		visitToken(n);
+}
+
+void ContextBuilder::visitContinueStatement(IContinueStatement *node)
+{
+	if(auto n = node->getLabel())
+		visitToken(n);
+}
+
+void ContextBuilder::visitGotoStatement(IGotoStatement *node)
+{
+	if(auto n = node->getLabel())
+		visitToken(n);
+	if(auto n = node->getExpression())
+		visitExpression(n);
+}
+
+void ContextBuilder::visitToken(IToken *node)
+{
+	Q_UNUSED(node)
+}
+
 void ContextBuilder::visitForeachType(IForeachType *node)
 {
 	if(auto n = node->getType())

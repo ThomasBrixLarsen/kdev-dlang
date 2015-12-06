@@ -118,4 +118,28 @@ void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 		newUse(node, decl);
 }
 
+void UseBuilder::visitToken(IToken *node)
+{
+	UseBuilderBase::visitToken(node);
+	if(!node || !currentContext())
+		return;
+	
+	DUContext *context = nullptr;
+	{
+		DUChainReadLocker lock;
+		context = currentContext()->findContextIncluding(editorFindRange(node, 0));
+	}
+	if(!context)
+	{
+		qDebug() << "No context found for" << node->getText();
+		return;
+	}
+	
+	QualifiedIdentifier id = identifierForNode(node);
+	
+	DeclarationPointer decl = getDeclaration(id, context);
+	if(decl)
+		newUse(node, decl);
+}
+
 }
