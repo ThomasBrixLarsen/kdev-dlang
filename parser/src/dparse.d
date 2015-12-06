@@ -11,201 +11,201 @@ import astWrapper;
 
 class ASTPrinter : ASTVisitor
 {
-	this(bool traverse)
+	this(File file, bool traverse)
 	{
+		this.file = file;
 		this.traverse = traverse;
+	}
+	File file;
+	int indentation;
+	string indentationLevel()
+	{
+		string indent;
+		foreach(i; 0..indentation)
+			indent ~= " ";
+		return indent;
 	}
 	bool traverse;
 	alias visit = ASTVisitor.visit;
-	/** */ override void visit(const AddExpression addExpression) { writeln("AddExpression"); if(traverse) addExpression.accept(this); }
-    /** */ override void visit(const AliasDeclaration aliasDeclaration) { writeln("AliasDeclaration"); if(traverse) aliasDeclaration.accept(this); }
-    /** */ override void visit(const AliasInitializer aliasInitializer) { writeln("AliasInitializer"); if(traverse) aliasInitializer.accept(this); }
-    /** */ override void visit(const AliasThisDeclaration aliasThisDeclaration) { writeln("AliasThisDeclaration"); if(traverse) aliasThisDeclaration.accept(this); }
-    /** */ override void visit(const AlignAttribute alignAttribute) { writeln("AlignAttribute"); if(traverse) alignAttribute.accept(this); }
-    /** */ override void visit(const AndAndExpression andAndExpression) { writeln("AndAndExpression"); if(traverse) andAndExpression.accept(this); }
-    /** */ override void visit(const AndExpression andExpression) { writeln("AndExpression"); if(traverse) andExpression.accept(this); }
-    /** */ override void visit(const AnonymousEnumDeclaration anonymousEnumDeclaration) { writeln("AnonymousEnumDeclaration"); if(traverse) anonymousEnumDeclaration.accept(this); }
-    /** */ override void visit(const AnonymousEnumMember anonymousEnumMember) { writeln("AnonymousEnumMember"); if(traverse) anonymousEnumMember.accept(this); }
-    /** */ override void visit(const ArgumentList argumentList) { writeln("ArgumentList"); if(traverse) argumentList.accept(this); }
-    /** */ override void visit(const Arguments arguments) { writeln("Arguments"); if(traverse) arguments.accept(this); }
-    /** */ override void visit(const ArrayInitializer arrayInitializer) { writeln("ArrayInitializer"); if(traverse) arrayInitializer.accept(this); }
-    /** */ override void visit(const ArrayLiteral arrayLiteral) { writeln("ArrayLiteral"); if(traverse) arrayLiteral.accept(this); }
-    /** */ override void visit(const ArrayMemberInitialization arrayMemberInitialization) { writeln("ArrayMemberInitialization"); if(traverse) arrayMemberInitialization.accept(this); }
-    /** */ override void visit(const AssertExpression assertExpression) { writeln("AssertExpression"); if(traverse) assertExpression.accept(this); }
-    /** */ override void visit(const AssignExpression assignExpression) { writeln("AssignExpression"); if(traverse) assignExpression.accept(this); }
-    /** */ override void visit(const AssocArrayLiteral assocArrayLiteral) { writeln("AssocArrayLiteral"); if(traverse) assocArrayLiteral.accept(this); }
-    /** */ override void visit(const AtAttribute atAttribute) { writeln("AtAttribute"); if(traverse) atAttribute.accept(this); }
-    /** */ override void visit(const Attribute attribute) { writeln("Attribute"); if(traverse) attribute.accept(this); }
-    /** */ override void visit(const AttributeDeclaration attributeDeclaration) { writeln("AttributeDeclaration"); if(traverse) attributeDeclaration.accept(this); }
-    /** */ override void visit(const AutoDeclaration autoDeclaration) { writeln("AutoDeclaration"); if(traverse) autoDeclaration.accept(this); }
-    /** */ override void visit(const BlockStatement blockStatement) { writeln("BlockStatement"); if(traverse) blockStatement.accept(this); }
-    /** */ override void visit(const BodyStatement bodyStatement) { writeln("BodyStatement"); if(traverse) bodyStatement.accept(this); }
-    /** */ override void visit(const BreakStatement breakStatement) { writeln("BreakStatement"); if(traverse) breakStatement.accept(this); }
-    /** */ override void visit(const BaseClass baseClass) { writeln("BaseClass"); if(traverse) baseClass.accept(this); }
-    /** */ override void visit(const BaseClassList baseClassList) { writeln("BaseClassList"); if(traverse) baseClassList.accept(this); }
-    /** */ override void visit(const CaseRangeStatement caseRangeStatement) { writeln("CaseRangeStatement"); if(traverse) caseRangeStatement.accept(this); }
-    /** */ override void visit(const CaseStatement caseStatement) { writeln("CaseStatement"); if(traverse) caseStatement.accept(this); }
-    /** */ override void visit(const CastExpression castExpression) { writeln("CastExpression"); if(traverse) castExpression.accept(this); }
-    /** */ override void visit(const CastQualifier castQualifier) { writeln("CastQualifier"); if(traverse) castQualifier.accept(this); }
-    /** */ override void visit(const Catch catch_) { writeln("Catch"); if(traverse) catch_.accept(this); }
-    /** */ override void visit(const Catches catches) { writeln("Catches"); if(traverse) catches.accept(this); }
-    /** */ override void visit(const ClassDeclaration classDeclaration) { writeln("ClassDeclaration"); if(traverse) classDeclaration.accept(this); }
-    /** */ override void visit(const CmpExpression cmpExpression) { writeln("CmpExpression"); if(traverse) cmpExpression.accept(this); }
-    /** */ override void visit(const CompileCondition compileCondition) { writeln("CompileCondition"); if(traverse) compileCondition.accept(this); }
-    /** */ override void visit(const ConditionalDeclaration conditionalDeclaration) { writeln("ConditionalDeclaration"); if(traverse) conditionalDeclaration.accept(this); }
-    /** */ override void visit(const ConditionalStatement conditionalStatement) { writeln("ConditionalStatement"); if(traverse) conditionalStatement.accept(this); }
-    /** */ override void visit(const Constraint constraint) { writeln("Constraint"); if(traverse) constraint.accept(this); }
-    /** */ override void visit(const Constructor constructor) { writeln("Constructor"); if(traverse) constructor.accept(this); }
-    /** */ override void visit(const ContinueStatement continueStatement) { writeln("ContinueStatement"); if(traverse) continueStatement.accept(this); }
-    /** */ override void visit(const DebugCondition debugCondition) { writeln("DebugCondition"); if(traverse) debugCondition.accept(this); }
-    /** */ override void visit(const DebugSpecification debugSpecification) { writeln("DebugSpecification"); if(traverse) debugSpecification.accept(this); }
-    /** */ override void visit(const Declaration declaration) { writeln("Declaration"); if(traverse) declaration.accept(this); }
-    /** */ override void visit(const DeclarationOrStatement declarationsOrStatement) { writeln("DeclarationOrStatement"); if(traverse) declarationsOrStatement.accept(this); }
-    /** */ override void visit(const DeclarationsAndStatements declarationsAndStatements) { writeln("DeclarationsAndStatements"); if(traverse) declarationsAndStatements.accept(this); }
-    /** */ override void visit(const Declarator declarator) { writeln("Declarator"); if(traverse) declarator.accept(this); }
-    /** */ override void visit(const DefaultStatement defaultStatement) { writeln("DefaultStatement"); if(traverse) defaultStatement.accept(this); }
-    /** */ override void visit(const DeleteExpression deleteExpression) { writeln("DeleteExpression"); if(traverse) deleteExpression.accept(this); }
-    /** */ override void visit(const DeleteStatement deleteStatement) { writeln("DeleteStatement"); if(traverse) deleteStatement.accept(this); }
-    /** */ override void visit(const Deprecated deprecated_) { writeln("Deprecated"); if(traverse) deprecated_.accept(this); }
-    /** */ override void visit(const Destructor destructor) { writeln("Destructor"); if(traverse) destructor.accept(this); }
-    /** */ override void visit(const DoStatement doStatement) { writeln("DoStatement"); if(traverse) doStatement.accept(this); }
-    /** */ override void visit(const EnumBody enumBody) { writeln("EnumBody"); if(traverse) enumBody.accept(this); }
-    /** */ override void visit(const EnumDeclaration enumDeclaration) { writeln("EnumDeclaration"); if(traverse) enumDeclaration.accept(this); }
-    /** */ override void visit(const EnumMember enumMember) { writeln("EnumMember"); if(traverse) enumMember.accept(this); }
-    /** */ override void visit(const EponymousTemplateDeclaration eponymousTemplateDeclaration) { writeln("EponymousTemplateDeclaration"); if(traverse) eponymousTemplateDeclaration.accept(this); }
-    /** */ override void visit(const EqualExpression equalExpression) { writeln("EqualExpression"); if(traverse) equalExpression.accept(this); }
-    /** */ override void visit(const Expression expression) { writeln("Expression"); if(traverse) expression.accept(this); }
-    /** */ override void visit(const ExpressionStatement expressionStatement) { writeln("ExpressionStatement"); if(traverse) expressionStatement.accept(this); }
-    /** */ override void visit(const FinalSwitchStatement finalSwitchStatement) { writeln("FinalSwitchStatement"); if(traverse) finalSwitchStatement.accept(this); }
-    /** */ override void visit(const Finally finally_) { writeln("Finally"); if(traverse) finally_.accept(this); }
-    /** */ override void visit(const ForStatement forStatement) { writeln("ForStatement"); if(traverse) forStatement.accept(this); }
-    /** */ override void visit(const ForeachStatement foreachStatement) { writeln("ForeachStatement"); if(traverse) foreachStatement.accept(this); }
-    /** */ override void visit(const ForeachType foreachType) { writeln("ForeachType"); if(traverse) foreachType.accept(this); }
-    /** */ override void visit(const ForeachTypeList foreachTypeList) { writeln("ForeachTypeList"); if(traverse) foreachTypeList.accept(this); }
-    /** */ override void visit(const FunctionAttribute functionAttribute) { writeln("FunctionAttribute"); if(traverse) functionAttribute.accept(this); }
-    /** */ override void visit(const FunctionBody functionBody) { writeln("FunctionBody"); if(traverse) functionBody.accept(this); }
-    /** */ override void visit(const FunctionCallExpression functionCallExpression) { writeln("FunctionCallExpression"); if(traverse) functionCallExpression.accept(this); }
-    /** */ override void visit(const FunctionDeclaration functionDeclaration) { writeln("FunctionDeclaration"); if(traverse) functionDeclaration.accept(this); }
-    /** */ override void visit(const FunctionLiteralExpression functionLiteralExpression) { writeln("FunctionLiteralExpression"); if(traverse) functionLiteralExpression.accept(this); }
-    /** */ override void visit(const GotoStatement gotoStatement) { writeln("GotoStatement"); if(traverse) gotoStatement.accept(this); }
-    /** */ override void visit(const IdentifierChain identifierChain) { writeln("IdentifierChain"); if(traverse) identifierChain.accept(this); }
-    /** */ override void visit(const IdentifierList identifierList) { writeln("IdentifierList"); if(traverse) identifierList.accept(this); }
-    /** */ override void visit(const IdentifierOrTemplateChain identifierOrTemplateChain) { writeln("IdentifierOrTemplateChain"); if(traverse) identifierOrTemplateChain.accept(this); }
-    /** */ override void visit(const IdentifierOrTemplateInstance identifierOrTemplateInstance) { writeln("IdentifierOrTemplateInstance"); if(traverse) identifierOrTemplateInstance.accept(this); }
-    /** */ override void visit(const IdentityExpression identityExpression) { writeln("IdentityExpression"); if(traverse) identityExpression.accept(this); }
-    /** */ override void visit(const IfStatement ifStatement) { writeln("IfStatement"); if(traverse) ifStatement.accept(this); }
-    /** */ override void visit(const ImportBind importBind) { writeln("ImportBind"); if(traverse) importBind.accept(this); }
-    /** */ override void visit(const ImportBindings importBindings) { writeln("ImportBindings"); if(traverse) importBindings.accept(this); }
-    /** */ override void visit(const ImportDeclaration importDeclaration) { writeln("ImportDeclaration"); if(traverse) importDeclaration.accept(this); }
-    /** */ override void visit(const ImportExpression importExpression) { writeln("ImportExpression"); if(traverse) importExpression.accept(this); }
-    /** */ override void visit(const IndexExpression indexExpression) { writeln("IndexExpression"); if(traverse) indexExpression.accept(this); }
-    /** */ override void visit(const InExpression inExpression) { writeln("InExpression"); if(traverse) inExpression.accept(this); }
-    /** */ override void visit(const InStatement inStatement) { writeln("InStatement"); if(traverse) inStatement.accept(this); }
-    /** */ override void visit(const Initialize initialize) { writeln("Initialize"); if(traverse) initialize.accept(this); }
-    /** */ override void visit(const Initializer initializer) { writeln("Initializer"); if(traverse) initializer.accept(this); }
-    /** */ override void visit(const InterfaceDeclaration interfaceDeclaration) { writeln("InterfaceDeclaration"); if(traverse) interfaceDeclaration.accept(this); }
-    /** */ override void visit(const Invariant invariant_) { writeln("Invariant"); if(traverse) invariant_.accept(this); }
-    /** */ override void visit(const IsExpression isExpression) { writeln("IsExpression"); if(traverse) isExpression.accept(this); }
-    /** */ override void visit(const KeyValuePair keyValuePair) { writeln("KeyValuePair"); if(traverse) keyValuePair.accept(this); }
-    /** */ override void visit(const KeyValuePairs keyValuePairs) { writeln("KeyValuePairs"); if(traverse) keyValuePairs.accept(this); }
-    /** */ override void visit(const LabeledStatement labeledStatement) { writeln("LabeledStatement"); if(traverse) labeledStatement.accept(this); }
-    /** */ override void visit(const LambdaExpression lambdaExpression) { writeln("LambdaExpression"); if(traverse) lambdaExpression.accept(this); }
-    /** */ override void visit(const LastCatch lastCatch) { writeln("LastCatch"); if(traverse) lastCatch.accept(this); }
-    /** */ override void visit(const LinkageAttribute linkageAttribute) { writeln("LinkageAttribute"); if(traverse) linkageAttribute.accept(this); }
-    /** */ override void visit(const MemberFunctionAttribute memberFunctionAttribute) { writeln("MemberFunctionAttribute"); if(traverse) memberFunctionAttribute.accept(this); }
-    /** */ override void visit(const MixinDeclaration mixinDeclaration) { writeln("MixinDeclaration"); if(traverse) mixinDeclaration.accept(this); }
-    /** */ override void visit(const MixinExpression mixinExpression) { writeln("MixinExpression"); if(traverse) mixinExpression.accept(this); }
-    /** */ override void visit(const MixinTemplateDeclaration mixinTemplateDeclaration) { writeln("MixinTemplateDeclaration"); if(traverse) mixinTemplateDeclaration.accept(this); }
-    /** */ override void visit(const MixinTemplateName mixinTemplateName) { writeln("MixinTemplateName"); if(traverse) mixinTemplateName.accept(this); }
-    /** */ override void visit(const Module module_) { writeln("Module"); if(traverse) module_.accept(this); }
-    /** */ override void visit(const ModuleDeclaration moduleDeclaration) { writeln("ModuleDeclaration"); if(traverse) moduleDeclaration.accept(this); }
-    /** */ override void visit(const MulExpression mulExpression) { writeln("MulExpression"); if(traverse) mulExpression.accept(this); }
-    /** */ override void visit(const NewAnonClassExpression newAnonClassExpression) { writeln("NewAnonClassExpression"); if(traverse) newAnonClassExpression.accept(this); }
-    /** */ override void visit(const NewExpression newExpression) { writeln("NewExpression"); if(traverse) newExpression.accept(this); }
-    /** */ override void visit(const NonVoidInitializer nonVoidInitializer) { writeln("NonVoidInitializer"); if(traverse) nonVoidInitializer.accept(this); }
-    /** */ override void visit(const Operands operands) { writeln("Operands"); if(traverse) operands.accept(this); }
-    /** */ override void visit(const OrExpression orExpression) { writeln("OrExpression"); if(traverse) orExpression.accept(this); }
-    /** */ override void visit(const OrOrExpression orOrExpression) { writeln("OrOrExpression"); if(traverse) orOrExpression.accept(this); }
-    /** */ override void visit(const OutStatement outStatement) { writeln("OutStatement"); if(traverse) outStatement.accept(this); }
-    /** */ override void visit(const Parameter parameter) { writeln("Parameter"); if(traverse) parameter.accept(this); }
-    /** */ override void visit(const Parameters parameters) { writeln("Parameters"); if(traverse) parameters.accept(this); }
-    /** */ override void visit(const Postblit postblit) { writeln("Postblit"); if(traverse) postblit.accept(this); }
-    /** */ override void visit(const PowExpression powExpression) { writeln("PowExpression"); if(traverse) powExpression.accept(this); }
-    /** */ override void visit(const PragmaDeclaration pragmaDeclaration) { writeln("PragmaDeclaration"); if(traverse) pragmaDeclaration.accept(this); }
-    /** */ override void visit(const PragmaExpression pragmaExpression) { writeln("PragmaExpression"); if(traverse) pragmaExpression.accept(this); }
-    /** */ override void visit(const PrimaryExpression primaryExpression) { writeln("PrimaryExpression"); if(traverse) primaryExpression.accept(this); }
-    /** */ override void visit(const Register register) { writeln("Register"); if(traverse) register.accept(this); }
-    /** */ override void visit(const RelExpression relExpression) { writeln("RelExpression"); if(traverse) relExpression.accept(this); }
-    /** */ override void visit(const ReturnStatement returnStatement) { writeln("ReturnStatement"); if(traverse) returnStatement.accept(this); }
-    /** */ override void visit(const ScopeGuardStatement scopeGuardStatement) { writeln("ScopeGuardStatement"); if(traverse) scopeGuardStatement.accept(this); }
-    /** */ override void visit(const SharedStaticConstructor sharedStaticConstructor) { writeln("SharedStaticConstructor"); if(traverse) sharedStaticConstructor.accept(this); }
-    /** */ override void visit(const SharedStaticDestructor sharedStaticDestructor) { writeln("SharedStaticDestructor"); if(traverse) sharedStaticDestructor.accept(this); }
-    /** */ override void visit(const ShiftExpression shiftExpression) { writeln("ShiftExpression"); if(traverse) shiftExpression.accept(this); }
-    /** */ override void visit(const SingleImport singleImport) { writeln("SingleImport"); if(traverse) singleImport.accept(this); }
-    /** */ //override void visit(const SliceExpression sliceExpression) { writeln("SliceExpression"); if(traverse) sliceExpression.accept(this); }
-    /** */ override void visit(const Statement statement) { writeln("Statement"); if(traverse) statement.accept(this); }
-    /** */ override void visit(const StatementNoCaseNoDefault statementNoCaseNoDefault) { writeln("StatementNoCaseNoDefault"); if(traverse) statementNoCaseNoDefault.accept(this); }
-    /** */ override void visit(const StaticAssertDeclaration staticAssertDeclaration) { writeln("StaticAssertDeclaration"); if(traverse) staticAssertDeclaration.accept(this); }
-    /** */ override void visit(const StaticAssertStatement staticAssertStatement) { writeln("StaticAssertStatement"); if(traverse) staticAssertStatement.accept(this); }
-    /** */ override void visit(const StaticConstructor staticConstructor) { writeln("StaticConstructor"); if(traverse) staticConstructor.accept(this); }
-    /** */ override void visit(const StaticDestructor staticDestructor) { writeln("StaticDestructor"); if(traverse) staticDestructor.accept(this); }
-    /** */ override void visit(const StaticIfCondition staticIfCondition) { writeln("StaticIfCondition"); if(traverse) staticIfCondition.accept(this); }
-    /** */ override void visit(const StorageClass storageClass) { writeln("StorageClass"); if(traverse) storageClass.accept(this); }
-    /** */ override void visit(const StructBody structBody) { writeln("StructBody"); if(traverse) structBody.accept(this); }
-    /** */ override void visit(const StructDeclaration structDeclaration) { writeln("StructDeclaration"); if(traverse) structDeclaration.accept(this); }
-    /** */ override void visit(const StructInitializer structInitializer) { writeln("StructInitializer"); if(traverse) structInitializer.accept(this); }
-    /** */ override void visit(const StructMemberInitializer structMemberInitializer) { writeln("StructMemberInitializer"); if(traverse) structMemberInitializer.accept(this); }
-    /** */ override void visit(const StructMemberInitializers structMemberInitializers) { writeln("StructMemberInitializers"); if(traverse) structMemberInitializers.accept(this); }
-    /** */ override void visit(const SwitchStatement switchStatement) { writeln("SwitchStatement"); if(traverse) switchStatement.accept(this); }
-    /** */ override void visit(const Symbol symbol) { writeln("Symbol"); if(traverse) symbol.accept(this); }
-    /** */ override void visit(const SynchronizedStatement synchronizedStatement) { writeln("SynchronizedStatement"); if(traverse) synchronizedStatement.accept(this); }
-    /** */ override void visit(const TemplateAliasParameter templateAliasParameter) { writeln("TemplateAliasParameter"); if(traverse) templateAliasParameter.accept(this); }
-    /** */ override void visit(const TemplateArgument templateArgument) { writeln("TemplateArgument"); if(traverse) templateArgument.accept(this); }
-    /** */ override void visit(const TemplateArgumentList templateArgumentList) { writeln("TemplateArgumentList"); if(traverse) templateArgumentList.accept(this); }
-    /** */ override void visit(const TemplateArguments templateArguments) { writeln("TemplateArguments"); if(traverse) templateArguments.accept(this); }
-    /** */ override void visit(const TemplateDeclaration templateDeclaration) { writeln("TemplateDeclaration"); if(traverse) templateDeclaration.accept(this); }
-    /** */ override void visit(const TemplateInstance templateInstance) { writeln("TemplateInstance"); if(traverse) templateInstance.accept(this); }
-    /** */ override void visit(const TemplateMixinExpression templateMixinExpression) { writeln("TemplateMixinExpression"); if(traverse) templateMixinExpression.accept(this); }
-    /** */ override void visit(const TemplateParameter templateParameter) { writeln("TemplateParameter"); if(traverse) templateParameter.accept(this); }
-    /** */ override void visit(const TemplateParameterList templateParameterList) { writeln("TemplateParameterList"); if(traverse) templateParameterList.accept(this); }
-    /** */ override void visit(const TemplateParameters templateParameters) { writeln("TemplateParameters"); if(traverse) templateParameters.accept(this); }
-    /** */ override void visit(const TemplateSingleArgument templateSingleArgument) { writeln("TemplateSingleArgument"); if(traverse) templateSingleArgument.accept(this); }
-    /** */ override void visit(const TemplateThisParameter templateThisParameter) { writeln("TemplateThisParameter"); if(traverse) templateThisParameter.accept(this); }
-    /** */ override void visit(const TemplateTupleParameter templateTupleParameter) { writeln("TemplateTupleParameter"); if(traverse) templateTupleParameter.accept(this); }
-    /** */ override void visit(const TemplateTypeParameter templateTypeParameter) { writeln("TemplateTypeParameter"); if(traverse) templateTypeParameter.accept(this); }
-    /** */ override void visit(const TemplateValueParameter templateValueParameter) { writeln("TemplateValueParameter"); if(traverse) templateValueParameter.accept(this); }
-    /** */ override void visit(const TemplateValueParameterDefault templateValueParameterDefault) { writeln("TemplateValueParameterDefault"); if(traverse) templateValueParameterDefault.accept(this); }
-    /** */ override void visit(const TernaryExpression ternaryExpression) { writeln("TernaryExpression"); if(traverse) ternaryExpression.accept(this); }
-    /** */ override void visit(const ThrowStatement throwStatement) { writeln("ThrowStatement"); if(traverse) throwStatement.accept(this); }
-    /** */ override void visit(const Token) { }
-    /** */ override void visit(const TraitsExpression traitsExpression) { writeln("TraitsExpression"); if(traverse) traitsExpression.accept(this); }
-    /** */ override void visit(const TryStatement tryStatement) { writeln("TryStatement"); if(traverse) tryStatement.accept(this); }
-    /** */ override void visit(const Type type) { writeln("Type"); if(traverse) type.accept(this); }
-    /** */ override void visit(const Type2 type2) { writeln("Type2"); if(traverse) type2.accept(this); }
-    /** */ override void visit(const TypeSpecialization typeSpecialization) { writeln("TypeSpecialization"); if(traverse) typeSpecialization.accept(this); }
-    /** */ override void visit(const TypeSuffix typeSuffix) { writeln("TypeSuffix"); if(traverse) typeSuffix.accept(this); }
-    /** */ override void visit(const TypeidExpression typeidExpression) { writeln("TypeidExpression"); if(traverse) typeidExpression.accept(this); }
-    /** */ override void visit(const TypeofExpression typeofExpression) { writeln("TypeofExpression"); if(traverse) typeofExpression.accept(this); }
-    /** */ override void visit(const UnaryExpression unaryExpression) { writeln("UnaryExpression"); if(traverse) unaryExpression.accept(this); }
-    /** */ override void visit(const UnionDeclaration unionDeclaration) { writeln("UnionDeclaration"); if(traverse) unionDeclaration.accept(this); }
-    /** */ override void visit(const Unittest unittest_) { writeln("Unittest"); if(traverse) unittest_.accept(this); }
-    /** */ override void visit(const VariableDeclaration variableDeclaration) { writeln("VariableDeclaration"); if(traverse) variableDeclaration.accept(this); }
-    /** */ override void visit(const Vector vector) { writeln("Vector"); if(traverse) vector.accept(this); }
-    /** */ override void visit(const VersionCondition versionCondition) { writeln("VersionCondition"); if(traverse) versionCondition.accept(this); }
-    /** */ override void visit(const VersionSpecification versionSpecification) { writeln("VersionSpecification"); if(traverse) versionSpecification.accept(this); }
-    /** */ override void visit(const WhileStatement whileStatement) { writeln("WhileStatement"); if(traverse) whileStatement.accept(this); }
-    /** */ override void visit(const WithStatement withStatement) { writeln("WithStatement"); if(traverse) withStatement.accept(this); }
-    /** */ override void visit(const XorExpression xorExpression) { writeln("XorExpression"); if(traverse) xorExpression.accept(this); }
-}
-
-class Visitor : ASTVisitor
-{
-	alias visit = ASTVisitor.visit;
-	
-	override void visit(const ModuleDeclaration moduleDeclaration)
-	{
-		moduleDeclaration.accept(this);
-	}
+	/** */ override void visit(const AddExpression addExpression) { file.writefln("%sAddExpression", indentationLevel()); if(traverse) { indentation++; addExpression.accept(this); indentation--; } }
+    /** */ override void visit(const AliasDeclaration aliasDeclaration) { file.writefln("%sAliasDeclaration", indentationLevel()); if(traverse) { indentation++; aliasDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const AliasInitializer aliasInitializer) { file.writefln("%sAliasInitializer", indentationLevel()); if(traverse) { indentation++; aliasInitializer.accept(this); indentation--; } }
+    /** */ override void visit(const AliasThisDeclaration aliasThisDeclaration) { file.writefln("%sAliasThisDeclaration", indentationLevel()); if(traverse) { indentation++; aliasThisDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const AlignAttribute alignAttribute) { file.writefln("%sAlignAttribute", indentationLevel()); if(traverse) { indentation++; alignAttribute.accept(this); indentation--; } }
+    /** */ override void visit(const AndAndExpression andAndExpression) { file.writefln("%sAndAndExpression", indentationLevel()); if(traverse) { indentation++; andAndExpression.accept(this); indentation--; } }
+    /** */ override void visit(const AndExpression andExpression) { file.writefln("%sAndExpression", indentationLevel()); if(traverse) { indentation++; andExpression.accept(this); indentation--; } }
+    /** */ override void visit(const AnonymousEnumDeclaration anonymousEnumDeclaration) { file.writefln("%sAnonymousEnumDeclaration", indentationLevel()); if(traverse) { indentation++; anonymousEnumDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const AnonymousEnumMember anonymousEnumMember) { file.writefln("%sAnonymousEnumMember", indentationLevel()); if(traverse) { indentation++; anonymousEnumMember.accept(this); indentation--; } }
+    /** */ override void visit(const ArgumentList argumentList) { file.writefln("%sArgumentList", indentationLevel()); if(traverse) { indentation++; argumentList.accept(this); indentation--; } }
+    /** */ override void visit(const Arguments arguments) { file.writefln("%sArguments", indentationLevel()); if(traverse) { indentation++; arguments.accept(this); indentation--; } }
+    /** */ override void visit(const ArrayInitializer arrayInitializer) { file.writefln("%sArrayInitializer", indentationLevel()); if(traverse) { indentation++; arrayInitializer.accept(this); indentation--; } }
+    /** */ override void visit(const ArrayLiteral arrayLiteral) { file.writefln("%sArrayLiteral", indentationLevel()); if(traverse) { indentation++; arrayLiteral.accept(this); indentation--; } }
+    /** */ override void visit(const ArrayMemberInitialization arrayMemberInitialization) { file.writefln("%sArrayMemberInitialization", indentationLevel()); if(traverse) { indentation++; arrayMemberInitialization.accept(this); indentation--; } }
+    /** */ override void visit(const AssertExpression assertExpression) { file.writefln("%sAssertExpression", indentationLevel()); if(traverse) { indentation++; assertExpression.accept(this); indentation--; } }
+    /** */ override void visit(const AssignExpression assignExpression) { file.writefln("%sAssignExpression", indentationLevel()); if(traverse) { indentation++; assignExpression.accept(this); indentation--; } }
+    /** */ override void visit(const AssocArrayLiteral assocArrayLiteral) { file.writefln("%sAssocArrayLiteral", indentationLevel()); if(traverse) { indentation++; assocArrayLiteral.accept(this); indentation--; } }
+    /** */ override void visit(const AtAttribute atAttribute) { file.writefln("%sAtAttribute", indentationLevel()); if(traverse) { indentation++; atAttribute.accept(this); indentation--; } }
+    /** */ override void visit(const Attribute attribute) { file.writefln("%sAttribute", indentationLevel()); if(traverse) { indentation++; attribute.accept(this); indentation--; } }
+    /** */ override void visit(const AttributeDeclaration attributeDeclaration) { file.writefln("%sAttributeDeclaration", indentationLevel()); if(traverse) { indentation++; attributeDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const AutoDeclaration autoDeclaration) { file.writefln("%sAutoDeclaration", indentationLevel()); if(traverse) { indentation++; autoDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const BlockStatement blockStatement) { file.writefln("%sBlockStatement", indentationLevel()); if(traverse) { indentation++; blockStatement.accept(this); indentation--; } }
+    /** */ override void visit(const BodyStatement bodyStatement) { file.writefln("%sBodyStatement", indentationLevel()); if(traverse) { indentation++; bodyStatement.accept(this); indentation--; } }
+    /** */ override void visit(const BreakStatement breakStatement) { file.writefln("%sBreakStatement", indentationLevel()); if(traverse) { indentation++; breakStatement.accept(this); indentation--; } }
+    /** */ override void visit(const BaseClass baseClass) { file.writefln("%sBaseClass", indentationLevel()); if(traverse) { indentation++; baseClass.accept(this); indentation--; } }
+    /** */ override void visit(const BaseClassList baseClassList) { file.writefln("%sBaseClassList", indentationLevel()); if(traverse) { indentation++; baseClassList.accept(this); indentation--; } }
+    /** */ override void visit(const CaseRangeStatement caseRangeStatement) { file.writefln("%sCaseRangeStatement", indentationLevel()); if(traverse) { indentation++; caseRangeStatement.accept(this); indentation--; } }
+    /** */ override void visit(const CaseStatement caseStatement) { file.writefln("%sCaseStatement", indentationLevel()); if(traverse) { indentation++; caseStatement.accept(this); indentation--; } }
+    /** */ override void visit(const CastExpression castExpression) { file.writefln("%sCastExpression", indentationLevel()); if(traverse) { indentation++; castExpression.accept(this); indentation--; } }
+    /** */ override void visit(const CastQualifier castQualifier) { file.writefln("%sCastQualifier", indentationLevel()); if(traverse) { indentation++; castQualifier.accept(this); indentation--; } }
+    /** */ override void visit(const Catch catch_) { file.writefln("%sCatch", indentationLevel()); if(traverse) { indentation++; catch_.accept(this); indentation--; } }
+    /** */ override void visit(const Catches catches) { file.writefln("%sCatches", indentationLevel()); if(traverse) { indentation++; catches.accept(this); indentation--; } }
+    /** */ override void visit(const ClassDeclaration classDeclaration) { file.writefln("%sClassDeclaration", indentationLevel()); if(traverse) { indentation++; classDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const CmpExpression cmpExpression) { file.writefln("%sCmpExpression", indentationLevel()); if(traverse) { indentation++; cmpExpression.accept(this); indentation--; } }
+    /** */ override void visit(const CompileCondition compileCondition) { file.writefln("%sCompileCondition", indentationLevel()); if(traverse) { indentation++; compileCondition.accept(this); indentation--; } }
+    /** */ override void visit(const ConditionalDeclaration conditionalDeclaration) { file.writefln("%sConditionalDeclaration", indentationLevel()); if(traverse) { indentation++; conditionalDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const ConditionalStatement conditionalStatement) { file.writefln("%sConditionalStatement", indentationLevel()); if(traverse) { indentation++; conditionalStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Constraint constraint) { file.writefln("%sConstraint", indentationLevel()); if(traverse) { indentation++; constraint.accept(this); indentation--; } }
+    /** */ override void visit(const Constructor constructor) { file.writefln("%sConstructor", indentationLevel()); if(traverse) { indentation++; constructor.accept(this); indentation--; } }
+    /** */ override void visit(const ContinueStatement continueStatement) { file.writefln("%sContinueStatement", indentationLevel()); if(traverse) { indentation++; continueStatement.accept(this); indentation--; } }
+    /** */ override void visit(const DebugCondition debugCondition) { file.writefln("%sDebugCondition", indentationLevel()); if(traverse) { indentation++; debugCondition.accept(this); indentation--; } }
+    /** */ override void visit(const DebugSpecification debugSpecification) { file.writefln("%sDebugSpecification", indentationLevel()); if(traverse) { indentation++; debugSpecification.accept(this); indentation--; } }
+    /** */ override void visit(const Declaration declaration) { file.writefln("%sDeclaration", indentationLevel()); if(traverse) { indentation++; declaration.accept(this); indentation--; } }
+    /** */ override void visit(const DeclarationOrStatement declarationsOrStatement) { file.writefln("%sDeclarationOrStatement", indentationLevel()); if(traverse) { indentation++; declarationsOrStatement.accept(this); indentation--; } }
+    /** */ override void visit(const DeclarationsAndStatements declarationsAndStatements) { file.writefln("%sDeclarationsAndStatements", indentationLevel()); if(traverse) { indentation++; declarationsAndStatements.accept(this); indentation--; } }
+    /** */ override void visit(const Declarator declarator) { file.writefln("%sDeclarator", indentationLevel()); if(traverse) { indentation++; declarator.accept(this); indentation--; } }
+    /** */ override void visit(const DefaultStatement defaultStatement) { file.writefln("%sDefaultStatement", indentationLevel()); if(traverse) { indentation++; defaultStatement.accept(this); indentation--; } }
+    /** */ override void visit(const DeleteExpression deleteExpression) { file.writefln("%sDeleteExpression", indentationLevel()); if(traverse) { indentation++; deleteExpression.accept(this); indentation--; } }
+    /** */ override void visit(const DeleteStatement deleteStatement) { file.writefln("%sDeleteStatement", indentationLevel()); if(traverse) { indentation++; deleteStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Deprecated deprecated_) { file.writefln("%sDeprecated", indentationLevel()); if(traverse) { indentation++; deprecated_.accept(this); indentation--; } }
+    /** */ override void visit(const Destructor destructor) { file.writefln("%sDestructor", indentationLevel()); if(traverse) { indentation++; destructor.accept(this); indentation--; } }
+    /** */ override void visit(const DoStatement doStatement) { file.writefln("%sDoStatement", indentationLevel()); if(traverse) { indentation++; doStatement.accept(this); indentation--; } }
+    /** */ override void visit(const EnumBody enumBody) { file.writefln("%sEnumBody", indentationLevel()); if(traverse) { indentation++; enumBody.accept(this); indentation--; } }
+    /** */ override void visit(const EnumDeclaration enumDeclaration) { file.writefln("%sEnumDeclaration", indentationLevel()); if(traverse) { indentation++; enumDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const EnumMember enumMember) { file.writefln("%sEnumMember", indentationLevel()); if(traverse) { indentation++; enumMember.accept(this); indentation--; } }
+    /** */ override void visit(const EponymousTemplateDeclaration eponymousTemplateDeclaration) { file.writefln("%sEponymousTemplateDeclaration", indentationLevel()); if(traverse) { indentation++; eponymousTemplateDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const EqualExpression equalExpression) { file.writefln("%sEqualExpression", indentationLevel()); if(traverse) { indentation++; equalExpression.accept(this); indentation--; } }
+    /** */ override void visit(const Expression expression) { file.writefln("%sExpression", indentationLevel()); if(traverse) { indentation++; expression.accept(this); indentation--; } }
+    /** */ override void visit(const ExpressionStatement expressionStatement) { file.writefln("%sExpressionStatement", indentationLevel()); if(traverse) { indentation++; expressionStatement.accept(this); indentation--; } }
+    /** */ override void visit(const FinalSwitchStatement finalSwitchStatement) { file.writefln("%sFinalSwitchStatement", indentationLevel()); if(traverse) { indentation++; finalSwitchStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Finally finally_) { file.writefln("%sFinally", indentationLevel()); if(traverse) { indentation++; finally_.accept(this); indentation--; } }
+    /** */ override void visit(const ForStatement forStatement) { file.writefln("%sForStatement", indentationLevel()); if(traverse) { indentation++; forStatement.accept(this); indentation--; } }
+    /** */ override void visit(const ForeachStatement foreachStatement) { file.writefln("%sForeachStatement", indentationLevel()); if(traverse) { indentation++; foreachStatement.accept(this); indentation--; } }
+    /** */ override void visit(const ForeachType foreachType) { file.writefln("%sForeachType", indentationLevel()); if(traverse) { indentation++; foreachType.accept(this); indentation--; } }
+    /** */ override void visit(const ForeachTypeList foreachTypeList) { file.writefln("%sForeachTypeList", indentationLevel()); if(traverse) { indentation++; foreachTypeList.accept(this); indentation--; } }
+    /** */ override void visit(const FunctionAttribute functionAttribute) { file.writefln("%sFunctionAttribute", indentationLevel()); if(traverse) { indentation++; functionAttribute.accept(this); indentation--; } }
+    /** */ override void visit(const FunctionBody functionBody) { file.writefln("%sFunctionBody", indentationLevel()); if(traverse) { indentation++; functionBody.accept(this); indentation--; } }
+    /** */ override void visit(const FunctionCallExpression functionCallExpression) { file.writefln("%sFunctionCallExpression", indentationLevel()); if(traverse) { indentation++; functionCallExpression.accept(this); indentation--; } }
+    /** */ override void visit(const FunctionDeclaration functionDeclaration) { file.writefln("%sFunctionDeclaration", indentationLevel()); if(traverse) { indentation++; functionDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const FunctionLiteralExpression functionLiteralExpression) { file.writefln("%sFunctionLiteralExpression", indentationLevel()); if(traverse) { indentation++; functionLiteralExpression.accept(this); indentation--; } }
+    /** */ override void visit(const GotoStatement gotoStatement) { file.writefln("%sGotoStatement", indentationLevel()); if(traverse) { indentation++; gotoStatement.accept(this); indentation--; } }
+    /** */ override void visit(const IdentifierChain identifierChain) { file.writefln("%sIdentifierChain", indentationLevel()); if(traverse) { indentation++; identifierChain.accept(this); indentation--; } }
+    /** */ override void visit(const IdentifierList identifierList) { file.writefln("%sIdentifierList", indentationLevel()); if(traverse) { indentation++; identifierList.accept(this); indentation--; } }
+    /** */ override void visit(const IdentifierOrTemplateChain identifierOrTemplateChain) { file.writefln("%sIdentifierOrTemplateChain", indentationLevel()); if(traverse) { indentation++; identifierOrTemplateChain.accept(this); indentation--; } }
+    /** */ override void visit(const IdentifierOrTemplateInstance identifierOrTemplateInstance) { file.writefln("%sIdentifierOrTemplateInstance", indentationLevel()); if(traverse) { indentation++; identifierOrTemplateInstance.accept(this); indentation--; } }
+    /** */ override void visit(const IdentityExpression identityExpression) { file.writefln("%sIdentityExpression", indentationLevel()); if(traverse) { indentation++; identityExpression.accept(this); indentation--; } }
+    /** */ override void visit(const IfStatement ifStatement) { file.writefln("%sIfStatement", indentationLevel()); if(traverse) { indentation++; ifStatement.accept(this); indentation--; } }
+    /** */ override void visit(const ImportBind importBind) { file.writefln("%sImportBind", indentationLevel()); if(traverse) { indentation++; importBind.accept(this); indentation--; } }
+    /** */ override void visit(const ImportBindings importBindings) { file.writefln("%sImportBindings", indentationLevel()); if(traverse) { indentation++; importBindings.accept(this); indentation--; } }
+    /** */ override void visit(const ImportDeclaration importDeclaration) { file.writefln("%sImportDeclaration", indentationLevel()); if(traverse) { indentation++; importDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const ImportExpression importExpression) { file.writefln("%sImportExpression", indentationLevel()); if(traverse) { indentation++; importExpression.accept(this); indentation--; } }
+    /** */ override void visit(const IndexExpression indexExpression) { file.writefln("%sIndexExpression", indentationLevel()); if(traverse) { indentation++; indexExpression.accept(this); indentation--; } }
+    /** */ override void visit(const InExpression inExpression) { file.writefln("%sInExpression", indentationLevel()); if(traverse) { indentation++; inExpression.accept(this); indentation--; } }
+    /** */ override void visit(const InStatement inStatement) { file.writefln("%sInStatement", indentationLevel()); if(traverse) { indentation++; inStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Initialize initialize) { file.writefln("%sInitialize", indentationLevel()); if(traverse) { indentation++; initialize.accept(this); indentation--; } }
+    /** */ override void visit(const Initializer initializer) { file.writefln("%sInitializer", indentationLevel()); if(traverse) { indentation++; initializer.accept(this); indentation--; } }
+    /** */ override void visit(const InterfaceDeclaration interfaceDeclaration) { file.writefln("%sInterfaceDeclaration", indentationLevel()); if(traverse) { indentation++; interfaceDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const Invariant invariant_) { file.writefln("%sInvariant", indentationLevel()); if(traverse) { indentation++; invariant_.accept(this); indentation--; } }
+    /** */ override void visit(const IsExpression isExpression) { file.writefln("%sIsExpression", indentationLevel()); if(traverse) { indentation++; isExpression.accept(this); indentation--; } }
+    /** */ override void visit(const KeyValuePair keyValuePair) { file.writefln("%sKeyValuePair", indentationLevel()); if(traverse) { indentation++; keyValuePair.accept(this); indentation--; } }
+    /** */ override void visit(const KeyValuePairs keyValuePairs) { file.writefln("%sKeyValuePairs", indentationLevel()); if(traverse) { indentation++; keyValuePairs.accept(this); indentation--; } }
+    /** */ override void visit(const LabeledStatement labeledStatement) { file.writefln("%sLabeledStatement", indentationLevel()); if(traverse) { indentation++; labeledStatement.accept(this); indentation--; } }
+    /** */ override void visit(const LambdaExpression lambdaExpression) { file.writefln("%sLambdaExpression", indentationLevel()); if(traverse) { indentation++; lambdaExpression.accept(this); indentation--; } }
+    /** */ override void visit(const LastCatch lastCatch) { file.writefln("%sLastCatch", indentationLevel()); if(traverse) { indentation++; lastCatch.accept(this); indentation--; } }
+    /** */ override void visit(const LinkageAttribute linkageAttribute) { file.writefln("%sLinkageAttribute", indentationLevel()); if(traverse) { indentation++; linkageAttribute.accept(this); indentation--; } }
+    /** */ override void visit(const MemberFunctionAttribute memberFunctionAttribute) { file.writefln("%sMemberFunctionAttribute", indentationLevel()); if(traverse) { indentation++; memberFunctionAttribute.accept(this); indentation--; } }
+    /** */ override void visit(const MixinDeclaration mixinDeclaration) { file.writefln("%sMixinDeclaration", indentationLevel()); if(traverse) { indentation++; mixinDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const MixinExpression mixinExpression) { file.writefln("%sMixinExpression", indentationLevel()); if(traverse) { indentation++; mixinExpression.accept(this); indentation--; } }
+    /** */ override void visit(const MixinTemplateDeclaration mixinTemplateDeclaration) { file.writefln("%sMixinTemplateDeclaration", indentationLevel()); if(traverse) { indentation++; mixinTemplateDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const MixinTemplateName mixinTemplateName) { file.writefln("%sMixinTemplateName", indentationLevel()); if(traverse) { indentation++; mixinTemplateName.accept(this); indentation--; } }
+    /** */ override void visit(const Module module_) { file.writefln("%sModule", indentationLevel()); if(traverse) { indentation++; module_.accept(this); indentation--; } }
+    /** */ override void visit(const ModuleDeclaration moduleDeclaration) { file.writefln("%sModuleDeclaration", indentationLevel()); if(traverse) { indentation++; moduleDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const MulExpression mulExpression) { file.writefln("%sMulExpression", indentationLevel()); if(traverse) { indentation++; mulExpression.accept(this); indentation--; } }
+    /** */ override void visit(const NewAnonClassExpression newAnonClassExpression) { file.writefln("%sNewAnonClassExpression", indentationLevel()); if(traverse) { indentation++; newAnonClassExpression.accept(this); indentation--; } }
+    /** */ override void visit(const NewExpression newExpression) { file.writefln("%sNewExpression", indentationLevel()); if(traverse) { indentation++; newExpression.accept(this); indentation--; } }
+    /** */ override void visit(const NonVoidInitializer nonVoidInitializer) { file.writefln("%sNonVoidInitializer", indentationLevel()); if(traverse) { indentation++; nonVoidInitializer.accept(this); indentation--; } }
+    /** */ override void visit(const Operands operands) { file.writefln("%sOperands", indentationLevel()); if(traverse) { indentation++; operands.accept(this); indentation--; } }
+    /** */ override void visit(const OrExpression orExpression) { file.writefln("%sOrExpression", indentationLevel()); if(traverse) { indentation++; orExpression.accept(this); indentation--; } }
+    /** */ override void visit(const OrOrExpression orOrExpression) { file.writefln("%sOrOrExpression", indentationLevel()); if(traverse) { indentation++; orOrExpression.accept(this); indentation--; } }
+    /** */ override void visit(const OutStatement outStatement) { file.writefln("%sOutStatement", indentationLevel()); if(traverse) { indentation++; outStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Parameter parameter) { file.writefln("%sParameter", indentationLevel()); if(traverse) { indentation++; parameter.accept(this); indentation--; } }
+    /** */ override void visit(const Parameters parameters) { file.writefln("%sParameters", indentationLevel()); if(traverse) { indentation++; parameters.accept(this); indentation--; } }
+    /** */ override void visit(const Postblit postblit) { file.writefln("%sPostblit", indentationLevel()); if(traverse) { indentation++; postblit.accept(this); indentation--; } }
+    /** */ override void visit(const PowExpression powExpression) { file.writefln("%sPowExpression", indentationLevel()); if(traverse) { indentation++; powExpression.accept(this); indentation--; } }
+    /** */ override void visit(const PragmaDeclaration pragmaDeclaration) { file.writefln("%sPragmaDeclaration", indentationLevel()); if(traverse) { indentation++; pragmaDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const PragmaExpression pragmaExpression) { file.writefln("%sPragmaExpression", indentationLevel()); if(traverse) { indentation++; pragmaExpression.accept(this); indentation--; } }
+    /** */ override void visit(const PrimaryExpression primaryExpression) { file.writefln("%sPrimaryExpression", indentationLevel()); if(traverse) { indentation++; primaryExpression.accept(this); indentation--; } }
+    /** */ override void visit(const Register register) { file.writefln("%sRegister", indentationLevel()); if(traverse) { indentation++; register.accept(this); indentation--; } }
+    /** */ override void visit(const RelExpression relExpression) { file.writefln("%sRelExpression", indentationLevel()); if(traverse) { indentation++; relExpression.accept(this); indentation--; } }
+    /** */ override void visit(const ReturnStatement returnStatement) { file.writefln("%sReturnStatement", indentationLevel()); if(traverse) { indentation++; returnStatement.accept(this); indentation--; } }
+    /** */ override void visit(const ScopeGuardStatement scopeGuardStatement) { file.writefln("%sScopeGuardStatement", indentationLevel()); if(traverse) { indentation++; scopeGuardStatement.accept(this); indentation--; } }
+    /** */ override void visit(const SharedStaticConstructor sharedStaticConstructor) { file.writefln("%sSharedStaticConstructor", indentationLevel()); if(traverse) { indentation++; sharedStaticConstructor.accept(this); indentation--; } }
+    /** */ override void visit(const SharedStaticDestructor sharedStaticDestructor) { file.writefln("%sSharedStaticDestructor", indentationLevel()); if(traverse) { indentation++; sharedStaticDestructor.accept(this); indentation--; } }
+    /** */ override void visit(const ShiftExpression shiftExpression) { file.writefln("%sShiftExpression", indentationLevel()); if(traverse) { indentation++; shiftExpression.accept(this); indentation--; } }
+    /** */ override void visit(const SingleImport singleImport) { file.writefln("%sSingleImport", indentationLevel()); if(traverse) { indentation++; singleImport.accept(this); indentation--; } }
+    /** */ //override void visit(const SliceExpression sliceExpression) { file.writefln("%sSliceExpression", indentationLevel()); if(traverse) { indentation++; sliceExpression.accept(this); indentation--; } }
+    /** */ override void visit(const Statement statement) { file.writefln("%sStatement", indentationLevel()); if(traverse) { indentation++; statement.accept(this); indentation--; } }
+    /** */ override void visit(const StatementNoCaseNoDefault statementNoCaseNoDefault) { file.writefln("%sStatementNoCaseNoDefault", indentationLevel()); if(traverse) { indentation++; statementNoCaseNoDefault.accept(this); indentation--; } }
+    /** */ override void visit(const StaticAssertDeclaration staticAssertDeclaration) { file.writefln("%sStaticAssertDeclaration", indentationLevel()); if(traverse) { indentation++; staticAssertDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const StaticAssertStatement staticAssertStatement) { file.writefln("%sStaticAssertStatement", indentationLevel()); if(traverse) { indentation++; staticAssertStatement.accept(this); indentation--; } }
+    /** */ override void visit(const StaticConstructor staticConstructor) { file.writefln("%sStaticConstructor", indentationLevel()); if(traverse) { indentation++; staticConstructor.accept(this); indentation--; } }
+    /** */ override void visit(const StaticDestructor staticDestructor) { file.writefln("%sStaticDestructor", indentationLevel()); if(traverse) { indentation++; staticDestructor.accept(this); indentation--; } }
+    /** */ override void visit(const StaticIfCondition staticIfCondition) { file.writefln("%sStaticIfCondition", indentationLevel()); if(traverse) { indentation++; staticIfCondition.accept(this); indentation--; } }
+    /** */ override void visit(const StorageClass storageClass) { file.writefln("%sStorageClass", indentationLevel()); if(traverse) { indentation++; storageClass.accept(this); indentation--; } }
+    /** */ override void visit(const StructBody structBody) { file.writefln("%sStructBody", indentationLevel()); if(traverse) { indentation++; structBody.accept(this); indentation--; } }
+    /** */ override void visit(const StructDeclaration structDeclaration) { file.writefln("%sStructDeclaration", indentationLevel()); if(traverse) { indentation++; structDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const StructInitializer structInitializer) { file.writefln("%sStructInitializer", indentationLevel()); if(traverse) { indentation++; structInitializer.accept(this); indentation--; } }
+    /** */ override void visit(const StructMemberInitializer structMemberInitializer) { file.writefln("%sStructMemberInitializer", indentationLevel()); if(traverse) { indentation++; structMemberInitializer.accept(this); indentation--; } }
+    /** */ override void visit(const StructMemberInitializers structMemberInitializers) { file.writefln("%sStructMemberInitializers", indentationLevel()); if(traverse) { indentation++; structMemberInitializers.accept(this); indentation--; } }
+    /** */ override void visit(const SwitchStatement switchStatement) { file.writefln("%sSwitchStatement", indentationLevel()); if(traverse) { indentation++; switchStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Symbol symbol) { file.writefln("%sSymbol", indentationLevel()); if(traverse) { indentation++; symbol.accept(this); indentation--; } }
+    /** */ override void visit(const SynchronizedStatement synchronizedStatement) { file.writefln("%sSynchronizedStatement", indentationLevel()); if(traverse) { indentation++; synchronizedStatement.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateAliasParameter templateAliasParameter) { file.writefln("%sTemplateAliasParameter", indentationLevel()); if(traverse) { indentation++; templateAliasParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateArgument templateArgument) { file.writefln("%sTemplateArgument", indentationLevel()); if(traverse) { indentation++; templateArgument.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateArgumentList templateArgumentList) { file.writefln("%sTemplateArgumentList", indentationLevel()); if(traverse) { indentation++; templateArgumentList.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateArguments templateArguments) { file.writefln("%sTemplateArguments", indentationLevel()); if(traverse) { indentation++; templateArguments.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateDeclaration templateDeclaration) { file.writefln("%sTemplateDeclaration", indentationLevel()); if(traverse) { indentation++; templateDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateInstance templateInstance) { file.writefln("%sTemplateInstance", indentationLevel()); if(traverse) { indentation++; templateInstance.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateMixinExpression templateMixinExpression) { file.writefln("%sTemplateMixinExpression", indentationLevel()); if(traverse) { indentation++; templateMixinExpression.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateParameter templateParameter) { file.writefln("%sTemplateParameter", indentationLevel()); if(traverse) { indentation++; templateParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateParameterList templateParameterList) { file.writefln("%sTemplateParameterList", indentationLevel()); if(traverse) { indentation++; templateParameterList.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateParameters templateParameters) { file.writefln("%sTemplateParameters", indentationLevel()); if(traverse) { indentation++; templateParameters.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateSingleArgument templateSingleArgument) { file.writefln("%sTemplateSingleArgument", indentationLevel()); if(traverse) { indentation++; templateSingleArgument.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateThisParameter templateThisParameter) { file.writefln("%sTemplateThisParameter", indentationLevel()); if(traverse) { indentation++; templateThisParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateTupleParameter templateTupleParameter) { file.writefln("%sTemplateTupleParameter", indentationLevel()); if(traverse) { indentation++; templateTupleParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateTypeParameter templateTypeParameter) { file.writefln("%sTemplateTypeParameter", indentationLevel()); if(traverse) { indentation++; templateTypeParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateValueParameter templateValueParameter) { file.writefln("%sTemplateValueParameter", indentationLevel()); if(traverse) { indentation++; templateValueParameter.accept(this); indentation--; } }
+    /** */ override void visit(const TemplateValueParameterDefault templateValueParameterDefault) { file.writefln("%sTemplateValueParameterDefault", indentationLevel()); if(traverse) { indentation++; templateValueParameterDefault.accept(this); indentation--; } }
+    /** */ override void visit(const TernaryExpression ternaryExpression) { file.writefln("%sTernaryExpression", indentationLevel()); if(traverse) { indentation++; ternaryExpression.accept(this); indentation--; } }
+    /** */ override void visit(const ThrowStatement throwStatement) { file.writefln("%sThrowStatement", indentationLevel()); if(traverse) { indentation++; throwStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Token token) {file.writefln("%sToken: %s", indentationLevel(), token.text); }
+    /** */ override void visit(const TraitsExpression traitsExpression) { file.writefln("%sTraitsExpression", indentationLevel()); if(traverse) { indentation++; traitsExpression.accept(this); indentation--; } }
+    /** */ override void visit(const TryStatement tryStatement) { file.writefln("%sTryStatement", indentationLevel()); if(traverse) { indentation++; tryStatement.accept(this); indentation--; } }
+    /** */ override void visit(const Type type) { file.writefln("%sType", indentationLevel()); if(traverse) { indentation++; type.accept(this); indentation--; } }
+    /** */ override void visit(const Type2 type2) { file.writefln("%sType2", indentationLevel()); if(traverse) { indentation++; type2.accept(this); indentation--; } }
+    /** */ override void visit(const TypeSpecialization typeSpecialization) { file.writefln("%sTypeSpecialization", indentationLevel()); if(traverse) { indentation++; typeSpecialization.accept(this); indentation--; } }
+    /** */ override void visit(const TypeSuffix typeSuffix) { file.writefln("%sTypeSuffix", indentationLevel()); if(traverse) { indentation++; typeSuffix.accept(this); indentation--; } }
+    /** */ override void visit(const TypeidExpression typeidExpression) { file.writefln("%sTypeidExpression", indentationLevel()); if(traverse) { indentation++; typeidExpression.accept(this); indentation--; } }
+    /** */ override void visit(const TypeofExpression typeofExpression) { file.writefln("%sTypeofExpression", indentationLevel()); if(traverse) { indentation++; typeofExpression.accept(this); indentation--; } }
+    /** */ override void visit(const UnaryExpression unaryExpression) { file.writefln("%sUnaryExpression", indentationLevel()); if(traverse) { indentation++; unaryExpression.accept(this); indentation--; } }
+    /** */ override void visit(const UnionDeclaration unionDeclaration) { file.writefln("%sUnionDeclaration", indentationLevel()); if(traverse) { indentation++; unionDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const Unittest unittest_) { file.writefln("%sUnittest", indentationLevel()); if(traverse) { indentation++; unittest_.accept(this); indentation--; } }
+    /** */ override void visit(const VariableDeclaration variableDeclaration) { file.writefln("%sVariableDeclaration", indentationLevel()); if(traverse) { indentation++; variableDeclaration.accept(this); indentation--; } }
+    /** */ override void visit(const Vector vector) { file.writefln("%sVector", indentationLevel()); if(traverse) { indentation++; vector.accept(this); indentation--; } }
+    /** */ override void visit(const VersionCondition versionCondition) { file.writefln("%sVersionCondition", indentationLevel()); if(traverse) { indentation++; versionCondition.accept(this); indentation--; } }
+    /** */ override void visit(const VersionSpecification versionSpecification) { file.writefln("%sVersionSpecification", indentationLevel()); if(traverse) { indentation++; versionSpecification.accept(this); indentation--; } }
+    /** */ override void visit(const WhileStatement whileStatement) { file.writefln("%sWhileStatement", indentationLevel()); if(traverse) { indentation++; whileStatement.accept(this); indentation--; } }
+    /** */ override void visit(const WithStatement withStatement) { file.writefln("%sWithStatement", indentationLevel()); if(traverse) { indentation++; withStatement.accept(this); indentation--; } }
+    /** */ override void visit(const XorExpression xorExpression) { file.writefln("%sXorExpression", indentationLevel()); if(traverse) { indentation++; xorExpression.accept(this); indentation--; } }
 }
 
 extern(C++) void initDParser()
@@ -234,13 +234,17 @@ extern(C++) IModule parseSourceFile(char* sourceFile, char* sourceData)
 		
 		writefln("parseSourceFile(%s)", fromStringz(sourceFile));
 		
+		auto file = File((fromStringz(sourceFile).replace("/", ".")~".ast").idup, "w");
+		
 		thread_attachThis();
 		
 		LexerConfig config;
 		config.fileName = fromStringz(sourceFile).idup;
 		auto source = cast(ubyte[])fromStringz(sourceData);
 		auto tokens = getTokensForParser(source, config, new StringCache(StringCache.defaultBucketCount));
-		keepAlive[config.fileName] = new CModule(parseModule(tokens, config.fileName));
+		auto mod = parseModule(tokens, config.fileName);
+		//new ASTPrinter(file, true).visit(mod);
+		keepAlive[config.fileName] = new CModule(mod);
 		return keepAlive[config.fileName];
 	}
 	catch(Throwable e)
