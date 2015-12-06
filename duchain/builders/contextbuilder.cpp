@@ -286,6 +286,10 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitIfStatement(n);
 	if(auto n = node->getConditionalStatement())
 		visitConditionalStatement(n);
+	if(auto n = node->getDebugSpecification())
+		visitDebugSpecification(n);
+	if(auto n = node->getVersionSpecification())
+		visitVersionSpecification(n);
 	if(auto n = node->getBlockStatement())
 		visitBlock(n, true);
 	if(auto n = node->getReturnStatement())
