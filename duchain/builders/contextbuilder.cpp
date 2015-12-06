@@ -528,6 +528,8 @@ void ContextBuilder::visitUnaryExpression(IUnaryExpression *node)
 		visitFunctionCallExpression(n);
 	else if(auto n = node->getUnaryExpression())
 		visitUnaryExpression(n);
+	else if(auto n = node->getAssertExpression())
+		visitAssertExpression(n);
 }
 
 void ContextBuilder::visitAssignExpression(IAssignExpression *node)
