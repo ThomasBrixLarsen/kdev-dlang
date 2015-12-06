@@ -52,6 +52,8 @@ public:
 	virtual void visitDebugSpecification(IDebugSpecification *node) override;
 	virtual void visitVersionSpecification(IVersionSpecification *node) override;
 	virtual void visitCatch(ICatch *node) override;
+	virtual void visitEnumDeclaration(IEnumDeclaration *node) override;
+	virtual void visitEnumMember(IEnumMember *node) override;
 
 private:
 	/**

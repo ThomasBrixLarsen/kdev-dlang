@@ -226,6 +226,8 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 		visitVersionSpecification(n);
 	else if(auto n = node->getInterfaceDeclaration())
 		visitInterfaceDeclaration(n);
+	else if(auto n = node->getEnumDeclaration())
+		visitEnumDeclaration(n);
 	for(int i=0; i<node->numDeclarations(); i++)
 		visitDeclaration(node->getDeclaration(i));
 }
@@ -290,6 +292,26 @@ void ContextBuilder::visitParameter(IParameter *node)
 {
 	if(auto n = node->getType())
 		visitTypeName(n);
+}
+
+void ContextBuilder::visitEnumDeclaration(IEnumDeclaration *node)
+{
+	openContext(node, editorFindRange(node->getEnumBody(), 0), DUContext::Enum, node->getName());
+	if(auto n = node->getEnumBody())
+		visitEnumBody(n);
+	closeContext();
+}
+
+void ContextBuilder::visitEnumBody(IEnumBody *node)
+{
+	for(int i=0; i<node->numEnumMembers(); i++)
+		visitEnumMember(node->getEnumMember(i));
+}
+
+void ContextBuilder::visitEnumMember(IEnumMember *node)
+{
+	if(auto n = node->getAssignExpression())
+		visitExpressionNode(n);
 }
 
 void ContextBuilder::visitStatement(IStatement *node)
@@ -509,7 +531,6 @@ void ContextBuilder::visitPrimaryExpression(IPrimaryExpression *node)
 {
 	if(node->getIdentifierOrTemplateInstance())
 		identifierChain.append(QString::fromUtf8(node->getIdentifierOrTemplateInstance()->getIdentifier()->getText()));
-	Q_UNUSED(node)
 }
 
 void ContextBuilder::visitAddExpression(IAddExpression *node)
@@ -565,14 +586,12 @@ void ContextBuilder::visitImportDeclaration(IImportDeclaration *node)
 
 void ContextBuilder::visitFunctionCallExpression(IFunctionCallExpression *node)
 {
-	identifierChain.clear();
 	if(auto n = node->getUnaryExpression())
 		visitUnaryExpression(n);
 	if(auto n = node->getType())
 		visitTypeName(n);
 	if(auto n = node->getArguments())
 		visitArguments(n);
-	identifierChain.clear();
 }
 
 void ContextBuilder::visitArguments(IArguments *node)

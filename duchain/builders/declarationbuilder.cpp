@@ -26,6 +26,8 @@
 #include <language/duchain/duchain.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/arraytype.h>
+#include <language/duchain/types/enumerationtype.h>
+#include <language/duchain/types/enumeratortype.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/identifiedtype.h>
 #include <language/duchain/types/pointertype.h>
@@ -253,5 +255,33 @@ void DeclarationBuilder::visitCatch(ICatch *node)
 	Declaration *parameter = openDeclaration<Declaration>(node->getIdentifier(), node);
 	parameter->setKind(Declaration::Instance);
 	parameter->setAbstractType(lastType());
+	closeDeclaration();
+}
+
+void DeclarationBuilder::visitEnumDeclaration(IEnumDeclaration *node)
+{
+	DUChainWriteLocker lock;
+	Declaration *e = openDeclaration<Declaration>(node->getName(), node);
+	e->setKind(Declaration::Type);
+	lock.unlock();
+	DeclarationBuilderBase::visitEnumDeclaration(node);
+	lock.lock();
+	e->setInternalContext(lastContext());
+	//e->setAbstractType(lastType());
+	closeDeclaration();
+}
+
+void DeclarationBuilder::visitEnumMember(IEnumMember *node)
+{
+	DeclarationBuilderBase::visitEnumMember(node);
+	DUChainWriteLocker lock;
+	ClassMemberDeclaration *e = openDeclaration<ClassMemberDeclaration>(node->getName(), node);
+	e->setStatic(true);
+	EnumeratorType::Ptr enumeratorType = lastType().cast<EnumeratorType>();
+	if(enumeratorType)
+	{
+		enumeratorType->setDeclaration(e);
+		e->setAbstractType(enumeratorType.cast<AbstractType>());
+	}
 	closeDeclaration();
 }

@@ -67,6 +67,9 @@ public:
 	virtual void visitBaseClassList(IBaseClassList *node);
 	virtual void visitBaseClass(IBaseClass *node);
 	virtual void visitStructBody(IStructBody *node);
+	virtual void visitEnumDeclaration(IEnumDeclaration *node);
+	virtual void visitEnumBody(IEnumBody *node);
+	virtual void visitEnumMember(IEnumMember *node);
 	virtual void visitStatement(IStatement *node);
 	virtual void visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *node);
 	virtual void visitExpressionStatement(IExpressionStatement *node);

@@ -20,6 +20,8 @@
 #include "typebuilder.h"
 
 #include <language/duchain/types/arraytype.h>
+#include <language/duchain/types/enumerationtype.h>
+#include <language/duchain/types/enumeratortype.h>
 #include <language/duchain/types/functiontype.h>
 #include <language/duchain/types/integraltype.h>
 #include <language/duchain/types/pointertype.h>
@@ -198,6 +200,27 @@ void TypeBuilder::visitInterfaceDeclaration(IInterfaceDeclaration *node)
 	//currentType<KDevelop::StructureType>()->setPrettyName(node->getName()->getString());
 	//currentType<KDevelop::StructureType>()->setStructureType();
 	closeType();
+}
+
+void TypeBuilder::visitEnumDeclaration(IEnumDeclaration *node)
+{
+	enumValueCounter = 0;
+	TypeBuilderBase::visitEnumDeclaration(node);
+	//TODO: Save type for use in members?
+	if(auto n = node->getType())
+		visitTypeName(n);
+	else
+		injectType<AbstractType>(AbstractType::Ptr(new IntegralType(IntegralType::TypeInt)));
+}
+
+void TypeBuilder::visitEnumMember(IEnumMember *node)
+{
+	EnumeratorType::Ptr enumerator(new EnumeratorType());
+	openType(enumerator);
+	enumerator->setValue<qint64>(enumValueCounter);
+	TypeBuilderBase::visitEnumMember(node);
+	closeType();
+	enumValueCounter++;
 }
 
 }

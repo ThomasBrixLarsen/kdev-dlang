@@ -109,10 +109,17 @@ void UseBuilder::visitUnaryExpression(IUnaryExpression *node)
 		auto t = getTypeOrVarDeclaration(QualifiedIdentifier(str), context);
 		if(!t)
 			continue;
+		if(!t->type<AbstractType>())
+		{
+			id.push(Identifier(str));
+			continue;
+		}
 		for(const QString &part : t->type<AbstractType>()->toString().split("::", QString::SkipEmptyParts))
 			id.push(Identifier(part));
 	}
 	id.push(identifierForNode(node->getIdentifierOrTemplateInstance()->getIdentifier()));
+	identifierChain.clear();
+	
 	DeclarationPointer decl = getDeclaration(id, context);
 	if(decl)
 		newUse(node, decl);

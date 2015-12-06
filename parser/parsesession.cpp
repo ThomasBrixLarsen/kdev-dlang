@@ -191,6 +191,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			}
 			break;
 		}
+		case Kind::enumBody:
+		{
+			auto f = (IEnumBody *)from;
+			if(f)
+			{
+				line = f->getStartLine();
+				column = f->getStartColumn();
+			}
+			break;
+		}
 		case Kind::identifierChain:
 		{
 			auto f = (IIdentifierChain*)from;
@@ -373,6 +383,16 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 		case Kind::doStatement:
 		{
 			auto f = (IDoStatement *)to;
+			if(f)
+			{
+				lineEnd = f->getEndLine();
+				columnEnd = f->getEndColumn();
+			}
+			break;
+		}
+		case Kind::enumBody:
+		{
+			auto f = (IEnumBody *)to;
 			if(f)
 			{
 				lineEnd = f->getEndLine();

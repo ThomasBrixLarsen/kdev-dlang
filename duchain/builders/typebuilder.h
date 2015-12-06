@@ -35,12 +35,14 @@ typedef KDevelop::AbstractTypeBuilder<INode, IToken, ContextBuilder> TypeBuilder
 class KDEVDDUCHAIN_EXPORT TypeBuilder : public TypeBuilderBase
 {
 public:
-	virtual void visitTypeName(IType *node);
-	virtual void visitParameter(IParameter *node);
-	virtual void visitClassDeclaration(IClassDeclaration *node);
-	virtual void visitStructDeclaration(IStructDeclaration *node);
-	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node);
-	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
+	virtual void visitTypeName(IType *node) override;
+	virtual void visitParameter(IParameter *node) override;
+	virtual void visitClassDeclaration(IClassDeclaration *node) override;
+	virtual void visitStructDeclaration(IStructDeclaration *node) override;
+	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node) override;
+	virtual void visitFuncDeclaration(IFunctionDeclaration *node) override;
+	virtual void visitEnumDeclaration(IEnumDeclaration *node) override;
+	virtual void visitEnumMember(IEnumMember *node) override;
 	
 	void buildTypeName(KDevelop::QualifiedIdentifier typeName);
 	
@@ -55,6 +57,9 @@ protected:
 	KDevelop::QualifiedIdentifier m_contextIdentifier;
 	
 	KDevelop::FunctionType::Ptr currentFunctionType;
+
+private:
+	int enumValueCounter;
 };
 
 }
