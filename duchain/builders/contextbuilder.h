@@ -110,6 +110,12 @@ public:
 	virtual void visitBreakStatement(IBreakStatement *node);
 	virtual void visitContinueStatement(IContinueStatement *node);
 	virtual void visitGotoStatement(IGotoStatement *node);
+	virtual void visitTryStatement(ITryStatement *node);
+	virtual void visitCatch(ICatch *node);
+	virtual void visitLastCatch(ILastCatch *node);
+	virtual void visitFinally(IFinally *node);
+	virtual void visitThrowStatement(IThrowStatement *node);
+	virtual void visitScopeGuardStatement(IScopeGuardStatement *node);
 	virtual void visitToken(IToken *node);
 	virtual KDevelop::DUContext *contextFromNode(INode *node) override;
 	

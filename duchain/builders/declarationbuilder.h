@@ -50,6 +50,7 @@ public:
 	virtual void visitLabeledStatement(ILabeledStatement *node) override;
 	virtual void visitDebugSpecification(IDebugSpecification *node) override;
 	virtual void visitVersionSpecification(IVersionSpecification *node) override;
+	virtual void visitCatch(ICatch *node) override;
 
 private:
 	/**

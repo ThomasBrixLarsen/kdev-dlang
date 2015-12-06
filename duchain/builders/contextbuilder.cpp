@@ -314,6 +314,12 @@ void ContextBuilder::visitStatementNoCaseNoDefault(IStatementNoCaseNoDefault *no
 		visitContinueStatement(n);
 	if(auto n = node->getGotoStatement())
 		visitGotoStatement(n);
+	if(auto n = node->getTryStatement())
+		visitTryStatement(n);
+	if(auto n = node->getThrowStatement())
+		visitThrowStatement(n);
+	if(auto n = node->getScopeGuardStatement())
+		visitScopeGuardStatement(n);
 }
 
 void ContextBuilder::visitIfStatement(IIfStatement *node)
@@ -673,6 +679,53 @@ void ContextBuilder::visitGotoStatement(IGotoStatement *node)
 		visitToken(n);
 	if(auto n = node->getExpression())
 		visitExpression(n);
+}
+
+void ContextBuilder::visitTryStatement(ITryStatement *node)
+{
+	if(auto n = node->getDeclarationOrStatement())
+		visitDeclarationOrStatement(n);
+	if(auto n = node->getCatches())
+	{
+		for(int i=0; i<n->numCatches(); i++)
+			visitCatch(n->getCatche(i));
+		if(auto c = n->getLastCatch())
+			visitLastCatch(c);
+	}
+	if(auto n = node->getFinally())
+		visitFinally(n);
+}
+
+void ContextBuilder::visitCatch(ICatch *node)
+{
+	if(auto n = node->getDeclarationOrStatement())
+		visitDeclarationOrStatement(n);
+	if(auto n = node->getType())
+		visitTypeName(n);
+}
+
+void ContextBuilder::visitLastCatch(ILastCatch *node)
+{
+	if(auto n = node->getStatementNoCaseNoDefault())
+		visitStatementNoCaseNoDefault(n);
+}
+
+void ContextBuilder::visitFinally(IFinally *node)
+{
+	if(auto n = node->getDeclarationOrStatement())
+		visitDeclarationOrStatement(n);
+}
+
+void ContextBuilder::visitThrowStatement(IThrowStatement *node)
+{
+	if(auto n = node->getExpression())
+		visitExpression(n);
+}
+
+void ContextBuilder::visitScopeGuardStatement(IScopeGuardStatement *node)
+{
+	if(auto n = node->getStatementNoCaseNoDefault())
+		visitStatementNoCaseNoDefault(n);
 }
 
 void ContextBuilder::visitToken(IToken *node)

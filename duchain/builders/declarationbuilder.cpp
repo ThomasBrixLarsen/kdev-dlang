@@ -229,3 +229,13 @@ void DeclarationBuilder::visitVersionSpecification(IVersionSpecification *node)
 	label->setKind(Declaration::Type);
 	closeDeclaration();
 }
+
+void DeclarationBuilder::visitCatch(ICatch *node)
+{
+	TypeBuilder::visitCatch(node);
+	DUChainWriteLocker lock;
+	Declaration *parameter = openDeclaration<Declaration>(node->getIdentifier(), node);
+	parameter->setKind(Declaration::Instance);
+	parameter->setAbstractType(lastType());
+	closeDeclaration();
+}
