@@ -5,13 +5,17 @@ This plugin introduces D language support for KDevelop. D is a programming langu
 
 Features
 --------------------
-**NOTE**: It is still a WIP, so only a (small) part of the D language features is supported at this time. 
+**NOTE**: Only a small part of the D language features is supported at this time. 
 Some of the most important features include:
  -   Code highlighting.
  -   KDevelop navigation widgets.
  -   Code completion.
 
-**HOWTO install this plugin**
+**Installing this plugin**
+
+[Arch Linux](https://aur.archlinux.org/packages/kdevelop-dlang-git/)
+
+**Manual process**
 
 1) Install KDevelop 4.90.90 or better.
 
@@ -22,7 +26,7 @@ Some of the most important features include:
 
 4) Install the D Plugin as you would for a typical cmake project.
 
-**HOWTO use this plugin**
+**Using this plugin**
 
 Simpy open a .d or .di file and it should work.
 
