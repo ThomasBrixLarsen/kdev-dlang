@@ -201,6 +201,26 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			}
 			break;
 		}
+		case Kind::constructor:
+		{
+			auto f = (IConstructor *)from;
+			if(f)
+			{
+				line = f->getLine();
+				column = f->getColumn();
+			}
+			break;
+		}
+		case Kind::destructor:
+		{
+			auto f = (IDestructor *)from;
+			if(f)
+			{
+				line = f->getLine();
+				column = f->getColumn() - 1; //"~".
+			}
+			break;
+		}
 		case Kind::identifierChain:
 		{
 			auto f = (IIdentifierChain*)from;
@@ -397,6 +417,26 @@ KDevelop::RangeInRevision ParseSession::findRange(INode *from, INode *to)
 			{
 				lineEnd = f->getEndLine();
 				columnEnd = f->getEndColumn();
+			}
+			break;
+		}
+		case Kind::constructor:
+		{
+			auto f = (IConstructor *)to;
+			if(f)
+			{
+				lineEnd = f->getLine();
+				columnEnd = f->getColumn() + 4; //"this".
+			}
+			break;
+		}
+		case Kind::destructor:
+		{
+			auto f = (IDestructor *)to;
+			if(f)
+			{
+				lineEnd = f->getLine();
+				columnEnd = f->getColumn() + 4; //"this".
 			}
 			break;
 		}

@@ -19,6 +19,16 @@ void writeln(string text)
  */
 class Test
 {
+	this()
+	{
+		
+	}
+	
+	~this()
+	{
+		
+	}
+	
 	int test3()
 	{
 		int ret = 2;

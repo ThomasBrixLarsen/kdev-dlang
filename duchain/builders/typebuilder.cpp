@@ -148,6 +148,32 @@ void TypeBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	closeType();
 }
 
+void TypeBuilder::visitConstructor(IConstructor *node)
+{
+	DUChainWriteLocker lock;
+	clearLastType();
+	
+	FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
+	currentFunctionType = functionType;
+	
+	openType(functionType);
+	
+	closeType();
+}
+
+void TypeBuilder::visitDestructor(IDestructor *node)
+{
+	DUChainWriteLocker lock;
+	clearLastType();
+	
+	FunctionType::Ptr functionType = FunctionType::Ptr(new FunctionType());
+	currentFunctionType = functionType;
+	
+	openType(functionType);
+	
+	closeType();
+}
+
 void TypeBuilder::visitClassDeclaration(IClassDeclaration *node)
 {
 	openType<KDevelop::StructureType>(KDevelop::StructureType::Ptr(new KDevelop::StructureType));

@@ -56,6 +56,8 @@ public:
 	virtual void visitBlock(IBlockStatement *node, bool openContext);
 	virtual void visitBody(IFunctionBody *node);
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node);
+	virtual void visitConstructor(IConstructor *node);
+	virtual void visitDestructor(IDestructor *node);
 	virtual void visitParameter(IParameter *node);
 	virtual void visitModule(IModule *node);
 	virtual void visitDeclarationsAndStatements(IDeclarationsAndStatements *node);

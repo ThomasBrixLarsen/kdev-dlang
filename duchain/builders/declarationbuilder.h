@@ -42,6 +42,8 @@ public:
 	virtual void visitModule(IModule *node) override;
 	virtual void visitVarDeclaration(IVariableDeclaration *node) override;
 	virtual void visitFuncDeclaration(IFunctionDeclaration *node) override;
+	virtual void visitConstructor(IConstructor *node) override;
+	virtual void visitDestructor(IDestructor *node) override;
 	virtual void visitClassDeclaration(IClassDeclaration *node) override;
 	virtual void visitStructDeclaration(IStructDeclaration *node) override;
 	virtual void visitInterfaceDeclaration(IInterfaceDeclaration *node) override;

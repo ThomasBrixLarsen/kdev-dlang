@@ -177,6 +177,38 @@ void DeclarationBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	}
 }
 
+void DeclarationBuilder::visitConstructor(IConstructor *node)
+{
+	TypeBuilder::visitConstructor(node);
+	DUChainWriteLocker lock;
+	ClassFunctionDeclaration *newMethod = openDefinition<ClassFunctionDeclaration>(QualifiedIdentifier("this"), editorFindRange(node, node));
+	if(node->getComment())
+		newMethod->setComment(QString::fromUtf8(node->getComment()));
+	newMethod->setKind(KDevelop::Declaration::Type);
+	lock.unlock();
+	ContextBuilder::visitConstructor(node);
+	lock.lock();
+	closeDeclaration();
+	newMethod->setInternalContext(lastContext());
+	newMethod->setType(currentFunctionType);
+}
+
+void DeclarationBuilder::visitDestructor(IDestructor *node)
+{
+	TypeBuilder::visitDestructor(node);
+	DUChainWriteLocker lock;
+	ClassFunctionDeclaration *newMethod = openDefinition<ClassFunctionDeclaration>(QualifiedIdentifier("~this"), editorFindRange(node, node));
+	if(node->getComment())
+		newMethod->setComment(QString::fromUtf8(node->getComment()));
+	newMethod->setKind(KDevelop::Declaration::Type);
+	lock.unlock();
+	ContextBuilder::visitDestructor(node);
+	lock.lock();
+	closeDeclaration();
+	newMethod->setInternalContext(lastContext());
+	newMethod->setType(currentFunctionType);
+}
+
 void DeclarationBuilder::visitSingleImport(ISingleImport *node)
 {
 	DUChainWriteLocker lock;

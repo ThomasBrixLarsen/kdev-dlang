@@ -176,6 +176,32 @@ void ContextBuilder::visitFuncDeclaration(IFunctionDeclaration *node)
 	closeContext();
 }
 
+void ContextBuilder::visitConstructor(IConstructor *node)
+{
+	openContext(node, editorFindRange(node, node->getFunctionBody()), DUContext::Function, QualifiedIdentifier("this"));
+	
+	if(node->getParameters())
+	{
+		for(int i=0; i<node->getParameters()->numParameters(); i++)
+		{
+			if(auto n = node->getParameters()->getParameter(i))
+				visitParameter(n);
+		}
+	}
+	
+	if(auto n = node->getFunctionBody())
+		visitBody(n);
+		closeContext();
+}
+
+void ContextBuilder::visitDestructor(IDestructor *node)
+{
+	openContext(node, editorFindRange(node, node->getFunctionBody()), DUContext::Function, QualifiedIdentifier("~this"));
+	if(auto n = node->getFunctionBody())
+		visitBody(n);
+	closeContext();
+}
+
 void ContextBuilder::visitBody(IFunctionBody *node)
 {
 	openContext(node, DUContext::Other);
@@ -214,6 +240,10 @@ void ContextBuilder::visitDeclaration(IDeclaration *node)
 		visitClassDeclaration(n);
 	else if(auto n = node->getFunctionDeclaration())
 		visitFuncDeclaration(n);
+	else if(auto n = node->getConstructor())
+		visitConstructor(n);
+	else if(auto n = node->getDestructor())
+		visitDestructor(n);
 	else if(auto n = node->getImportDeclaration())
 		visitImportDeclaration(n);
 	else if(auto n = node->getStructDeclaration())
