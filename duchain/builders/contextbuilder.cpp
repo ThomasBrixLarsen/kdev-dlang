@@ -301,13 +301,11 @@ void ContextBuilder::visitBaseClass(IBaseClass *node)
 
 void ContextBuilder::visitStructBody(IStructBody *node)
 {
-	openContext(node, editorFindRange(node, 0), DUContext::Class);
 	for(int i=0; i<node->numDeclarations(); i++)
 	{
 		if(auto n = node->getDeclaration(i))
 			visitDeclaration(n);
 	}
-	closeContext();
 }
 
 void ContextBuilder::visitVarDeclaration(IVariableDeclaration *node)
