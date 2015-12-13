@@ -80,7 +80,8 @@ FunctionCompletionItem::FunctionCompletionItem(DeclarationPointer decl, int dept
 	if(m_prefix == "")
 	{
 		DUChainReadLocker lock;
-		m_prefix += type->returnType()->toString();
+		if(type && type->returnType())
+			m_prefix += type->returnType()->toString();
 	}
 }
 
